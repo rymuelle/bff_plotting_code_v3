@@ -32,7 +32,7 @@ class SampleManager(DataFrame):
     def from_file(cls, file_name, *args, **kwargs):
         df = pd.read_csv(file_name)
         return cls(df, name=file_name, *args, **kwargs)
-    def view(self, lt={}, gt={}, eq={}):
+    def view(self, lt={}, gt={}, eq={}, **kwargs):
         df = self
         for key in lt:
             df = df[df[key] < lt[key]] 
@@ -40,7 +40,7 @@ class SampleManager(DataFrame):
             df = df[df[key] > gt[key]]
         for key in eq:
             df = df[df[key] == eq[key]]
-        return self.__class__(df)
+        return self.__class__(df, **kwargs)
     def mass_window(self,min_mass,max_mass):
         return self.view(gt={'DiLepMass':min_mass},lt={'DiLepMass':max_mass})
     def bff(self,HTLT=np.inf,RelMET=np.inf,SBM=0):
@@ -49,11 +49,15 @@ class SampleManager(DataFrame):
         return self.view(eq=Flag_METFilters)
     def flag(self,flag_name, istrue=1):
         return self.view(eq={flag_name:istrue})
-    def total(self):
-        return np.sum(self.sample_weight)
-    def histogram(self,column_name, **kwargs):
+    def weights(self,weight_names=['Weight']):
+        #this is really weird, but if you return a df with only one row in it, this forms a 1d list, unless you conver to an iterable like numpy array
+        weights = [self[weight].to_numpy() for weight in weight_names]
+        return np.prod(weights,axis=0)
+    def total(self, **kwargs): 
+        return np.sum(self.weights(**kwargs))
+    def histogram(self,column_name,w_kwargs={}, **kwargs):
         pd_series = self[column_name]
-        weights = self.sample_weight
+        weights = self.weights(**w_kwargs)
         n,bins  = np.histogram(pd_series,weights=weights,**kwargs)
         stat_error = np.sqrt(np.histogram(pd_series,weights=weights**2, bins=bins)[0])
         bin_centers = [(bins[i]+bins[i+1])/2. for i in range(len(bins)-1)]
@@ -63,3 +67,25 @@ class SampleManager(DataFrame):
         return '''Name: {} \n shape: {}\n total: {:.2e}\n mass mean: {:.2f} std: {:.2f}'''.format(self.name,self.shape,self.total(),mean,std)
     def print(self):
         print(repr(self))
+
+class SampleManagerPlotting(SampleManager):
+    #@classmethod
+    #def merge(cls,df_list): maybe a good idea, slow
+    #    temp_cls = super().merge(df_list)
+    #    print(type(temp_cls))
+    def __init__(self, df, *args, name="", label="", category="", color="", **kwargs):
+        super().__init__(df, *args, name=name, **kwargs)
+        self.label = label
+        self.category = category
+        self.color = color
+    @classmethod
+    def from_file(cls,file_name,name,label,category,color, *args, **kwargs):
+        df = pd.read_csv(file_name)
+        return cls(df,name=name,label=label,category=category,color=color)
+    def view(self, lt={}, gt={}, eq={}, **kwargs):
+        cls_tmp = super().view(lt=lt, gt=gt, eq=eq, **kwargs)
+        cls_tmp.label = self.label
+        cls_tmp.category = self.category
+        cls_tmp.color = self.color
+        cls_tmp.name = self.name
+        return cls_tmp

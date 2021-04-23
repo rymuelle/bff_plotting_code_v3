@@ -7,6 +7,7 @@ def def_cpp():
         using namespace ROOT::VecOps;
         float GetBTagWeight(const RVec<int> &isBJet, const RVec<int> &JetHadronFlav, const RVec<float> &JetPt, const RVec<float> &bTagSF) {
           float weight = 1.;
+          return weight;
           for (unsigned j = 0; j < isBJet.size(); ++j) {
             if (isBJet[j]) {
               weight *= bTagSF[j];
@@ -21,7 +22,7 @@ def def_cpp():
               weight *= (1. - eff * bTagSF[j]) / (1. - eff);
             }
           }
-          return weight;
+          return (float) weight;
         }
         
         TH2F *PUIDSF_true  = 0;

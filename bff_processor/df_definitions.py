@@ -79,6 +79,8 @@ def def_HLT(df, ismc, era):
         elif era == "2018":
             df = df.Define("TriggerRegion1", "HLT_Mu50>0 or HLT_OldMu100>0 or HLT_TkMu100>0 or HLT_DoubleEle25_CaloIdL_MW>0")
             df = df.Define("TriggerWeight", "TriggerRegion1")
+    else:
+        df = df.Define("TriggerWeight", "1.0")
     return df
     
 def def_sf_and_weight(df,ismc, is_inclusive, name,sample_weight):
@@ -116,6 +118,7 @@ def def_sf_and_weight(df,ismc, is_inclusive, name,sample_weight):
             df = df.Define("BTagWeightDown", "map_zero_to_one(GetBTagWeight(GoodBJet, GoodJetHadronFlav, GoodJetPt, GoodJetBTagSFDown))")
             #event weights
             df = df.Define("sample_weight", str(sample_weight))
+            #df = df.Define("Weight", "{}*copysign(1.,genWeight)*k_factor*puWeight*BTagWeight*PUIDWeight*MuonSFweight*ElectronSFweight*TriggerWeight".format(sample_weight))
             df = df.Define("Weight", "{}*copysign(1.,genWeight)*k_factor*puWeight*BTagWeight*PUIDWeight*MuonSFweight*ElectronSFweight*TriggerWeight".format(sample_weight))
             # Systematic weights
             df = df.Define("Weight_PuUp", "Weight/puWeight*puWeightUp")
@@ -142,7 +145,8 @@ def def_sf_and_weight(df,ismc, is_inclusive, name,sample_weight):
             df = df.Define("Weight_ElectronSFUp", "Weight/ElectronSFweight*ElectronSFweightUp")
             df = df.Define("Weight_ElectronSFDown", "Weight/ElectronSFweight*ElectronSFweightDown")
     else:
-        df = df.Define("Weight", "1")
+        df = df.Define("Weight", "1.")
+        df = df.Define("sample_weight", "1")
         df = df.Define("Weight_PuDown", "1")
         df = df.Define("Weight_PuUp", "1")
         df = df.Define("Weight_BTagUp", "1")
