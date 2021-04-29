@@ -8,6 +8,7 @@ def def_cpp():
         float GetBTagWeight(const RVec<int> &isBJet, const RVec<int> &JetHadronFlav, const RVec<float> &JetPt, const RVec<float> &bTagSF) {
           float weight = 1.;
           return weight;
+          std::cout << weight << std::endl;
           for (unsigned j = 0; j < isBJet.size(); ++j) {
             if (isBJet[j]) {
               weight *= bTagSF[j];
@@ -22,6 +23,7 @@ def def_cpp():
               weight *= (1. - eff * bTagSF[j]) / (1. - eff);
             }
           }
+          std::cout << weight << std::endl;
           return (float) weight;
         }
         
@@ -135,7 +137,7 @@ def def_cpp():
         
         float map_zero_to_one(float value){
           if (value==0){
-            return 1;
+            return (float) 1.0;
           } else {
             return value;
           }

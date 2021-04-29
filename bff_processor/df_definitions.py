@@ -31,7 +31,6 @@ def def_good_jet(df, ismc, bDiscValue):
         df = df.Define("NoPUID_GoodJetGenJetIdx", "Jet_genJetIdx[NoPUID_GoodJet]")
     return df
 
-def def_good_leptons(df, ismc):
     df = df.Define("GoodMuon", "Muon_pt_corrected > 53 && abs(Muon_eta) < 2.4 && Muon_tightId > 0 && Muon_pfRelIso04_all < 0.25")\
            .Define("GoodMuonPt", "Muon_pt[GoodMuon]")\
            .Define("GoodMuonEta", "Muon_eta[GoodMuon]")\
@@ -118,7 +117,6 @@ def def_sf_and_weight(df,ismc, is_inclusive, name,sample_weight):
             df = df.Define("BTagWeightDown", "map_zero_to_one(GetBTagWeight(GoodBJet, GoodJetHadronFlav, GoodJetPt, GoodJetBTagSFDown))")
             #event weights
             df = df.Define("sample_weight", str(sample_weight))
-            #df = df.Define("Weight", "{}*copysign(1.,genWeight)*k_factor*puWeight*BTagWeight*PUIDWeight*MuonSFweight*ElectronSFweight*TriggerWeight".format(sample_weight))
             df = df.Define("Weight", "{}*copysign(1.,genWeight)*k_factor*puWeight*BTagWeight*PUIDWeight*MuonSFweight*ElectronSFweight*TriggerWeight".format(sample_weight))
             # Systematic weights
             df = df.Define("Weight_PuUp", "Weight/puWeight*puWeightUp")
