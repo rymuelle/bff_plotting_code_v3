@@ -4,6 +4,7 @@ import ROOT
 def setup_btag_puid(ismc, era, bTagEff):
     if ismc:
         bTagFile = TFile(bTagEff, 'read')
+        ROOT.bTagEff = bTagFile.Get("bTagEff")
         PUIDSFfile = TFile("data/PUID_80XTraining_EffSFandUncties.root","read")
         ROOT.PUIDEff_true  = PUIDSFfile.Get("h2_eff_mc{}_T".format(era))
         ROOT.PUIDEff_false = PUIDSFfile.Get("h2_mistag_mc{}_T".format(era))
@@ -30,7 +31,7 @@ def def_good_jet(df, ismc, bDiscValue):
     if int(ismc):
         df = df.Define("NoPUID_GoodJetGenJetIdx", "Jet_genJetIdx[NoPUID_GoodJet]")
     return df
-
+def def_good_leptons(df, ismc):
     df = df.Define("GoodMuon", "Muon_pt_corrected > 53 && abs(Muon_eta) < 2.4 && Muon_tightId > 0 && Muon_pfRelIso04_all < 0.25")\
            .Define("GoodMuonPt", "Muon_pt[GoodMuon]")\
            .Define("GoodMuonEta", "Muon_eta[GoodMuon]")\
