@@ -2,6 +2,7 @@ import pandas as pd
 from pandas import DataFrame
 import numpy as np
 
+
 class SampleManager(DataFrame):
     Flag_METFilters = {"Flag_goodVertices":1,
         "Flag_globalSuperTightHalo2016Filter":1,
@@ -62,6 +63,16 @@ class SampleManager(DataFrame):
         stat_error = np.sqrt(np.histogram(pd_series,weights=weights**2, bins=bins)[0])
         bin_centers = [(bins[i]+bins[i+1])/2. for i in range(len(bins)-1)]
         return n, stat_error, bins, bin_centers
+    def boost(self, column_name, *meta_bin, b_kwargs={}, w_kwargs={}, **kwargs):
+        import boost_histogram as bh
+        pd_series = self[column_name]
+        weights = self.weights(**w_kwargs)
+        h = bh.Histogram(
+            bh.axis.Regular(*meta_bin, metadata=column_name),
+            storage=bh.storage.Weight(),
+        )
+        h.fill(pd_series,weight=weights, **b_kwargs)
+        return h
     def __repr__(self):
         mean,std = self.DiLepMass.mean(),self.DiLepMass.std()
         return '''Name: {} \n shape: {}\n total: {:.2e}\n mass mean: {:.2f} std: {:.2f}'''.format(self.name,self.shape,self.total(),mean,std)
