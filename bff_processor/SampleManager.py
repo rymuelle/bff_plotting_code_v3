@@ -54,8 +54,10 @@ class SampleManager(DataFrame):
         #this is really weird, but if you return a df with only one row in it, this forms a 1d list, unless you conver to an iterable like numpy array
         weights = [self[weight].to_numpy() for weight in weight_names]
         return np.prod(weights,axis=0)
-    def total(self, **kwargs): 
-        return np.sum(self.weights(**kwargs))
+    def total(self, sumW2=0, **kwargs):
+        weights = self.weights(**kwargs)
+        if sumW2: return np.sum(weights), np.sum(weights**2)**.5
+        return np.sum(weights)
     def histogram(self,column_name,w_kwargs={}, **kwargs):
         pd_series = self[column_name]
         weights = self.weights(**w_kwargs)
