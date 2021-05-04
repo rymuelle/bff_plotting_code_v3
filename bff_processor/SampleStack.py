@@ -30,7 +30,7 @@ class SampleStack():
         nom = np.sum(np.array(hists)[:,0],axis=0)
         std = np.sum( np.array(hists)[:,1]**2 ,axis=0)**.5
         return nom, std, bins, bins_c
-    def sum_boost(self,column_name,*meta_bin, label='',name='',category='', **kwargs):
+    def sum_boost(self,column_name,*meta_bin, label='',name='',category='',**kwargs):
         hists =  [smp.boost(column_name,*meta_bin, **kwargs) for smp in self.select_smp(label=label,name=name,category=category)]
         return sum(hists)
     def __repr__(self):
