@@ -20,7 +20,17 @@ parser.add_argument('-p','--pickle', help='input pickle', required=True)
 parser.add_argument('-d', '--data', help='seperate data pickle if needed', default=0)
 parser.add_argument('-l','--lumi', help='lumi', required=True)
 parser.add_argument('-e','--era', help='era', required=True)
+parser.add_argument('--only_mc', help='only draw mc', default=False, action='store_true')
 args = vars(parser.parse_args())
+
+
+draw_data, draw_mc, draw_signal = 1,1,1
+
+postfix = ""
+only_mc=args['only_mc']
+if only_mc:
+    postfix+="_onlymc"
+    draw_data, draw_signal = 0, 0
 
 lumi=float(args['lumi'])
 pkl_name = args['pickle']
@@ -51,12 +61,12 @@ def plot_region(reg, top, bottom, mc_color = 'orange'):
     
     #data
     dhist = make_stack_boost(meta_df[meta_df.type=='data'],reg_dict_temp_data, reg)
-    if dhist[0]:
+    if dhist[0] and draw_data:
         dnom, dunc = plot_w_error_boost(top,*dhist, color='black', label='data')
     
     for i,row in meta_df[meta_df.type=='signal'].iterrows():
         sighist  = make_stack_boost(meta_df[meta_df.hname==row.hname],reg_dict_temp, reg)
-        if sighist[0]:
+        if sighist[0] and draw_signal:
             plot_w_error_boost(top,*sighist, color=row.color, label=row.label)
     top.set_yscale('log')
     top.legend(ncol=2)
@@ -66,7 +76,7 @@ def plot_region(reg, top, bottom, mc_color = 'orange'):
 
     bottom.plot(dedges, bnom/bnom, color=mc_color)
     bottom.fill_between(dedges, *[bunc[0]/bnom,bunc[1]/bnom], color=mc_color, alpha=.5)
-    if dhist[0]:
+    if dhist[0] and draw_data:
             bottom.plot(dedges, dnom/bnom, color='black')
             bottom.fill_between(dedges, *[dunc[0]/bnom,dunc[1]/bnom], color='black', alpha=.5)
     bottom.set_ylim([0,2])
@@ -79,7 +89,7 @@ def plot_region(reg, top, bottom, mc_color = 'orange'):
 for key in reg_dict_temp:
     fig, top, bottom = ratio_plot_template( figsize=[10,10])
     plot_region(key,top,bottom,mc_color='purple')
-    fig.savefig('output/{}_{}_{}.png'.format(pkl_name,key,era))
+    fig.savefig('output/{}_{}_{}{}.png'.format(pkl_name,key,era,postfix))
 
 #combined one jet stuff
 one_jet_keys = {'SR1_{}':[0,0],
@@ -92,7 +102,7 @@ for key in one_jet_keys:
     print(ai)
     axs = axes[ai[0]][ai[1]]
     plot_region(key,*axs,mc_color='purple')
-fig.savefig('output/{}_{}_1.png'.format(pkl_name,era))
+fig.savefig('output/{}_{}{}_1.png'.format(pkl_name,era,postfix))
 
 #comb two jet stuff
 one_jet_keys = {'SR2_{}':[0,0],
@@ -105,4 +115,4 @@ for key in one_jet_keys:
     print(ai)
     axs = axes[ai[0]][ai[1]]
     plot_region(key,*axs,mc_color='purple')
-fig.savefig('output/{}_{}_2.png'.format(pkl_name,era))
+fig.savefig('output/{}_{}{}_2.png'.format(pkl_name,era,postfix))
