@@ -88,3 +88,15 @@ def color_map(n_things):
     cmap = plt.cm.rainbow
     colors = np.linspace(0,1,n_things)
     return [cmap(c) for c in colors]
+
+def log_norm(x, norm, sigma, theta, mean):
+    return norm/((x-theta)*sigma*2*3.14159)*np.exp(-(np.log((x-theta)/mean))**2/(2*sigma**2))
+
+def log_norm_unp(x, norm, sigma, theta, mean):
+    import uncertainties.unumpy as unp
+    return norm/((x-theta)*sigma*2*3.14159)*unp.exp(-(unp.log((x-theta)/mean))**2/(2*sigma**2))
+import uncertainties
+
+def unzip_unp(unp_arr):
+    import uncertainties
+    return np.array(list(zip(*[(x.nominal_value, x.std_dev) for x in unp_arr])))

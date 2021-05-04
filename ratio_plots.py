@@ -17,6 +17,7 @@ import argparse
 
 parser = argparse.ArgumentParser(description='Produce stack plots from pickle.')
 parser.add_argument('-p','--pickle', help='input pickle', required=True)
+parser.add_argument('-d', '--data', help='seperate data pickle if needed', default=0)
 parser.add_argument('-l','--lumi', help='lumi', required=True)
 parser.add_argument('-e','--era', help='era', required=True)
 args = vars(parser.parse_args())
@@ -27,6 +28,13 @@ era = args['era']
 #open file
 with open(pkl_name,'rb') as f:
     reg_dict_temp = pickle.load(f)
+if args['data']:
+    pkl_name = args['data']
+    with open(pkl_name,'rb') as f:
+        reg_dict_temp_data = pickle.load(f)
+else:
+    reg_dict_temp_data = reg_dict_temp
+pkl_name = pkl_name.split('.')[0]
 
 #function to make stack plot
 def plot_region(reg, top, bottom, mc_color = 'orange'):
@@ -42,7 +50,7 @@ def plot_region(reg, top, bottom, mc_color = 'orange'):
     bnom, bunc = plot_w_error_boost(top,*bhist, color=mc_color, label='MC')
     
     #data
-    dhist = make_stack_boost(meta_df[meta_df.type=='data'],reg_dict_temp, reg)
+    dhist = make_stack_boost(meta_df[meta_df.type=='data'],reg_dict_temp_data, reg)
     if dhist[0]:
         dnom, dunc = plot_w_error_boost(top,*dhist, color='black', label='data')
     
@@ -61,93 +69,6 @@ def plot_region(reg, top, bottom, mc_color = 'orange'):
     if dhist[0]:
             bottom.plot(dedges, dnom/bnom, color='black')
             bottom.fill_between(dedges, *[dunc[0]/bnom,dunc[1]/bnom], color='black', alpha=.5)
-    bottom.set_ylim([0,2])
-    
-    bottom.set_xlabel('DiLepMass [GeV]')
-    top.set_ylabel('Count per 5 GeV')
-    hep.cms.label(loc=0,ax=top,lumi=lumi,year=2016)
-
-#individual plots
-for key in reg_dict_temp:
-    fig, top, bottom = ratio_plot_template( figsize=[10,10])
-    plot_region(key,top,bottom,mc_color='purple')
-    fig.savefig('output/{}_{}_{}.png'.format(pkl_name,key,era))
-
-#combined one jet stuff
-one_jet_keys = {'SR1_{}':[0,0],
-'CR10_{}':[1,0],
-'CR13_{}':[0,1],
-'CR14_{}':[1,1]}
-fig, axes = nratio_plot_template(nPlots=[2,2],figsize=[20,20])
-for key in one_jet_keys:
-    ai = one_jet_keys[key]
-    print(ai)
-    axs = axes[ai[0]][ai[1]]
-    plot_region(key,*axs,mc_color='purple')
-fig.savefig('output/{}_{}_1.png'.format(pkl_name,era))
-
-#comb two jet stuff
-one_jet_keys = {'SR2_{}':[0,0],
-'CR20_{}':[1,0],
-'CR23_{}':[0,1],
-'CR24_{}':[1,1]}
-fig, axes = nratio_plot_template(nPlots=[2,2],figsize=[20,20])
-for key in one_jet_keys:
-    ai = one_jet_keys[key]
-    print(ai)
-    axs = axes[ai[0]][ai[1]]
-    plot_region(key,*axs,mc_color='purple')
-fig.savefig('output/{}_{}_2.png'.format(pkl_name,era))
-
-import argparse
-
-parser = argparse.ArgumentParser(description='Produce stack plots from pickle.')
-parser.add_argument('-p','--pickle', help='input pickle', required=True)
-parser.add_argument('-l','--lumi', help='lumi', required=True)
-parser.add_argument('-e','--era', help='era', required=True)
-args = vars(parser.parse_args())
-
-lumi=float(args['lumi'])
-pkl_name = args['pickle']
-era = args['era']
-#open file
-with open(pkl_name,'rb') as f:
-    reg_dict_temp = pickle.load(f)
-
-#function to make stack plot
-def plot_region(reg, top, bottom, mc_color = 'orange'):
-
-    #mc background
-    snom, _, _, bin_center, color, label = make_stack(meta_df[meta_df.type=='background'],reg_dict_temp, reg, sum_hist=False)
-    top.stackplot(bin_center,*snom,alpha=.5, colors=color, labels=label)
-    
-    bhist  = make_stack(meta_df[meta_df.type=='background'],reg_dict_temp, reg)
-    plot_w_error(top,*bhist, color=mc_color, label='MC')
-    x_bin = bhist[3]
-    
-    #data
-    dhist = make_stack(meta_df[meta_df.type=='data'],reg_dict_temp, reg)
-    if len(dhist[0])>0:
-        plot_w_error(top,*dhist, color='black', label='data')
-    
-    for i,row in meta_df[meta_df.type=='signal'].iterrows():
-        sighist  = make_stack(meta_df[meta_df.hname==row.hname],reg_dict_temp, reg)
-        plot_w_error(top,*sighist, color=row.color, label=row.label)
-    top.set_yscale('log')
-    top.legend(ncol=2)
-    top.set_ylim(top=10e4, bottom=1e0)
-    
-    bottom.plot([x_bin[0],x_bin[1]],[1,1], color='black')
-    
-    bnom = bhist[0]
-    bstats = bhist[1]
-    bsys = bhist[2]
-    dnom = dhist[0]
-    dstats = dhist[1]
-    dsys = dhist[2]
-    plot_w_error(bottom,bnom/bnom,bstats/bnom,bsys/bnom,x_bin, color=mc_color)
-    if len(dnom)>0:
-        plot_w_error(bottom,dnom/bnom,dstats/bnom,dsys/bnom,x_bin, color='black')
     bottom.set_ylim([0,2])
     
     bottom.set_xlabel('DiLepMass [GeV]')

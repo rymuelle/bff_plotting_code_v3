@@ -21,7 +21,7 @@ parser.add_argument('-o','--outname', help='Out name for pickle', required=True)
 parser.add_argument('-c','--column', help='Column to plot', default='DiLepMass')
 parser.add_argument('--min', help='min bin val', default=105, type=float)
 parser.add_argument('--max', help='max bin val', default=800, type=float)
-parser.add_argument('--nBins', help='n bin val', default=(800-105)/5+1, type=float)
+parser.add_argument('--nBins', help='n bin val', default=(800-105)/5+1, type=int)
 parser.add_argument('-t','--threads', help='n threads boost', default=0, type=int)
 
 args = parser.parse_args()
@@ -34,7 +34,7 @@ if args.threads:
 era = args.era
 outname = args.outname
 column = args.column
-meta_bin = [args.min,args.max,args.nBins]
+meta_bin = [int(args.nBins),args.min,args.max]
 
 sample_list =[
 ['data/tw_{}_BFFZprimeToMuMu_M_200.csv'.format(era), 'BFFZprimeToMuMu_M_200', 'BFFZprimeToMuMu_M_200', 'sig', 'blue'],
@@ -115,7 +115,7 @@ def make_view_no_reg():
 stack.view = make_view_no_reg()
 stack = stack.SMP(clone=True)
 stack_data.view = make_view_no_reg()
-stack_data = stack.SMP(clone=True)
+stack_data = stack_data.SMP(clone=True)
 
 
 def make_sys_plots(stack, column, reg, nJet, ismc=0, **kwargs):

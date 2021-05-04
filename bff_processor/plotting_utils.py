@@ -174,9 +174,12 @@ def make_stack_boost(df, reg_dict_temp, region, sum_hist=True):
 def plot_w_error_boost(ax, nom, sys, color='black', alpha=.25, **kwargs):
     nom_values = nom.values()
     nom_var = nom.variances()
-    sysup = np.array([sys[0].values() ** 2 + nom_var]) ** .5 + nom_values
-    sysdown = -np.array([sys[1].values() ** 2 + nom_var]) ** .5 + nom_values 
-
+    if sys[0]: 
+        sysup = np.array([sys[0].values() ** 2 + nom_var]) ** .5 + nom_values
+        sysdown = -np.array([sys[1].values() ** 2 + nom_var]) ** .5 + nom_values 
+    else:
+        sysup = np.array([nom_var]) ** .5 + nom_values
+        sysdown = -np.array([nom_var]) ** .5 + nom_values 
     double_edge = double_list(nom.axes[0].edges)[1:-1]
     double_comb_sys_stat = [double_list(sysdown), double_list(sysup)]
     bin_center = nom.axes[0].centers
