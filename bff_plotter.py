@@ -163,7 +163,6 @@ def process_sample(sp,sample,era,verbose=1):
 ##### BTag SF not included
 #####
 for sample in sp.samples():
-    if 'data'  in sample['name']: continue 
     start_time = perf_counter()
     name,df,fileglob = process_sample(sp,sample,era)
     #count = df.Count()
