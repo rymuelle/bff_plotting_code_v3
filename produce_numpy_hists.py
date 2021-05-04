@@ -22,6 +22,7 @@ parser.add_argument('-c','--column', help='Column to plot', default='DiLepMass')
 parser.add_argument('--min', help='min bin val', default=105, type=float)
 parser.add_argument('--max', help='max bin val', default=800, type=float)
 parser.add_argument('--nBins', help='n bin val', default=(800-105)/5+1, type=int)
+parser.add_argument('--no_bff', help="don't apply bff cuts", default=False, action='store_true')
 parser.add_argument('-t','--threads', help='n threads boost', default=0, type=int)
 
 args = parser.parse_args()
@@ -31,6 +32,7 @@ if args.threads:
     print("use {} threads".format(args.threads))
     b_kwargs['threads'] = args.threads
 
+no_bff = args.no_bff
 era = args.era
 outname = args.outname
 column = args.column
@@ -94,8 +96,11 @@ BFF_cuts =  ['HTLT_{}', 'RelMET_{}', 'SBM_{}']
 def def_BFF_cuts(jv, nJet):
     t1 =  [bff.format(jv) for bff in BFF_cuts]
     return(list(zip(t1,BFF_cut_values[nJet])))
-
-BFF_cut_values ={1:[-18,.3125,18.75], 2:[-10,.2625,1.25]}
+if no_bff:
+    print("WARNING: no bff cuts applied")
+    BFF_cut_values ={1:[np.infnp.inf,0], 2:[np.inf,np.inf,0]}
+else:
+    BFF_cut_values ={1:[-18,.3125,18.75], 2:[-10,.2625,1.25]}
 def make_view(jv,nJets, region):
     bff = def_BFF_cuts(jv, nJet)
     view_dict = {'lt': {'DiLepMass': 800, bff[0][0]: bff[0][1], bff[1][0]: bff[1][1]},
