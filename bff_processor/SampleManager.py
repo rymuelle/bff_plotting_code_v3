@@ -63,7 +63,7 @@ class SampleManager(DataFrame):
         stat_error = np.sqrt(np.histogram(pd_series,weights=weights**2, bins=bins)[0])
         bin_centers = [(bins[i]+bins[i+1])/2. for i in range(len(bins)-1)]
         return n, stat_error, bins, bin_centers
-    def boost(self,column_name,*meta_bin, **kwargs):
+    def boost(self, column_name, *meta_bin, w_kwargs={}, **kwargs):
         import boost_histogram as bh
         pd_series = self[column_name]
         weights = self.weights(**kwargs)
