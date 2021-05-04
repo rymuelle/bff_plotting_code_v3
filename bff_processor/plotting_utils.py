@@ -40,7 +40,7 @@ def make_plot(hist_dict):
 
 td_dict = {
     'data':{'label': 'data', 'type': 'data', 'kwargs':{'color': 'black'}},
-    'BFFZprimeToMuMu_M_175':{'label': '175 $\delta_{bs}=0.04$', 'type': 'signal', 'kwargs':{'color': '#6633ff'}},
+    'BFFZprimeToMuMu_M_175':{'label': '175 $\delta_{bs}=0.04$', 'type': 'signal', 'kwargs':{'color': '#3380ff'}},
     'BFFZprimeToMuMu_M_200':{'label': '200 $\delta_{bs}=0.04$', 'type': 'signal', 'kwargs':{'color': '#6633ff'}},
     'BFFZprimeToMuMu_M_200_dbs0p5':{'label': '200 $\delta_{bs}=0.5$', 'type': 'signal', 'kwargs':{'color': '#3900e6','linestyle':'--'}},
     'BFFZprimeToMuMu_M_200_dbs1p0':{'label': '200 $\delta_{bs}=1.0$', 'type': 'signal', 'kwargs':{'color': '#260099','linestyle':':'}},
