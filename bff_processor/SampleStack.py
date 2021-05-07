@@ -20,9 +20,12 @@ class SampleStack():
             return [smp.view(**view, name=smp.name) for smp in self._SMP]
         else:
             return self.__class__(sample_list=[smp.view(**view, name=smp.name) for smp in self._SMP], add_sample=False)
-    def select_smp(self, label='',name='',category=''):
+    def select_smp(self, label='',name='',category='', clone=False):
         eval_smp = lambda smp, l, n, c: (l == smp.label or not l) and (n == smp.name or not n) and (c == smp.category or not c)
-        return [smp for smp in self.SMP() if eval_smp(smp, label, name, category)]
+        if not clone:
+            return [smp for smp in self.SMP() if eval_smp(smp, label, name, category)]
+        else:
+            return self.__class__(sample_list=[smp for smp in self.SMP() if eval_smp(smp, label, name, category)], add_sample=False)
     def sum_hists(self,column_name,bins, label='',name='',category='',**kwargs):
         hists =  [smp.histogram(column_name, bins=bins,**kwargs) for smp in self.select_smp(label=label,name=name,category=category)]
         bins_c = np.array(hists)[:,3][0]
