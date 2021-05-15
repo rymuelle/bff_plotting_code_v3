@@ -32,14 +32,14 @@ def def_good_jet(df, ismc, bDiscValue):
         df = df.Define("NoPUID_GoodJetGenJetIdx", "Jet_genJetIdx[NoPUID_GoodJet]")
     return df
 def def_good_leptons(df, ismc):
-    df = df.Define("GoodMuon", "Muon_pt_corrected > 53 && abs(Muon_eta) < 2.4 && Muon_tightId > 0 && Muon_pfRelIso04_all < 0.25")\
-           .Define("GoodMuonPt", "Muon_pt[GoodMuon]")\
+    df = df.Define("GoodMuon", "Muon_corrected_pt > 53 && abs(Muon_eta) < 2.4 && Muon_tightId > 0 && Muon_pfRelIso04_all < 0.25")\
+           .Define("GoodMuonPt", "Muon_corrected_pt[GoodMuon]")\
            .Define("GoodMuonEta", "Muon_eta[GoodMuon]")\
            .Define("GoodMuonPhi", "Muon_phi[GoodMuon]")\
            .Define("GoodMuonCharge", "Muon_charge[GoodMuon]")\
            .Define("nMuons", "GoodMuonPt.size()")
-    df = df.Define("GoodMuonLowPt", "Muon_pt_corrected > 24 && abs(Muon_eta) < 2.4 && Muon_tightId > 0 && Muon_pfRelIso04_all < 0.25")\
-           .Define("GoodMuonPtLow", "Muon_pt[GoodMuonLowPt]")\
+    df = df.Define("GoodMuonLowPt", "Muon_corrected_pt > 24 && abs(Muon_eta) < 2.4 && Muon_tightId > 0 && Muon_pfRelIso04_all < 0.25")\
+           .Define("GoodMuonPtLow", "Muon_corrected_pt[GoodMuonLowPt]")\
            .Define("GoodMuonEtaLow", "Muon_eta[GoodMuonLowPt]")\
            .Define("nMuonsLowPt", "GoodMuonPtLow.size()")
     df = df.Define("GoodElectron", "Electron_pt > 53 && abs(Electron_eta) < 2.4 && Electron_cutBased_HEEP > 0")\
@@ -85,7 +85,7 @@ def def_HLT(df, ismc, era):
     
 def def_sf_and_weight(df,ismc, is_inclusive, name,sample_weight):
     if int(ismc):
-        if name not in ['mc_zz', 'mc_wz']:
+        if name not in ['mc_zz', 'mc_wz','mc_ww']:
             df = df.Define("PDF_ISRFSR_uncertainty","GetPDFandScaleUncertainty(LHEPdfWeight, LHEScaleWeight)")
             df = df.Define("PDF_ISRFSR_uncertaintyUp","PDF_ISRFSR_uncertainty[0]")
             df = df.Define("PDF_ISRFSR_uncertaintyDown","PDF_ISRFSR_uncertainty[1]")
@@ -109,9 +109,9 @@ def def_sf_and_weight(df,ismc, is_inclusive, name,sample_weight):
             df = df.Define("PUIDWeight", "map_zero_to_one(PUIDWeights[0])")
             df = df.Define("PUIDWeightUp", "map_zero_to_one(PUIDWeights[1])")
             df = df.Define("PUIDWeightDown", "map_zero_to_one(PUIDWeights[2])")
-            df = df.Define("GoodJetBTagSF", "(Jet_btagSF[GoodJet])")
-            df = df.Define("GoodJetBTagSFUp", "(Jet_btagSF_up[GoodJet])")
-            df = df.Define("GoodJetBTagSFDown", "(Jet_btagSF_down[GoodJet])")
+            df = df.Define("GoodJetBTagSF", "(Jet_btagSF_deepcsv_M[GoodJet])")
+            df = df.Define("GoodJetBTagSFUp", "(Jet_btagSF_deepcsv_M_up[GoodJet])")
+            df = df.Define("GoodJetBTagSFDown", "(Jet_btagSF_deepcsv_M_down[GoodJet])")
             df = df.Define("GoodJetHadronFlav","Jet_hadronFlavour[GoodJet]")
             df = df.Define("BTagWeight", "map_zero_to_one(GetBTagWeight(GoodBJet, GoodJetHadronFlav, GoodJetPt, GoodJetBTagSF))")
             df = df.Define("BTagWeightUp", "map_zero_to_one(GetBTagWeight(GoodBJet, GoodJetHadronFlav, GoodJetPt, GoodJetBTagSFUp))")
