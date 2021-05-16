@@ -100,3 +100,39 @@ import uncertainties
 def unzip_unp(unp_arr):
     import uncertainties
     return np.array(list(zip(*[(x.nominal_value, x.std_dev) for x in unp_arr])))
+
+def time_func(func):
+    from functools import wraps
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = perf_counter()
+        res = func(*args, **kwargs)
+        print("{:.2e}".format(perf_counter()-start))
+        return res
+    return wrapper
+
+
+def hist2unc(hist):
+    import uncertainties
+    from uncertainties import ufloat
+    val = hist.values()
+    var = hist.variances()
+    return np.array([ufloat(vl,vr) for vl, vr in zip(val,var)])
+
+def hist2array(hist):
+    return hist.values()
+
+def sum_in_quad(np_arr, **kwargs):
+    return np.sum(np_arr**2, **kwargs)**.5
+
+vhist2unc = np.vectorize(hist2unc)
+vhist2array = np.vectorize(hist2array)
+vunc2nom = np.vectorize(lambda x: x.nominal_value)
+vunc2std = np.vectorize(lambda x: x.std_dev)
+
+def parabola(x,offset,m1,m2,m3):
+    x = x - offset
+    return m1+m2*x+m3*x**2
+
+def linear(x,m1,m2):
+    return m1*x+m2
