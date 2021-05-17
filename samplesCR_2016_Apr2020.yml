@@ -171,12 +171,12 @@ samples:
 - bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/BFFZprimeToMuMu_M_200_TuneCUETP8M1_13TeV-madgraph-pythia8.root
   fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/crab/2016/SingleMuon/*/*/*/*.root
   ismc: 0
-  name: data_el
+  name: data_mu
   nevts: 1.0
   xsec: 1.0
 - bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/BFFZprimeToMuMu_M_200_TuneCUETP8M1_13TeV-madgraph-pythia8.root
   fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/crab/2016/DoubleEG/*/*/*/*.root
   ismc: 0
-  name: data_mu
+  name: data_el
   nevts: 1.0
   xsec: 1.0
