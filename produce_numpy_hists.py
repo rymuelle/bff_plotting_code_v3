@@ -98,7 +98,7 @@ def def_BFF_cuts(jv, nJet):
     return(list(zip(t1,BFF_cut_values[nJet])))
 if no_bff:
     print("WARNING: no bff cuts applied")
-    BFF_cut_values ={1:[np.infnp.inf,0], 2:[np.inf,np.inf,0]}
+    BFF_cut_values ={1:[np.inf, np.inf,0], 2:[np.inf,np.inf,0]}
 else:
     BFF_cut_values ={1:[-18,.3125,18.75], 2:[-10,.2625,1.25]}
 def make_view(jv,nJets, region):
