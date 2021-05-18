@@ -136,3 +136,5 @@ def parabola(x,offset,m1,m2,m3):
 
 def linear(x,m1,m2):
     return m1*x+m2
+
+

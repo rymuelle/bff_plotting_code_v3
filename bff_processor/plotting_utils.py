@@ -214,3 +214,52 @@ def boost_ratio_hist(b1,b2, **kwargs):
     b1_rat = b1_unc/b2_unc
     return boost_from_unc(b1_rat, edges, **kwargs)
 
+def produce_bff_hists(df, name, columns, weight='Weight'):
+    '''This function helps produce plots for bff cut selection'''
+    from itertools import combinations
+    hist_1d_dict = {}
+    for column, bin_meta in columns:
+        hist_1d_dict[column] = bh.Histogram(
+            bh.axis.Regular(*bin_meta, metadata="{} {}".format(column,name)),
+            storage=bh.storage.Weight()
+            )
+        hist_1d_dict[column].fill(df[column], weight=df[weight])
+    
+    hist_2d_dict= {}
+    for (c1,bm1), (c2,bm2) in combinations(columns, 2):
+        hist_2d_dict["{}_{}".format(c1,c2)] = bh.Histogram(
+            bh.axis.Regular(*bm1, metadata="{} {}".format(c1,name)),
+            bh.axis.Regular(*bm2, metadata="{} {}".format(c2,name)),
+            storage=bh.storage.Weight()
+        )
+        hist_2d_dict["{}_{}".format(c1,c2)].fill(df[c1],df[c2], weight=df[weight])
+    
+    return hist_1d_dict, hist_2d_dict
+
+
+def boost_plot(ax, bh, **kwargs):
+    val, var = bh.values(), bh.variances()
+    center = bh.axes[0].centers
+    ax.errorbar(center, val, yerr=var**.5, **kwargs)
+    
+def boost_plot2d(ax, h, lock_aspect=0, log=0,**kwargs):
+    w, x, y = h.to_numpy()
+    # Draw the count matrix
+    if not log:
+        ax.pcolormesh(x, y, w.T)
+    else:
+        import matplotlib.colors as colors
+        print(w.T.min(),w.T.max())
+        ax.pcolor(x, y, w.T,
+                   norm=colors.LogNorm(vmin=w.T.min()+.01, vmax=w.T.max()),
+                   cmap='PuBu_r', shading='auto')
+    ax.set_xlabel(h.axes[0].metadata)
+    ax.set_ylabel(h.axes[1].metadata)
+    if lock_aspect: ax.set_aspect("equal")
+
+def unc_plot(ax, unc, centers, **kwargs):
+    from bff_processor.utils import vunc2nom, vunc2std
+    val = vunc2nom(unc)
+    std = vunc2std(unc)
+    ax.errorbar(centers, val, std, **kwargs)
+
