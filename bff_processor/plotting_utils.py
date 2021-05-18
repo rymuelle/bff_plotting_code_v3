@@ -237,21 +237,23 @@ def produce_bff_hists(df, name, columns, weight='Weight'):
     return hist_1d_dict, hist_2d_dict
 
 
+
 def boost_plot(ax, bh, **kwargs):
     val, var = bh.values(), bh.variances()
     center = bh.axes[0].centers
     ax.errorbar(center, val, yerr=var**.5, **kwargs)
     
-def boost_plot2d(ax, h, lock_aspect=0, log=0,**kwargs):
+def boost_plot2d(ax, h, lock_aspect=0, log=0, min_val=.1, **kwargs):
     w, x, y = h.to_numpy()
     # Draw the count matrix
     if not log:
         ax.pcolormesh(x, y, w.T)
     else:
         import matplotlib.colors as colors
-        print(w.T.min(),w.T.max())
+        vmin = max(w.T.min(),min_val)
+        vmax = w.T.max()
         ax.pcolor(x, y, w.T,
-                   norm=colors.LogNorm(vmin=w.T.min()+.01, vmax=w.T.max()),
+                   norm=colors.LogNorm(vmin=vmin, vmax=vmax),
                    cmap='PuBu_r', shading='auto')
     ax.set_xlabel(h.axes[0].metadata)
     ax.set_ylabel(h.axes[1].metadata)
