@@ -169,6 +169,24 @@ samples:
   nevts: 0
   xsec: 592.6
 - bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/BFFZprimeToMuMu_M_200_TuneCUETP8M1_13TeV-madgraph-pythia8.root
+  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/crab/2016/BFFZprimeToMuMu_M_250_TuneCUETP8M1_13TeV-madgraph-pythia8/*/*/*/*.root
+  ismc: 1
+  name: BFFZprimeToMuMu_M_250_dbs0p04
+  nevts: 0
+  xsec: 122.5
+- bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/BFFZprimeToMuMu_M_200_TuneCUETP8M1_13TeV-madgraph-pythia8.root
+  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/crab/2016/BFFZprimeToMuMu_M_300_TuneCUETP8M1_13TeV-madgraph-pythia8/*/*/*/*.root
+  ismc: 1
+  name: BFFZprimeToMuMu_M_300_dbs0p04
+  nevts: 0
+  xsec: 58.86
+- bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/BFFZprimeToMuMu_M_200_TuneCUETP8M1_13TeV-madgraph-pythia8.root
+  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/crab/2016/BFFZprimeToMuMu_M_400_TuneCUETP8M1_13TeV-madgraph-pythia8/*/*/*/*.root
+  ismc: 1
+  name: BFFZprimeToMuMu_M_400_dbs0p04
+  nevts: 0
+  xsec: 17.42
+- bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/BFFZprimeToMuMu_M_200_TuneCUETP8M1_13TeV-madgraph-pythia8.root
   fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/crab/2016/SingleMuon/*/*/*/*.root
   ismc: 0
   name: data_mu
