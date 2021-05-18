@@ -137,4 +137,12 @@ def parabola(x,offset,m1,m2,m3):
 def linear(x,m1,m2):
     return m1*x+m2
 
+def power_func(x, c, p):
+    return c*x**p
 
+def significance(sig,bck):
+    return sig/(sig+bck+1e-12)**.5
+
+def apply_multiple_filters(df, filter_list):
+    filter_prod = np.array(filter_list).prod(axis=0)
+    return df[filter_prod==1]
