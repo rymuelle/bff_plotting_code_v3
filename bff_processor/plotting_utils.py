@@ -131,8 +131,6 @@ def make_stack_boost(df, reg_dict_temp, region, sum_hist=True,**kwargs):
     else:
         return nom, stats, np.array([sysup,sysdown]), center(x_bin), colors, labels
     
-    
-    
 def make_plot_boost(hist_dict):
     nom = hist_dict['nom']
     sysup = []
@@ -236,8 +234,6 @@ def produce_bff_hists(df, name, columns, weight='Weight'):
     
     return hist_1d_dict, hist_2d_dict
 
-
-
 def boost_plot(ax, bh, **kwargs):
     val, var = bh.values(), bh.variances()
     center = bh.axes[0].centers
@@ -259,9 +255,14 @@ def boost_plot2d(ax, h, lock_aspect=0, log=0, min_val=.1, **kwargs):
     ax.set_ylabel(h.axes[1].metadata)
     if lock_aspect: ax.set_aspect("equal")
 
-def unc_plot(ax, unc, centers, **kwargs):
+def unc_plot(ax, centers, unc, fill_between=False, **kwargs):
     from bff_processor.utils import vunc2nom, vunc2std
     val = vunc2nom(unc)
     std = vunc2std(unc)
-    ax.errorbar(centers, val, std, **kwargs)
+    if not fill_between:
+        ax.errorbar(centers, val, std, **kwargs)
+    if fill_between:
+        ax.plot(centers, val, **kwargs)
+        fb_kwargs = {**kwargs, 'label':None}
+        ax.fill_between(centers, val+std, val-std, alpha=.25, **fb_kwargs)
 

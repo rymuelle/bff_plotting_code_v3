@@ -116,7 +116,7 @@ def hist2unc(hist):
     import uncertainties
     from uncertainties import ufloat
     val = hist.values()
-    var = hist.variances()
+    var = hist.variances()**.5
     return np.array([ufloat(vl,vr) for vl, vr in zip(val,var)])
 
 def hist2array(hist):
@@ -150,3 +150,7 @@ def apply_multiple_filters(df, filter_list):
     filter_prod = np.array(filter_list).prod(axis=0)
     return df[filter_prod==1]
 
+
+def chiSquared(unc2,unc1,dof=0):
+    deltasquared = (unc1-unc2)**2
+    return np.sum(deltasquared/(unc2) )/(len(unc2)-dof)   
