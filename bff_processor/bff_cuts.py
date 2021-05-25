@@ -51,4 +51,5 @@ bff_2 = lambda df, jv: apply_multiple_filters(df, [RelMET_filter2(df, 'RelMET_{}
 
 def reg_filter(df, reg): return df[df[reg]==1]
 
-
+if __name__=="__main__":
+    print(param_dict)
