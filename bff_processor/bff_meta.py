@@ -53,9 +53,12 @@ def isin(string):
         return df[df[string]==1]
     return cut_df
 
-def preselection():
+def preselection(dr=0.4):
     import pandas as pd
+    import numpy as np
     def cut_df(df):
+        df['deltaR'] = df[["minGoodJetElDR","minGoodJetMuDR"]].min(axis=1)
+        df = band_cut('deltaR',low=dr,high=np.inf)(df)
         return isin('Flag_METFilters')(band_cut('DiLepMass',low=105,high=800)(df))
     return cut_df
 
