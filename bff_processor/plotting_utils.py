@@ -266,3 +266,8 @@ def unc_plot(ax, centers, unc, fill_between=False, **kwargs):
         fb_kwargs = {**kwargs, 'label':None}
         ax.fill_between(centers, val+std, val-std, alpha=.25, **fb_kwargs)
 
+def color_fader(c1,c2,mix=0): #fade (linear interpolate) from color c1 (at mix=0) to c2 (mix=1)
+    import matplotlib as mpl
+    c1=np.array(mpl.colors.to_rgb(c1))
+    c2=np.array(mpl.colors.to_rgb(c2))
+    return mpl.colors.to_hex((1-mix)*c1 + mix*c2)
