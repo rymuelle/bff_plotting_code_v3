@@ -134,8 +134,8 @@ def parabola(x,offset,m1,m2,m3):
     x = x - offset
     return m1+m2*x+m3*x**2
 
-def linear(x,m1,m2):
-    return m1*x+m2
+#def linear(x,m1,m2):
+#    return m1*x+m2
 
 def power_func(x, c, p):
     return c*x**p
@@ -154,3 +154,12 @@ def apply_multiple_filters(df, filter_list):
 def chiSquared(unc2,unc1,dof=0):
     deltasquared = (unc1-unc2)**2
     return np.sum(deltasquared/(unc2) )/(len(unc2)-dof)   
+
+def constant(x, b):
+    return linear(x, b, 0)
+
+def linear(x, b, m):
+    return m * x + b
+
+def quad(x, b, m, m2):
+    return m2 * x ** 2 + m * x + b
