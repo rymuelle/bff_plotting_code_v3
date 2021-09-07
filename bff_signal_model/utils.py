@@ -20,8 +20,9 @@ def chi2(xm, xp, error, ndf=0):
     return np.sum(y)/(len(y) - ndf)
 
 def make_plot_dict(df, obs, masses, compute_hesse=True, regions = ['SR1', 'SR2']):
-    tail_sys = 2
+    tail_sys = 1
     tail_sys_start = 2
+    constant_sys = .05
     x_range = obs.limit1d
     param_list = []
     plot_dict = {}
@@ -55,8 +56,9 @@ def make_plot_dict(df, obs, masses, compute_hesse=True, regions = ['SR1', 'SR2']
     
             #make the plot
             bins = np.linspace(*x_range, int((x_range[1]-x_range[0])/5 + 1))
+            print(len(bins))
             y, y_unc = doublecb.tail_sys(bins, np.sum(weights), width=tail_sys_start, supersample=100,
-                                           tail_percent=tail_sys, constant_percent=.05, stat_unc=0,)
+                                           tail_percent=tail_sys, constant_percent=constant_sys, stat_unc=0,)
             hist, _ = np.histogram(data, weights=weights, bins=bins)
             hist_var, _ = np.histogram(data, weights=weights **2 , bins=bins)
             hist_std = hist_var ** .5
@@ -67,7 +69,7 @@ def make_plot_dict(df, obs, masses, compute_hesse=True, regions = ['SR1', 'SR2']
             width = 10
             bins_centered_peak = np.linspace(mean-width*std, mean+width*std, 2*5*width+1)
             y, y_unc = doublecb.tail_sys(bins_centered_peak, np.sum(weights), width=tail_sys_start, supersample=100, area=width*std*2,
-                                        tail_percent=tail_sys, constant_percent=.05, stat_unc=0,)
+                                        tail_percent=tail_sys, constant_percent=constant_sys, stat_unc=0,)
             y2 = doublecb.fill_bins(bins_centered_peak,  np.sum(weights), supersample=100, area=width*std*2)
             hist, _ = np.histogram(data, weights=weights, bins=bins_centered_peak)
             hist_var, _ = np.histogram(data, weights=weights **2 , bins=bins_centered_peak)
