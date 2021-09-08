@@ -10,7 +10,7 @@ class Bins():
     def calc_bin_widths(self):
         return [(self.bin_edges[i+1]-self.bin_edges[i]) for i in range(self.calc_nBins())] 
     def calc_bin_range(self):
-        return (bin_edges[0],bin_edges[-1])
+        return (self.bin_edges[0], self.bin_edges[-1])
     def __repr__(self):
         return "{}".format(self.bin_edges)
 
