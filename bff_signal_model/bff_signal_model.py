@@ -5,6 +5,7 @@ from scipy.optimize import curve_fit
 from zfit.models.physics import double_crystalball_func
 from bff_signal_model.functions import *
 import numpy as np
+from bff_plotting_tools.make_hists import SysHist
 
 try:
     mu = zfit.Parameter("mu", 300,  100, 600)
@@ -51,22 +52,23 @@ class bff_signal_model(zfit.pdf.ZPDF):
         plot_scaling = sumW / n_bins * area
         return (y * plot_scaling).numpy()
 
-    def super_sample(self, bin_edges, supersample):
-        nbins = len(bin_edges) - 1
-        return [np.linspace(bin_edges[i], bin_edges[i+1], supersample) for i in range(nbins)]
+    def super_sample(self, bins, supersample):
+        bin_edges, nBins = bins.bin_edges, bins.calc_nBins()
+        return [np.linspace(bin_edges[i], bin_edges[i+1], supersample) for i in range(nBins)]
     
-    def fill_bins(self, bin_edges, sumW2, supersample=100, area=0):
-        nbins = len(bin_edges) - 1
-        supersampled_bins = self.super_sample(bin_edges, supersample)
-        supersampled_bin_values = list(map(lambda x: self.scaled_pdf(x, sumW2/nbins, area=area), supersampled_bins))
-        return np.sum(supersampled_bin_values, axis=1)
+    def fill_bins(self, bins, sumW2, supersample=100, area=0):
+        bin_widths= bins.calc_bin_widths()
+        supersampled_bins = self.super_sample(bins, supersample)
+        percent_weight = bin_widths/np.sum(bin_widths)
+        supersampled_bin_values = list(map(lambda x: self.scaled_pdf(x, sumW2, area=area), supersampled_bins))
+        return np.sum(supersampled_bin_values, axis=1)*percent_weight
 
-    def tail_sys(self, bin_edges, sumW2, 
+    def tail_sys(self, bins, sumW2, 
                  supersample=100, width=2.5, tail_percent=.1, constant_percent=.05, stat_unc=0,
                  **kwargs):
-        y = self.fill_bins(bin_edges, sumW2, supersample=supersample,
+        y = self.fill_bins(bins, sumW2, supersample=supersample,
                            **kwargs)
-        supersampled_bins = self.super_sample(bin_edges, supersample)
+        supersampled_bins = self.super_sample(bins, supersample)
         mu = self.mu()
         sigma = self.sigma() 
         sigma_from_mu = list(map(lambda x: abs(x-mu)/sigma, supersampled_bins))
@@ -75,7 +77,10 @@ class bff_signal_model(zfit.pdf.ZPDF):
         constant_percent =  y*constant_percent
         uncertainty = (subsampled_systematics ** 2 + constant_percent ** 2 + y*stat_unc) ** .5
         return y, uncertainty
-        
+    def make_hist(self, bins, sumW2, **kwargs):
+        y, unc = self.tail_sys(bins, sumW2, **kwargs)
+        return SysHist(y, -unc, +unc, y*0, bins.bin_edges)
+
 def reset_params(data):
     mean = np.mean(data)
     std = np.std(data)
