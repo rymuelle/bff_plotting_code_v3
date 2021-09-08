@@ -1,10 +1,19 @@
 import numpy as np
 
-def calc_bin_center(bin_edges):
-    return [(bin_edges[i]+bin_edges[i+1])/2 for i in range(len(bin_edges[:-1]))]
+class Bins():
+    def __init__(self, bin_edges):
+        self.bin_edges = np.array(bin_edges)
+    def nBins(self):
+        return len(self.bin_edges)-1
+    def calc_bin_center(self):
+        return [(self.bin_edges[i]+self.bin_edges[i+1])/2 for i in range(self.nBins())]
+    def calc_bin_widths(self):
+        return [(self.bin_edges[i+1]-self.bin_edges[i]) for i in range(self.nBins())] 
+    def bin_range(self):
+        return (bin_edges[0],bin_edges[-1])
+    def __repr__(self):
+        return "{}".format(self.bin_edges)
 
-def calc_bin_widths(bin_edges):
-    return [(bin_edges[i+1]-bin_edges[i]) for i in range(len(bin_edges[:-1]))]
 
 def make_bins(binning_type="split"):
     if binning_type=="constant":
@@ -20,11 +29,8 @@ def make_bins(binning_type="split"):
         nBins = int(total_range/(min_width/2+max_width/2))
         bin_widths = np.linspace(min_width, max_width, nBins)
         bin_edges = np.array([np.sum(bin_widths[:i]) for i in range(len(bin_widths)+1)]) + 110
-    else: return 0,0,0
-    bin_centers = calc_bin_center(bin_edges)
-    bin_widths = calc_bin_widths(bin_edges)
-    x_range = (bin_edges[0],bin_edges[-1])
-    return bin_edges, bin_centers, bin_widths, x_range
+    else: return 0
+    return Bins(bin_edges)
     
 
-
+bins = make_bins()
