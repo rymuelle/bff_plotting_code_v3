@@ -3,13 +3,13 @@ import numpy as np
 class Bins():
     def __init__(self, bin_edges):
         self.bin_edges = np.array(bin_edges)
-    def nBins(self):
+    def calc_nBins(self):
         return len(self.bin_edges)-1
     def calc_bin_center(self):
-        return [(self.bin_edges[i]+self.bin_edges[i+1])/2 for i in range(self.nBins())]
+        return [(self.bin_edges[i]+self.bin_edges[i+1])/2 for i in range(self.calc_nBins())]
     def calc_bin_widths(self):
-        return [(self.bin_edges[i+1]-self.bin_edges[i]) for i in range(self.nBins())] 
-    def bin_range(self):
+        return [(self.bin_edges[i+1]-self.bin_edges[i]) for i in range(self.calc_nBins())] 
+    def calc_bin_range(self):
         return (bin_edges[0],bin_edges[-1])
     def __repr__(self):
         return "{}".format(self.bin_edges)
