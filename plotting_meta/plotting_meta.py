@@ -5,7 +5,7 @@ class Bins():
         self.bin_edges = np.array(bin_edges)
     def calc_nBins(self):
         return len(self.bin_edges)-1
-    def calc_bin_center(self):
+    def calc_bin_centers(self):
         return [(self.bin_edges[i]+self.bin_edges[i+1])/2 for i in range(self.calc_nBins())]
     def calc_bin_widths(self):
         return [(self.bin_edges[i+1]-self.bin_edges[i]) for i in range(self.calc_nBins())] 
