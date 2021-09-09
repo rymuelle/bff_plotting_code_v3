@@ -1,5 +1,6 @@
 import numpy as np
 from plotting_meta.plotting_meta import Bins, bins
+import uncertainties
 
 class SysHist(Bins):
     def __init__(self, nominal, down, up, std, bin_edges):
@@ -9,6 +10,11 @@ class SysHist(Bins):
         self.up = up
         self.std = std
         self.bins = bins
+    @classmethod
+    def from_ufloats(cls, bins, ufloats):
+        y  = np.array(list(map(lambda x: x.nominal_value,ufloats)))
+        unc  = np.array(list(map(lambda x: x.std_dev,ufloats)))
+        return cls(y, -y*0, y*0, unc, bins.bin_edges)
     def calc_ratio(self, divisor):
         return SysHist(self.nominal/divisor, 
             self.down/divisor, 
@@ -23,6 +29,9 @@ class SysHist(Bins):
         ax.fill_between(self.calc_bin_centers(), self.up+self.nominal, self.down+self.nominal, step='mid', alpha=.5,color=color)
     def calc_sum(self):
         return np.sum(self.nominal)
+
+    def uncertainty_std_dev(self):
+        return np.array([uncertainties.ufloat(nom, std) for nom, std in zip(self.nominal, self.std)])
 
 def make_hist(df, column, region, bin_edges=bins.bin_edges, weights='Weight', region_sys='nom', std=0):
     '''Produce a binned count from a histogram'''
