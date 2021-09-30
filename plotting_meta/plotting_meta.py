@@ -20,7 +20,7 @@ def make_bins(binning_type="split"):
         bin_edges = np.linspace(110,800, int((800-110)/5 + 1))
     elif binning_type=="split":
         # 110-200 1 gev, 200-800, 5 gev. Skip the first bin edge of the latter
-        bin_edges = np.append(np.linspace(120,200, int((200-120)/1+1)),
+        bin_edges = np.append(np.linspace(110,200, int((200-110)/1+1)),
                          np.linspace(200,800, int((800-200)/5+1))[1:])
     elif binning_type=="linear":
         min_width = 1
