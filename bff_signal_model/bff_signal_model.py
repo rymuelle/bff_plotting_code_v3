@@ -95,3 +95,27 @@ def reset_params(data):
 def logistics_func(x, offset, widht):
     return 1/(1+10.**(-(x-offset)/widht))
     
+def sys_func(x, p0, p1, p2):
+  fit = ((p0/x.mass)**2+(p1)**2)**.5 + p2*x.dbs
+  #fit = (p0-p1*x.dbs)*np.log(x.mass)*np.log(p4)+p2+p3*x.dbs
+  return fit 
+
+def sys_func_offset(x, offset, *args):
+  return sys_func(x, *args) + offset
+
+
+popt_sys_dict = {
+    "2016":{
+    'SR1': [-24.54276342,   0.13869324,  -0.04319781],
+    'SR2': [-16.95213727,  0.14670199, -0.03403927]
+    },
+    "2017":{
+    'SR1': [-25.66070814,   0.11570483,  -0.04050246],
+    'SR2': [-18.77099018,   0.1226328,   -0.0306517]
+    },
+    "2018":{
+    'SR1': [-4.11823379e+01,  1.38593459e-01, -3.94183979e-02],
+    'SR2': [-2.68983655e+01,  1.19450655e-01, -1.55283528e-02]
+    },
+
+} 

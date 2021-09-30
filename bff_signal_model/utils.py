@@ -4,6 +4,9 @@ from zfit import z
 import numpy as np
 from bff_processor.utils import nratio_plot_template, hist2unc, vunc2nom, chiSquared, color_map, quad, linear, constant
 import mplhep as hep
+from plotting_meta.plotting_meta import make_bins
+
+bins = make_bins()
 
 def get_unique_masses(df, x_range=[110,800]):
     bff_data = df[df.name.str.contains("BFF")]
@@ -18,6 +21,17 @@ def sigma_from_mass(mass):
 def chi2(xm, xp, error, ndf=0):
     y = (xm - xp) ** 2 / error **2
     return np.sum(y)/(len(y) - ndf)
+
+def fit_model(obs, data, weights, model, compute_hesse=True):
+    data_zfit = zfit.Data.from_numpy(obs=obs, array=data, weights=weights)
+    nll = zfit.loss.UnbinnedNLL(model=model, data=data_zfit)
+    minimizer = zfit.minimize.Minuit()
+    result = minimizer.minimize(nll)
+    if compute_hesse:
+        x = result.hesse()
+    else:
+        x = {}
+    return { **{p.name:p.value().numpy() for p in result.params}, **{p.name+"_error":x[p]['error'] for p in x}}
 
 def make_plot_dict(df, obs, masses, compute_hesse=True, regions = ['SR1', 'SR2']):
     tail_sys = 1
@@ -55,15 +69,14 @@ def make_plot_dict(df, obs, masses, compute_hesse=True, regions = ['SR1', 'SR2']
             param_list.append(param_dict)
     
             #make the plot
-            bins = np.linspace(*x_range, int((x_range[1]-x_range[0])/5 + 1))
-            print(len(bins))
-            y, y_unc = doublecb.tail_sys(bins, np.sum(weights), width=tail_sys_start, supersample=100,
+            print(len(bin_edges))
+            y, y_unc = doublecb.tail_sys(bin_edges, np.sum(weights), width=tail_sys_start, supersample=100,
                                            tail_percent=tail_sys, constant_percent=constant_sys, stat_unc=0,)
-            hist, _ = np.histogram(data, weights=weights, bins=bins)
-            hist_var, _ = np.histogram(data, weights=weights **2 , bins=bins)
+            hist, _ = np.histogram(data, weights=weights, bins=bin_edges)
+            hist_var, _ = np.histogram(data, weights=weights **2 , bins=bin_edges)
             hist_std = hist_var ** .5
     
-            plot_dict[reg][mass] = {"fit": y, "fit_unc": y_unc, "hist": hist, "hist_std": hist_std, "bins":bins}
+            plot_dict[reg][mass] = {"fit": y, "fit_unc": y_unc, "hist": hist, "hist_std": hist_std, "bins":bin_edges}
     
             #make tail sys plots
             width = 10
@@ -102,7 +115,8 @@ def prepare_plots(mass_dict, mass, systematics=0, width = 100):
     
 def make_stack_plot(plot_dict, masses, pdf, lumi, era, compute_hesse, systematics=0, width=100, legend=True,
 bottom_limit=[-3,3],postfix="",
-                   yscale='log'):
+                   yscale='log',
+                   plot_fit = True):
     residual_dict = {}
     colors = color_map(len(masses))
     for reg, reg_dict in plot_dict.items():
@@ -118,8 +132,9 @@ bottom_limit=[-3,3],postfix="",
             bins, bin_centers, bin_centers_temp, hist, hist_std, fit_plot, fit_unc_plot = prepare_plots(mass_dict, mass, systematics=systematics, width=width)
 
             top.errorbar(bin_centers_temp, hist, yerr=hist_std, label='{} GeV'.format( mass), color=hist_color, linestyle="None", marker='o')
-            top.errorbar(bin_centers_temp, fit_plot, yerr=fit_unc_plot, color=color)
-            bottom.errorbar(bin_centers_temp, (fit_plot-hist)/fit_unc_plot, yerr=fit_unc_plot/fit_unc_plot, color=color)
+            if plot_fit:
+                top.errorbar(bin_centers_temp, fit_plot, yerr=fit_unc_plot, color=color)
+                bottom.errorbar(bin_centers_temp, (fit_plot-hist)/fit_unc_plot, yerr=fit_unc_plot/fit_unc_plot, color=color)
             residual_dict[reg][mass] = {"residual": (fit_plot-hist)/fit_plot, "std":hist_std/fit_plot, "bin_centers": bin_centers}
             
             total_unc = (fit_unc_plot**2+hist_std**2)**.5
