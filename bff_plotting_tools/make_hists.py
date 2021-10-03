@@ -1,5 +1,6 @@
 import numpy as np
 from plotting_meta.plotting_meta import Bins, bins
+from bff_plotting_tools.utils import rebin
 import uncertainties
 
 class SysHist(Bins):
@@ -15,6 +16,15 @@ class SysHist(Bins):
         y  = np.array(list(map(lambda x: x.nominal_value,ufloats)))
         unc  = np.array(list(map(lambda x: x.std_dev,ufloats)))
         return cls(y, -y*0, y*0, unc, bins.bin_edges)
+    def rebin(self, nGroup):
+        def rebin1D(x): return rebin(x.shape(1,-1), (1,nGroup))
+        nominal = rebin1D(self.nominal)
+        down = rebin1D(self.down)
+        up = rebin1D(up)
+        var = std**2
+        var = rebin1D(var)
+        std = var**.5
+        
     def calc_ratio(self, divisor):
         return SysHist(self.nominal/divisor, 
             self.down/divisor, 
@@ -24,8 +34,8 @@ class SysHist(Bins):
     def make_density_hist(self, scale=1):
         width = self.calc_bin_widths()*scale
         return self.calc_ratio(width)
-    def draw(self, ax, color='blue', **kwargs):
-        ax.errorbar(self.calc_bin_centers(), self.nominal, yerr=self.std, drawstyle='steps-mid',color=color, **kwargs)
+    def draw(self, ax, color='blue', error_scale=1, **kwargs):
+        ax.errorbar(self.calc_bin_centers(), self.nominal, yerr=self.std*error_scale, drawstyle='steps-mid',color=color, **kwargs)
         ax.fill_between(self.calc_bin_centers(), self.up+self.nominal, self.down+self.nominal, step='mid', alpha=.5,color=color)
     def calc_sum(self):
         return np.sum(self.nominal)
