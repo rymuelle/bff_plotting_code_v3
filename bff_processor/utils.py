@@ -134,8 +134,7 @@ def parabola(x,offset,m1,m2,m3):
     x = x - offset
     return m1+m2*x+m3*x**2
 
-#def linear(x,m1,m2):
-#    return m1*x+m2
+
 
 def power_func(x, c, p):
     return c*x**p
@@ -160,6 +159,9 @@ def constant(x, b):
 
 def linear(x, b, m):
     return m * x + b
+
+def linear_old(x,m1,m2):
+    return m1*x+m2
 
 def quad(x, b, m, m2):
     return m2 * x ** 2 + m * x + b

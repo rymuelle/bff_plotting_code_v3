@@ -1,5 +1,7 @@
 import dill as pickle
-from bff_processor.utils import linear, heaviside, power_func, apply_multiple_filters
+from bff_processor.utils import linear_old, heaviside, power_func, apply_multiple_filters
+# new linear has opposite order
+linear = linear_old
 import numpy as np
 
 with open('bff_cut.dill', 'rb') as f:
@@ -39,11 +41,10 @@ def bff2_value(df, jv): return np.array([RelMET_filter2(df, 'RelMET_{}'.format(j
 
 bff_value = {"1":bff1_value,"2":bff2_value}
 
-def bff1_no_tmb_value(df, jv): return np.array([RelMET_filter1(df, 'RelMET_{}'.format(jv)), HTLT_filter1(df, 'HTLT_{}'.format(jv))]).prod(axis=0)
-def bff2_no_tmb_value(df, jv): return np.array([RelMET_filter2(df, 'RelMET_{}'.format(jv)), HTLT_filter2(df, 'HTLT_{}'.format(jv))]).prod(axis=0)
+def bff1_no_tmb_value(df, jv): return np.array([RelMET_filter1(df, 'RelMET_{}'.format(jv))*5/8, HTLT_filter1(df, 'HTLT_{}'.format(jv))*3/8]).sum(axis=0)
+def bff2_no_tmb_value(df, jv): return np.array([RelMET_filter2(df, 'RelMET_{}'.format(jv))*5/8, HTLT_filter2(df, 'HTLT_{}'.format(jv))*3/8]).sum(axis=0)
 
 bff_no_tmb_value = {"1":bff1_no_tmb_value,"2":bff2_no_tmb_value}
-
 
 
 bff_1 = lambda df, jv: apply_multiple_filters(df, [RelMET_filter1(df, 'RelMET_{}'.format(jv)), HTLT_filter1(df, 'HTLT_{}'.format(jv)), TMB_filter1(df, 'TMB_{}'.format(jv))])
