@@ -1,3 +1,29 @@
+# Setting up on lxplus:
+
+I set up in CMSSW_12_1_0
+
+```
+cmsenv
+git checkout <repo path>
+# create virtual enviroment for installing pacakges
+python3 -m venv env
+# activate env
+. env/bin/activate
+#set it up so you can use the kernel in jupyter
+pip install ipykernel
+python -m ipykernel install --user --name=bff_12_1
+pip install <insert packages here>
+```
+
+Now, you should be able to log in to lxplus with port forwarding:
+```
+ ssh -L 8080:localhost:8080 rymuelle@lxplus.cern.ch
+ cd <path to git repo>
+ jupyter-notebook --no-browser --port=8080
+```
+
+You should now be able to open up the jupyter notebook launch page from the links printed out on a local browser.
+
 # Making skims:
 bff_plotter.ipynb
 
