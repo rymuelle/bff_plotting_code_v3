@@ -1,0 +1,20 @@
+lumi: 35.5
+samples:
+- bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/2016_BFF_200_2018_BtagEff.root
+  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/2016_175/*.root
+  ismc: 1
+  name: BFFZprimeToMuMu_M_175_dbs0p04
+  nevts: 0
+  xsec: 485.9
+- bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/2016_BFF_200_2018_BtagEff.root
+  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/2016_150/*.root
+  ismc: 1
+  name: BFFZprimeToMuMu_M_150_dbs0p04
+  nevts: 0
+  xsec: 812.8
+- bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/2018_BFF_200_2016_BtagEff.root
+  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/2016_125/*.root
+  ismc: 1
+  name: BFFZprimeToMuMu_M_125_dbs0p04
+  nevts: 0
+  xsec: 1541
