@@ -1,19 +1,19 @@
 lumi: 58.877
 samples:
 - bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2018/BtagEff/2018_BFF_200_2018_BtagEff.root
-  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/private/2018_175/*.root
+  fileglob: /afs/cern.ch/work/r/rymuelle/public/nanoAODzPrime/CMSSW_10_6_24/src/PhysicsTools/NanoAODTools/crab_bff/2018_private/BFFZprimeToMuMu_M175p0_dbs_0p04_RunIIAutumn18NanoAODv6_Skim.root
   ismc: 1
   name: BFFZprimeToMuMu_M_175_dbs0p04
   nevts: 0
   xsec: 507.6
 - bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2018/BtagEff/2018_BFF_200_2018_BtagEff.root
-  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/private/2018_150/*.root
+  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2018/2018_private/BFFZprimeToMuMu_M150p0_dbs_0p04_RunIIAutumn18NanoAODv6_Skim.root
   ismc: 1
   name: BFFZprimeToMuMu_M_150_dbs0p04
   nevts: 0
   xsec: 871.1
 - bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2018/BtagEff/2018_BFF_200_2018_BtagEff.root
-  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/private/2018_125/*.root
+  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2018/2018_private/BFFZprimeToMuMu_M125p0_dbs_0p04_RunIIAutumn18NanoAODv6_Skim.root
   ismc: 1
   name: BFFZprimeToMuMu_M_125_dbs0p04
   nevts: 0

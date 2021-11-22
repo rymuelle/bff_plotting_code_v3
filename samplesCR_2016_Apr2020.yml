@@ -1,23 +1,5 @@
 lumi: 35.5
 samples:
-- bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/BFFZprimeToMuMu_M_200_TuneCUETP8M1_13TeV-madgraph-pythia8.root
-  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/private/2016_175/*.root
-  ismc: 1
-  name: BFFZprimeToMuMu_M_175_dbs0p04
-  nevts: 0
-  xsec: 485.9
-- bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/BFFZprimeToMuMu_M_200_TuneCUETP8M1_13TeV-madgraph-pythia8.root
-  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/private/2016_150/*.root
-  ismc: 1
-  name: BFFZprimeToMuMu_M_150_dbs0p04
-  nevts: 0
-  xsec: 812.8
-- bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/BFFZprimeToMuMu_M_200_TuneCUETP8M1_13TeV-madgraph-pythia8.root
-  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/private/2016_125/*.root
-  ismc: 1
-  name: BFFZprimeToMuMu_M_125_dbs0p04
-  nevts: 0
-  xsec: 1541
 - bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/DYJetsToLL_M-50_TuneCUETP8M1_14Dec2018_LegacyPUSummer16.root
   fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/crab/2016/ZToEE_NNPDF30_13TeV-powheg_M_120_200/*/*/*/*.root
   ismc: 1
@@ -168,24 +150,80 @@ samples:
   name: BFFZprimeToMuMu_M_200_dbs0p5
   nevts: 0
   xsec: 592.6
+  
 - bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/BFFZprimeToMuMu_M_200_TuneCUETP8M1_13TeV-madgraph-pythia8.root
-  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/crab/2016/BFFZprimeToMuMu_M_250_TuneCUETP8M1_13TeV-madgraph-pythia8/*/*/*/*.root
+  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/private/2016_lpc/BFFZprimeToMuMu_M125p0_dbs_0p04_2016/*.root
   ismc: 1
-  name: BFFZprimeToMuMu_M_250_dbs0p04
+  name: BFFZprimeToMuMu_M_125_dbs0p04
   nevts: 0
-  xsec: 122.5
+  xsec: 1528
 - bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/BFFZprimeToMuMu_M_200_TuneCUETP8M1_13TeV-madgraph-pythia8.root
-  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/crab/2016/BFFZprimeToMuMu_M_300_TuneCUETP8M1_13TeV-madgraph-pythia8/*/*/*/*.root
+  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/private/2016_lpc/BFFZprimeToMuMu_M125p0_dbs_0p5_2016/*.root
   ismc: 1
-  name: BFFZprimeToMuMu_M_300_dbs0p04
+  name: BFFZprimeToMuMu_M_125_dbs0p5
   nevts: 0
-  xsec: 58.86
+  xsec: 3119
 - bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/BFFZprimeToMuMu_M_200_TuneCUETP8M1_13TeV-madgraph-pythia8.root
-  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/crab/2016/BFFZprimeToMuMu_M_400_TuneCUETP8M1_13TeV-madgraph-pythia8/*/*/*/*.root
+  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/private/2016_lpc/BFFZprimeToMuMu_M125p0_dbs_1p0_2016/*.root
   ismc: 1
-  name: BFFZprimeToMuMu_M_400_dbs0p04
+  name: BFFZprimeToMuMu_M_125_dbs1p0
   nevts: 0
-  xsec: 17.42
+  xsec: 7866
+- bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/BFFZprimeToMuMu_M_200_TuneCUETP8M1_13TeV-madgraph-pythia8.root
+  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/private/2016_lpc/BFFZprimeToMuMu_M150p0_dbs_0p04_2016/*.root
+  ismc: 1
+  name: BFFZprimeToMuMu_M_150_dbs0p04
+  nevts: 0
+  xsec: 815.0
+- bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/BFFZprimeToMuMu_M_200_TuneCUETP8M1_13TeV-madgraph-pythia8.root
+  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/private/2016_lpc/BFFZprimeToMuMu_M150p0_dbs_0p5_2016/*.root
+  ismc: 1
+  name: BFFZprimeToMuMu_M_150_dbs0p5
+  nevts: 0
+  xsec: 1673.
+- bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/BFFZprimeToMuMu_M_200_TuneCUETP8M1_13TeV-madgraph-pythia8.root
+  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/private/2016_lpc/BFFZprimeToMuMu_M150p0_dbs_1p0_2016/*.root
+  ismc: 1
+  name: BFFZprimeToMuMu_M_150_dbs1p0
+  nevts: 0
+  xsec: 4187.
+- bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/BFFZprimeToMuMu_M_200_TuneCUETP8M1_13TeV-madgraph-pythia8.root
+  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/private/2016_lpc/BFFZprimeToMuMu_M175p0_dbs_0p04_2016/*.root
+  ismc: 1
+  name: BFFZprimeToMuMu_M_175_dbs0p04
+  nevts: 0
+  xsec: 471.2
+- bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/BFFZprimeToMuMu_M_200_TuneCUETP8M1_13TeV-madgraph-pythia8.root
+  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/private/2016_lpc/BFFZprimeToMuMu_M175p0_dbs_0p5_2016/*.root
+  ismc: 1
+  name: BFFZprimeToMuMu_M_175_dbs0p5
+  nevts: 0
+  xsec: 969.8
+- bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/BFFZprimeToMuMu_M_200_TuneCUETP8M1_13TeV-madgraph-pythia8.root
+  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/private/2016_lpc/BFFZprimeToMuMu_M175p0_dbs_1p0_2016/*.root
+  ismc: 1
+  name: BFFZprimeToMuMu_M_175_dbs1p0
+  nevts: 0
+  xsec: 2438.
+- bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/BFFZprimeToMuMu_M_200_TuneCUETP8M1_13TeV-madgraph-pythia8.root
+  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/private/2016_lpc/BFFZprimeToMuMu_M200p0_dbs_0p04_2016/*.root
+  ismc: 1
+  name: BFFZprimeToMuMu_M_201_dbs0p04
+  nevts: 0
+  xsec: 289.1
+- bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/BFFZprimeToMuMu_M_200_TuneCUETP8M1_13TeV-madgraph-pythia8.root
+  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/private/2016_lpc/BFFZprimeToMuMu_M200p0_dbs_0p5_2016/*.root
+  ismc: 1
+  name: BFFZprimeToMuMu_M_201_dbs0p5
+  nevts: 0
+  xsec: 589.2
+- bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/BFFZprimeToMuMu_M_200_TuneCUETP8M1_13TeV-madgraph-pythia8.root
+  fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/private/2016_lpc/BFFZprimeToMuMu_M200p0_dbs_1p0_2016/*.root
+  ismc: 1
+  name: BFFZprimeToMuMu_M_201_dbs1p0
+  nevts: 0
+  xsec: 1483.
+  
 - bTagEff: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/2016/BtagEff/BFFZprimeToMuMu_M_200_TuneCUETP8M1_13TeV-madgraph-pythia8.root
   fileglob: /eos/cms/store/group/phys_exotica/bffZprime/nanoAODskimmed/crab/2016/SingleMuon/*/*/*/*.root
   ismc: 0
