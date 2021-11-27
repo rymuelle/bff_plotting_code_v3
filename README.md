@@ -25,7 +25,8 @@ Now, you should be able to log in to lxplus with port forwarding:
 You should now be able to open up the jupyter notebook launch page from the links printed out on a local browser.
 
 # Making skims:
-bff_plotter.ipynb
+Takes yml files and produces csv skims. Tested in 12_1_0.
+0_bff_skimmer.ipynb
 
 # calculating sig cuts:
 creates bff_dict of cut values
