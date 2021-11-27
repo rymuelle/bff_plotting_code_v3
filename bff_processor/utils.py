@@ -11,12 +11,24 @@ def toVector(vtype, list):
     return v
 
 def get_nEvents(fileglob, key = 'nEventsGenWeighted'):
+    '''
+    Finds total events pre cut.
+    Input:
+        fileglob: list of files
+        key: optional, key for one bin hist containing counts.
+        
+    Output:
+        scalar of total events added.
+    '''
     file_path = fileglob
     total = 0
     for file in fileglob:
-        print(file)
         up_f = uproot.open(file)
-        total += up_f[key].numpy()[0][0]
+        # Try two different methods to get value
+        try:
+            total += up_f[key].numpy()[0][0]
+        except:
+            total += up_f[key].values()[0]
     return total
 
 def make_view(mass_cut = [-np.inf,np.inf], HTLT = np.inf, RelMET = np.inf, SBM = 0, MET_filter = 1, region=0):
