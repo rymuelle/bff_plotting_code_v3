@@ -26,9 +26,9 @@ def get_nEvents(fileglob, key = 'nEventsGenWeighted'):
         up_f = uproot.open(file)
         # Try two different methods to get value
         try:
-            total += up_f[key].numpy()[0][0]
-        except:
             total += up_f[key].values()[0]
+        except:
+            total += up_f[key].numpy()[0][0]
     return total
 
 def make_view(mass_cut = [-np.inf,np.inf], HTLT = np.inf, RelMET = np.inf, SBM = 0, MET_filter = 1, region=0):
