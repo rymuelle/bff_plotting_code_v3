@@ -36,8 +36,9 @@ Creates bff_dict of cut values. Needed to produced .dill file of cut values used
 
 # produce combined df
 This should be run for each era. It produces a single df of all eras for ease of next steps (and it applies cuts)
+Tested in 12_1_0.
 
-produce_combined_df.ipynb
+2_produce_combined_df.ipynb
 
 # Bins 
 
