@@ -26,12 +26,13 @@ You should now be able to open up the jupyter notebook launch page from the link
 
 # Making skims:
 Takes yml files and produces csv skims. Tested in 12_1_0.
+
 0_bff_skimmer.ipynb
 
 # calculating sig cuts:
-creates bff_dict of cut values
+Creates bff_dict of cut values. Needed to produced .dill file of cut values used in the next step. Tested in 12_1_0.
 
-optimize_2d_cuts.ipynb
+1_optimize_2d_cuts.ipynb
 
 # produce combined df
 This should be run for each era. It produces a single df of all eras for ease of next steps (and it applies cuts)
