@@ -80,8 +80,10 @@ Tested in 12_1_0
 3_fit_and_abcd.ipynb
 
 # Make a fit to signal
+Makes fits to signal and systematics.
+Tested in 12_1_0
 
-fit_signal_restarting.ipynb
+3_fit_signal_restarting.ipynb
 
 ```
 import zfit
