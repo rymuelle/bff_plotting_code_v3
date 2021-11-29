@@ -74,8 +74,10 @@ ax.legend()
 ```
 
 # Make ABCD pred
+Makes abcd fits using lognorm function. 
+Tested in 12_1_0
 
-fit_and_abcd.ipynb
+3_fit_and_abcd.ipynb
 
 # Make a fit to signal
 
