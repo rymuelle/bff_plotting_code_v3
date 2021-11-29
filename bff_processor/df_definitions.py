@@ -16,11 +16,11 @@ def setup_btag_puid(ismc, era, bTagEff):
     return bTagFile, PUIDSFfile
 
 def def_good_jet(df, ismc, bDiscValue):
-    df = df.Define("GoodJet", "Jet_pt>20 && abs(Jet_eta)<2.4 && (Jet_jetId & (1 << 1)) && ((Jet_puId & 1) || Jet_pt>50.) && !(Jet_btagDeepB<={} && Jet_pt<=30.)".format(bDiscValue))\
+    df = df.Define("GoodJet", "Jet_pt>20 && abs(Jet_eta)<2.4 && (Jet_jetId > 3) && ((Jet_puId & 1) || Jet_pt>50.) && !(Jet_btagDeepB<={} && Jet_pt<=30.)".format(bDiscValue))\
            .Define("GoodJetPt", "Jet_pt[GoodJet]")\
            .Define("GoodJetEta", "Jet_eta[GoodJet]")\
            .Define("nJets", "GoodJetPt.size()")\
-           .Define("BJet", "Jet_pt>20 && abs(Jet_eta)<2.4 && (Jet_jetId & (1 << 1)) && (Jet_puId & 1) && Jet_btagDeepB>{}".format(bDiscValue))\
+           .Define("BJet", "Jet_btagDeepB>{}".format(bDiscValue))\
            .Define("GoodBJet", "BJet[GoodJet]")
     df = df.Define("leading_b_jet_pt", "(GoodBJet.size()>0) ? Jet_pt[GoodBJet[0]] : 0")
     df = df.Define("leading_jet_pt", "(GoodJet.size()>0) ? Jet_pt[GoodJet[0]] : 0")
@@ -28,9 +28,15 @@ def def_good_jet(df, ismc, bDiscValue):
            .Define("NoPUID_GoodJetPt", "Jet_pt[NoPUID_GoodJet]")\
            .Define("NoPUID_GoodJetEta", "Jet_eta[NoPUID_GoodJet]")\
            .Define("NoPUID_PUID", "Jet_puId[NoPUID_GoodJet]")
+    
+    df = df.Define("minJetDRmuon", "min_delta_r(Jet_eta[GoodJet], Muon_eta[GoodMuonLowPt], Jet_phi[GoodJet], Muon_phi[GoodMuonLowPt])")
+    df = df.Define("minJetDRelectron", "min_delta_r(Jet_eta[GoodJet], Electron_eta[GoodElectronLowPt], Jet_phi[GoodJet], Electron_phi[GoodElectronLowPt])")
+    df = df.Define("minGoodJetMuDR", "min_vec(minJetDRmuon)")
+    df = df.Define("minGoodJetElDR", "min_vec(minJetDRelectron)")
     if int(ismc):
         df = df.Define("NoPUID_GoodJetGenJetIdx", "Jet_genJetIdx[NoPUID_GoodJet]")
     return df
+
 def def_good_leptons(df, ismc):
     df = df.Define("GoodMuon", "Muon_corrected_pt > 53 && abs(Muon_eta) < 2.4 && Muon_tightId > 0 && Muon_pfRelIso04_all < 0.25")\
            .Define("GoodMuonPt", "Muon_corrected_pt[GoodMuon]")\

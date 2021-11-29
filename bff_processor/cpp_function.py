@@ -2,9 +2,39 @@ from ROOT import gInterpreter
 def def_cpp():
         return gInterpreter.Declare('''
         #include <math.h>
+        #include <TLorentzVector.h>
+        #include <algorithm> 
+        
         TH2F *bTagEff = 0;
         
         using namespace ROOT::VecOps;
+
+        
+        RVec<float> min_delta_r(const RVec<float> eta1, const RVec<float> eta2, const RVec<float> phi1, const RVec<float> phi2){
+            TLorentzVector v1; 
+            TLorentzVector v2;
+            RVec<float> dr_vec = {};
+            for (unsigned i = 0; i < eta1.size(); ++i) {
+                v1.SetPtEtaPhiM(1, eta1[i], phi1[i], 1);
+                double min_dr = 999;
+                for (unsigned j = 0; j < eta2.size(); ++j) {
+                    v2.SetPtEtaPhiM(1, eta2[j], phi2[j], 1);
+                    min_dr = min(min_dr, v2.DeltaR(v1));
+                }
+                dr_vec.push_back(min_dr);
+            }
+            return dr_vec;
+        }
+        
+        float min_vec(const RVec<float> x){
+            float min_val = 999999;
+            for (unsigned i = 0; i < x.size(); ++i) {
+                min_val = min(min_val, x[i]);
+            }
+            return min_val;
+        }
+
+
         float GetBTagWeight(const RVec<int> &isBJet, const RVec<int> &JetHadronFlav, const RVec<float> &JetPt, const RVec<float> &bTagSF) {
           float weight = 1.;
           for (unsigned j = 0; j < isBJet.size(); ++j) {
