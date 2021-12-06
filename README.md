@@ -119,6 +119,11 @@ Tested in 10_6_24/JupyROOT 6.14/09 enviroment.
 4_make_workspace.ipynb
 
 
+# # Running combine
+
+A notebook is included to run combine for all the various permuations of configs. (including combinations)
+
+5_run_combine.ipynb
 
 
-# 
+# Making gb/dbs plots
