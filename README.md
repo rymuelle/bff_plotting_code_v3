@@ -127,3 +127,14 @@ A notebook is included to run combine for all the various permuations of configs
 
 
 # Making gb/dbs plots
+
+## Cross section model
+This fits cross section values and so on to make model 
+Tested in 12_1_0
+6_fit_cross_sec_func.ipynb
+
+## Era by era gb dbs plot
+Makes plot using previous model
+Tested in 12_1_0
+7_draw_gb_dbs_plot.ipynb
+
