@@ -107,3 +107,18 @@ def make_plot(mass):
     ax.set_ylim(bottom=1e-3)
     ax.legend()
 ```
+
+# Send to higgs combine!
+
+**Note: this section tested in a 10_6_24 enviroment with combine installed! (Follow most recent recomendations)**
+
+## Producing workspace for combine:
+
+Tested in 10_6_24/JupyROOT 6.14/09 enviroment.
+
+4_make_workspace.ipynb
+
+
+
+
+# 
