@@ -138,3 +138,11 @@ Makes plot using previous model
 Tested in 12_1_0
 7_draw_gb_dbs_plot.ipynb
 
+
+
+# Extras:
+
+## Produce counts from each region:
+Tested in 12_1_0
+
+3_region_statistics.ipynb
