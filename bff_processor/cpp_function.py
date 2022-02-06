@@ -33,6 +33,13 @@ def def_cpp():
             }
             return min_val;
         }
+        float max_vec(const RVec<float> x){
+            float max_vec = -999999;
+            for (unsigned i = 0; i < x.size(); ++i) {
+                max_vec = max(max_vec, x[i]);
+            }
+            return max_vec;
+        }
 
 
         float GetBTagWeight(const RVec<int> &isBJet, const RVec<int> &JetHadronFlav, const RVec<float> &JetPt, const RVec<float> &bTagSF) {

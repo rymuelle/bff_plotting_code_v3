@@ -1,9 +1,14 @@
 from ROOT import RDataFrame, TFile
 import ROOT
+from glob import glob
 
 def setup_btag_puid(ismc, era, bTagEff):
+    '''read only one btag eff file'''
+    bTagEff_files = glob(bTagEff)
+    print(bTagEff_files[0])
+
     if ismc:
-        bTagFile = TFile(bTagEff, 'read')
+        bTagFile = TFile(bTagEff_files[0], 'read')
         ROOT.bTagEff = bTagFile.Get("bTagEff")
         PUIDSFfile = TFile("data/PUID_80XTraining_EffSFandUncties.root","read")
         ROOT.PUIDEff_true  = PUIDSFfile.Get("h2_eff_mc{}_T".format(era))
