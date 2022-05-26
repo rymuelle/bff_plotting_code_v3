@@ -24,6 +24,7 @@ def def_good_jet(df, ismc, bDiscValue):
     df = df.Define("GoodJet", "Jet_pt>20 && abs(Jet_eta)<2.4 && (Jet_jetId > 3) && ((Jet_puId & 1) || Jet_pt>50.) && !(Jet_btagDeepB<={} && Jet_pt<=30.)".format(bDiscValue))\
            .Define("GoodJetPt", "Jet_pt[GoodJet]")\
            .Define("GoodJetEta", "Jet_eta[GoodJet]")\
+           .Define("GoodJetPhi", "Jet_phi[GoodJet]")\
            .Define("nJets", "GoodJetPt.size()")\
            .Define("BJet", "Jet_btagDeepB>{}".format(bDiscValue))\
            .Define("GoodBJet", "BJet[GoodJet]")
@@ -49,9 +50,8 @@ def def_good_leptons(df, ismc):
            .Define("GoodMuonPhi", "Muon_phi[GoodMuon]")\
            .Define("GoodMuonCharge", "Muon_charge[GoodMuon]")\
            .Define("nMuons", "GoodMuonPt.size()")
-    df = df.Define("GoodMuonLowPt", "Muon_corrected_pt > 24 && abs(Muon_eta) < 2.4 && Muon_tightId > 0 && Muon_pfRelIso04_all < 0.25")\
+    df = df.Define("GoodMuonLowPt", "Muon_corrected_pt > 10 && abs(Muon_eta) < 2.4 && Muon_tightId > 0 && Muon_pfRelIso04_all < 0.25")\
            .Define("GoodMuonPtLow", "Muon_corrected_pt[GoodMuonLowPt]")\
-           .Define("GoodMuonEtaLow", "Muon_eta[GoodMuonLowPt]")\
            .Define("nMuonsLowPt", "GoodMuonPtLow.size()")
     df = df.Define("GoodElectron", "Electron_pt > 53 && abs(Electron_eta) < 2.4 && Electron_cutBased_HEEP > 0")\
            .Define("GoodElePt", "Electron_pt[GoodElectron]")\
@@ -59,22 +59,21 @@ def def_good_leptons(df, ismc):
            .Define("GoodElePhi", "Electron_phi[GoodElectron]")\
            .Define("GoodEleCharge", "Electron_charge[GoodElectron]")\
            .Define("nEle", "GoodElePt.size()")
-    df = df.Define("GoodElectronLowPt", "Electron_pt > 24 && abs(Electron_eta) < 2.4 && Electron_cutBased_HEEP > 0")\
-          .Define("GoodElePtLow", "Electron_pt[GoodElectronLowPt]")\
-          .Define("GoodEleEtaLow", "Electron_eta[GoodElectronLowPt]")\
-           .Define("nEleLowPt", "GoodElePtLow.size()")
+    df = df.Define("GoodElectronLowPt", "GoodElectron || (Electron_pt > 10 && abs(Electron_eta) < 2.4 && Electron_mvaFall17V2Iso_WPL > 0)")\
+            .Define("GoodElePtLow", "Electron_pt[GoodElectronLowPt]")\
+            .Define("nEleLowPt", "GoodElePtLow.size()")
     if int(ismc):
         df = df.Define("GoodMuon_effSF_trigger", "Muon_effSF_trigger[GoodMuon]")\
-           .Define("GoodMuon_effSF_stat_trigger", "Muon_effSF_stat_trigger[GoodMuon]")\
-           .Define("GoodMuon_effSF_ID", "Muon_effSF_ID[GoodMuon]")\
-           .Define("GoodMuon_effSF_sys_ID", "Muon_effSF_sys_ID[GoodMuon]")\
-           .Define("GoodMuon_effSF_stat_ID", "Muon_effSF_stat_ID[GoodMuon]")\
-           .Define("GoodMuon_effSF_ISO", "Muon_effSF_ISO[GoodMuon]")\
-           .Define("GoodMuon_effSF_sys_ISO", "Muon_effSF_sys_ISO[GoodMuon]")\
-           .Define("GoodMuon_effSF_stat_ISO", "Muon_effSF_stat_ISO[GoodMuon]")\
-           .Define("GoodElectron_effSF", "Electron_effSF[GoodElectron]")\
-           .Define("GoodElectron_effSF_stat", "Electron_effSF_stat[GoodElectron]")\
-           .Define("GoodElectron_effSF_sys", "Electron_effSF_sys[GoodElectron]")
+            .Define("GoodMuon_effSF_stat_trigger", "Muon_effSF_stat_trigger[GoodMuon]")\
+            .Define("GoodMuon_effSF_ID", "Muon_effSF_ID[GoodMuon]")\
+            .Define("GoodMuon_effSF_sys_ID", "Muon_effSF_sys_ID[GoodMuon]")\
+            .Define("GoodMuon_effSF_stat_ID", "Muon_effSF_stat_ID[GoodMuon]")\
+            .Define("GoodMuon_effSF_ISO", "Muon_effSF_ISO[GoodMuon]")\
+            .Define("GoodMuon_effSF_sys_ISO", "Muon_effSF_sys_ISO[GoodMuon]")\
+            .Define("GoodMuon_effSF_stat_ISO", "Muon_effSF_stat_ISO[GoodMuon]")\
+            .Define("GoodElectron_effSF", "Electron_effSF[GoodElectron]")\
+            .Define("GoodElectron_effSF_stat", "Electron_effSF_stat[GoodElectron]")\
+            .Define("GoodElectron_effSF_sys", "Electron_effSF_sys[GoodElectron]")
     return df
 def def_HLT(df, ismc, era):
     if int(ismc):
@@ -120,9 +119,9 @@ def def_sf_and_weight(df,ismc, is_inclusive, name,sample_weight):
             df = df.Define("PUIDWeight", "map_zero_to_one(PUIDWeights[0])")
             df = df.Define("PUIDWeightUp", "map_zero_to_one(PUIDWeights[1])")
             df = df.Define("PUIDWeightDown", "map_zero_to_one(PUIDWeights[2])")
-            df = df.Define("GoodJetBTagSF", "(Jet_btagSF_deepcsv_M[GoodJet])")
-            df = df.Define("GoodJetBTagSFUp", "(Jet_btagSF_deepcsv_M_up[GoodJet])")
-            df = df.Define("GoodJetBTagSFDown", "(Jet_btagSF_deepcsv_M_down[GoodJet])")
+            df = df.Define("GoodJetBTagSF", "(Jet_btagSF_deepflavour_M[GoodJet])")
+            df = df.Define("GoodJetBTagSFUp", "(Jet_btagSF_deepflavour_M_up[GoodJet])")
+            df = df.Define("GoodJetBTagSFDown", "(Jet_btagSF_deepflavour_M_down[GoodJet])")
             df = df.Define("GoodJetHadronFlav","Jet_hadronFlavour[GoodJet]")
             df = df.Define("BTagWeight", "map_zero_to_one(GetBTagWeight(GoodBJet, GoodJetHadronFlav, GoodJetPt, GoodJetBTagSF))")
             df = df.Define("BTagWeightUp", "map_zero_to_one(GetBTagWeight(GoodBJet, GoodJetHadronFlav, GoodJetPt, GoodJetBTagSFUp))")
@@ -173,13 +172,17 @@ def def_sf_and_weight(df,ismc, is_inclusive, name,sample_weight):
     return df
 
 def def_lep_selections(df):
+    df = df.Define('nLep', 'nEle+nMuons')
+    df = df.Define('nLowPtLep', 'nEleLowPt+nMuonsLowPt')
     df = df.Define("oppositeSignMuon", "oppositeSign(GoodMuonCharge)")
     df = df.Define("oppositeSignElectron", "oppositeSign(GoodEleCharge)")
     df = df.Define("oppositeSignEmu", "oppositeSign(GoodMuonCharge,GoodEleCharge)")
     df = df.Define("IncMumuLocal", "nEle==0 && nMuons==2 && oppositeSignMuon==1")
     df = df.Define("IncMumuLocalLow", "IncMumuLocal && nMuonsLowPt==2 && nEleLowPt==0")
+    
     df = df.Define("IncEeLocal", "nEle==2 && nMuons==0 && oppositeSignElectron==1")
     df = df.Define("IncEeLocalLow", "IncEeLocal && nEleLowPt==2 && nMuonsLowPt==0")
+    
     df = df.Define("IncEmuLocal", "nEle==1 && nMuons==1 && oppositeSignEmu==1")
     df = df.Define("IncEmuLocalLow", "IncEmuLocal && nEleLowPt==1 && nMuonsLowPt==1")
     return df
