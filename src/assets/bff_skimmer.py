@@ -136,3 +136,48 @@ hem_columns = ['GoodJetEta','GoodJetPhi','GoodJetPt','GoodBJet','GoodMuonPt','Go
 columns+=tmb_min
 columns+=tmb_max
 columns_data+=['TMBMin_nom','TMBMax_nom']
+
+def make_columns(era, columns):
+    '''put in era as string to add on additional columns to save'''
+    if era=="2016" or era=="2017":
+        columns += ["L1PreFiringWeight_Dn","L1PreFiringWeight_Nom","L1PreFiringWeight_Up"]
+    if era=="2018":
+        columns += [
+            "JetSFWeight_jesHEMIssueUp"
+            ,"JetSFWeight_jesHEMIssueDown"
+            ,"HTLT_jesHEMIssueUp"
+            ,"HTLT_jesHEMIssueDown"
+            ,"RelMET_jesHEMIssueUp"
+            ,"RelMET_jesHEMIssueDown"
+            ,"TMB_jesHEMIssueUp"
+            ,"TMBMin_jesHEMIssueUp"
+            ,"TMBMax_jesHEMIssueUp"
+            ,"TMB_jesHEMIssueDown"
+            ,"TMBMin_jesHEMIssueDown"
+            ,"TMBMax_jesHEMIssueDown"
+            ,"SR1_jesHEMIssueUp"
+            ,"SR2_jesHEMIssueUp"
+            ,"SR1_jesHEMIssueDown"
+            ,"SR2_jesHEMIssueDown"
+            ,"CR10_jesHEMIssueUp"
+            ,"CR11_jesHEMIssueUp"
+            ,"CR12_jesHEMIssueUp"
+            ,"CR13_jesHEMIssueUp"
+            ,"CR14_jesHEMIssueUp"
+            ,"CR20_jesHEMIssueUp"
+            ,"CR21_jesHEMIssueUp"
+            ,"CR22_jesHEMIssueUp"
+            ,"CR23_jesHEMIssueUp"
+            ,"CR24_jesHEMIssueUp"
+            ,"CR10_jesHEMIssueDown"
+            ,"CR11_jesHEMIssueDown"
+            ,"CR12_jesHEMIssueDown"
+            ,"CR13_jesHEMIssueDown"
+            ,"CR14_jesHEMIssueDown"
+            ,"CR20_jesHEMIssueDown"
+            ,"CR21_jesHEMIssueDown"
+            ,"CR22_jesHEMIssueDown"
+            ,"CR23_jesHEMIssueDown"
+            ,"CR24_jesHEMIssueDown"
+        ]
+    return columns
