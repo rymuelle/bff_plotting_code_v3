@@ -3,21 +3,19 @@ import ROOT
 from glob import glob
 
 def setup_btag_puid(ismc, era, bTagEff):
+    if not ismc: return None, None
     '''read only one btag eff file'''
-    bTagEff_files = glob(bTagEff)
+    bTagEff_files = glob(bTagEff, recursive=True)
     print(bTagEff_files[0])
-
-    if ismc:
-        bTagFile = TFile(bTagEff_files[0], 'read')
-        ROOT.bTagEff = bTagFile.Get("bTagEff")
-        PUIDSFfile = TFile("data/PUID_80XTraining_EffSFandUncties.root","read")
-        ROOT.PUIDEff_true  = PUIDSFfile.Get("h2_eff_mc{}_T".format(era))
-        ROOT.PUIDEff_false = PUIDSFfile.Get("h2_mistag_mc{}_T".format(era))
-        ROOT.PUIDSF_true   = PUIDSFfile.Get("h2_eff_sf{}_T".format(era))
-        ROOT.PUIDSF_false  = PUIDSFfile.Get("h2_mistag_sf{}_T".format(era))
-        ROOT.PUIDUnc_true  = PUIDSFfile.Get("h2_eff_sf{}_T_Systuncty".format(era))
-        ROOT.PUIDUnc_false = PUIDSFfile.Get("h2_mistag_sf{}_T_Systuncty".format(era))
-    else: bTagFile, PUIDSFfile = None, None
+    bTagFile = TFile(bTagEff_files[0], 'read')
+    ROOT.bTagEff = bTagFile.Get("bTagEff")
+    PUIDSFfile = TFile("data/PUID_80XTraining_EffSFandUncties.root","read")
+    ROOT.PUIDEff_true  = PUIDSFfile.Get("h2_eff_mc{}_T".format(era))
+    ROOT.PUIDEff_false = PUIDSFfile.Get("h2_mistag_mc{}_T".format(era))
+    ROOT.PUIDSF_true   = PUIDSFfile.Get("h2_eff_sf{}_T".format(era))
+    ROOT.PUIDSF_false  = PUIDSFfile.Get("h2_mistag_sf{}_T".format(era))
+    ROOT.PUIDUnc_true  = PUIDSFfile.Get("h2_eff_sf{}_T_Systuncty".format(era))
+    ROOT.PUIDUnc_false = PUIDSFfile.Get("h2_mistag_sf{}_T_Systuncty".format(era))
     return bTagFile, PUIDSFfile
 
 def def_good_jet(df, ismc, bDiscValue):
