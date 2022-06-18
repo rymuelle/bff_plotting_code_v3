@@ -1,17 +1,6 @@
 lumi: 35.5
 samples:
 
-- fileglob: SingleMuon
-  ismc: 0
-  name: data_mu
-  nevts: 1.0
-  xsec: 1.0
-
-- fileglob: DoubleEG
-  ismc: 0
-  name: data_el
-  nevts: 1.0
-  xsec: 1.0
 
 - fileglob: ZToEE_NNPDF30_13TeV-powheg_M_120_200
   ismc: 1
@@ -218,3 +207,29 @@ samples:
   nevts: 0
   xsec: 2438.
   
+  
+- fileglob:  BFF_750_dbs0p04_deepflavour_bff
+  ismc: 1
+  name: BFFZprimeToMuMu_M_750_dbs0p04
+  nevts: 0
+  xsec: .9116
+
+#- fileglob:  
+#  ismc: 1
+#  name: BFFZprimeToMuMu_M_200_dbs0p04_gmu0p16_gb0p008125
+#  nevts: 0
+#  xsec: 47.84
+
+
+
+- fileglob: SingleMuon
+  ismc: 0
+  name: data_mu
+  nevts: 1.0
+  xsec: 1.0
+
+- fileglob: DoubleEG
+  ismc: 0
+  name: data_el
+  nevts: 1.0
+  xsec: 1.0
