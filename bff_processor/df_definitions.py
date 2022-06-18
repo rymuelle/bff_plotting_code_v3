@@ -2,12 +2,10 @@ from ROOT import RDataFrame, TFile
 import ROOT
 from glob import glob
 
-def setup_btag_puid(ismc, era, bTagEff):
+def setup_btag_puid(ismc, era, bTagEff_list):
     if not ismc: return None, None
     '''read only one btag eff file'''
-    bTagEff_files = glob(bTagEff, recursive=True)
-    print(bTagEff_files[0])
-    bTagFile = TFile(bTagEff_files[0], 'read')
+    bTagFile = TFile(bTagEff_list[0], 'read')
     ROOT.bTagEff = bTagFile.Get("bTagEff")
     PUIDSFfile = TFile("data/PUID_80XTraining_EffSFandUncties.root","read")
     ROOT.PUIDEff_true  = PUIDSFfile.Get("h2_eff_mc{}_T".format(era))
@@ -19,16 +17,16 @@ def setup_btag_puid(ismc, era, bTagEff):
     return bTagFile, PUIDSFfile
 
 def def_good_jet(df, ismc, bDiscValue):
-    df = df.Define("GoodJet", "Jet_pt>20 && abs(Jet_eta)<2.4 && (Jet_jetId > 3) && ((Jet_puId & 1) || Jet_pt>50.) && !(Jet_btagDeepB<={} && Jet_pt<=30.)".format(bDiscValue))\
+    df = df.Define("GoodJet", "Jet_pt>20 && abs(Jet_eta)<2.4 && (Jet_jetId > 3) && ((Jet_puId & 1) || Jet_pt>50.) && !(Jet_btagDeepFlavB<={} && Jet_pt<=30.)".format(bDiscValue))\
            .Define("GoodJetPt", "Jet_pt[GoodJet]")\
            .Define("GoodJetEta", "Jet_eta[GoodJet]")\
            .Define("GoodJetPhi", "Jet_phi[GoodJet]")\
            .Define("nJets", "GoodJetPt.size()")\
-           .Define("BJet", "Jet_btagDeepB>{}".format(bDiscValue))\
+           .Define("BJet", "Jet_btagDeepFlavB>{}".format(bDiscValue))\
            .Define("GoodBJet", "BJet[GoodJet]")
     df = df.Define("leading_b_jet_pt", "(GoodBJet.size()>0) ? Jet_pt[GoodBJet[0]] : 0")
     df = df.Define("leading_jet_pt", "(GoodJet.size()>0) ? Jet_pt[GoodJet[0]] : 0")
-    df = df.Define("NoPUID_GoodJet", "Jet_pt>20 && abs(Jet_eta)<2.4 && (Jet_jetId & (1 << 1)) && !(Jet_btagDeepB<={} && Jet_pt<=30.) && Jet_pt<50.".format(bDiscValue))\
+    df = df.Define("NoPUID_GoodJet", "Jet_pt>20 && abs(Jet_eta)<2.4 && (Jet_jetId & (1 << 1)) && !(Jet_btagDeepFlavB<={} && Jet_pt<=30.) && Jet_pt<50.".format(bDiscValue))\
            .Define("NoPUID_GoodJetPt", "Jet_pt[NoPUID_GoodJet]")\
            .Define("NoPUID_GoodJetEta", "Jet_eta[NoPUID_GoodJet]")\
            .Define("NoPUID_PUID", "Jet_puId[NoPUID_GoodJet]")
@@ -41,17 +39,21 @@ def def_good_jet(df, ismc, bDiscValue):
         df = df.Define("NoPUID_GoodJetGenJetIdx", "Jet_genJetIdx[NoPUID_GoodJet]")
     return df
 
-def def_good_leptons(df, ismc):
-    df = df.Define("GoodMuon", "Muon_corrected_pt > 53 && abs(Muon_eta) < 2.4 && Muon_tightId > 0 && Muon_pfRelIso04_all < 0.25")\
+def def_good_leptons(df, ismc, era):
+    df = df.Define("GoodMuon", "Muon_corrected_pt > 53 && abs(Muon_eta) < 2.4 && Muon_highPtId > 0 && Muon_tkRelIso < 0.1")\
            .Define("GoodMuonPt", "Muon_corrected_pt[GoodMuon]")\
            .Define("GoodMuonEta", "Muon_eta[GoodMuon]")\
            .Define("GoodMuonPhi", "Muon_phi[GoodMuon]")\
            .Define("GoodMuonCharge", "Muon_charge[GoodMuon]")\
            .Define("nMuons", "GoodMuonPt.size()")
-    df = df.Define("GoodMuonLowPt", "Muon_corrected_pt > 10 && abs(Muon_eta) < 2.4 && Muon_tightId > 0 && Muon_pfRelIso04_all < 0.25")\
+    df = df.Define("GoodMuonLowPt", "Muon_corrected_pt > 10 && abs(Muon_eta) < 2.4 && Muon_highPtId > 0 && Muon_tkRelIso  < 0.1")\
            .Define("GoodMuonPtLow", "Muon_corrected_pt[GoodMuonLowPt]")\
            .Define("nMuonsLowPt", "GoodMuonPtLow.size()")
-    df = df.Define("GoodElectron", "Electron_pt > 53 && abs(Electron_eta) < 2.4 && Electron_cutBased_HEEP > 0")\
+    if era =="2018":
+        goodElString = "Electron_pt > 53 && abs(Electron_eta) < 2.4 && Electron_cutBased_HEEPV7p0_2018Prompt > 0"
+    else: 
+        goodElString = "Electron_pt > 53 && abs(Electron_eta) < 2.4 && Electron_cutBased_HEEP > 0"
+    df = df.Define("GoodElectron", goodElString)\
            .Define("GoodElePt", "Electron_pt[GoodElectron]")\
            .Define("GoodEleEta", "Electron_eta[GoodElectron]")\
            .Define("GoodElePhi", "Electron_phi[GoodElectron]")\
@@ -91,7 +93,7 @@ def def_HLT(df, ismc, era):
         df = df.Define("TriggerWeight", "1.0")
     return df
     
-def def_sf_and_weight(df,ismc, is_inclusive, name,sample_weight):
+def def_sf_and_weight(df,ismc, is_inclusive, name,sample_weight, era):
     if int(ismc):
         if name not in ['mc_zz', 'mc_wz','mc_ww']:
             df = df.Define("PDF_ISRFSR_uncertainty","GetPDFandScaleUncertainty(LHEPdfWeight, LHEScaleWeight)")
@@ -126,7 +128,11 @@ def def_sf_and_weight(df,ismc, is_inclusive, name,sample_weight):
             df = df.Define("BTagWeightDown", "map_zero_to_one(GetBTagWeight(GoodBJet, GoodJetHadronFlav, GoodJetPt, GoodJetBTagSFDown))")
             #event weights
             df = df.Define("sample_weight", str(sample_weight))
-            df = df.Define("Weight", "{}*copysign(1.,genWeight)*k_factor*puWeight*BTagWeight*PUIDWeight*MuonSFweight*ElectronSFweight*TriggerWeight".format(sample_weight))
+            if era=="2016" or era=="2017":
+                weight_string = "{}*copysign(1.,genWeight)*k_factor*puWeight*BTagWeight*PUIDWeight*MuonSFweight*ElectronSFweight*TriggerWeight*L1PreFiringWeight_Nom".format(sample_weight)
+            else: 
+                weight_string = "{}*copysign(1.,genWeight)*k_factor*puWeight*BTagWeight*PUIDWeight*MuonSFweight*ElectronSFweight*TriggerWeight".format(sample_weight)
+            df = df.Define("Weight", weight_string)
             # Systematic weights
             df = df.Define("Weight_PuUp", "Weight/puWeight*puWeightUp")
             df = df.Define("Weight_PuDown", "Weight/puWeight*puWeightDown")
@@ -140,6 +146,12 @@ def def_sf_and_weight(df,ismc, is_inclusive, name,sample_weight):
             df = df.Define("Weight_MuonSFDown", "Weight/MuonSFweight*MuonSFweightDown")
             df = df.Define("Weight_ElectronSFUp", "Weight/ElectronSFweight*ElectronSFweightUp")
             df = df.Define("Weight_ElectronSFDown", "Weight/ElectronSFweight*ElectronSFweightDown")
+            if era=="2016" or era=="2017":
+                df = df.Define("Weight_L1Down", "Weight/L1PreFiringWeight_Nom*L1PreFiringWeight_Dn")
+                df = df.Define("Weight_L1Up", "Weight/L1PreFiringWeight_Nom*L1PreFiringWeight_Up")
+            else: 
+                df = df.Define("Weight_jesHEMUp", "Weight/JetSFWeight_jesHEMIssueUp")
+                df = df.Define("Weight_jesHEMDown", "Weight/JetSFWeight_jesHEMIssueDown")
         else: # Inclusive sample doesn't cut on btags, so no btag weight needed; also no PUID needed
             df = df.Define("Weight", "{}*copysign(1.,genWeight)*k_factor*puWeight*MuonSFweight*ElectronSFweight*TriggerWeight".format(sample_weight))
             df = df.Define("sample_weight", "1")

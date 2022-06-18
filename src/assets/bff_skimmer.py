@@ -140,11 +140,11 @@ columns_data+=['TMBMin_nom','TMBMax_nom']
 def make_columns(era, columns):
     '''put in era as string to add on additional columns to save'''
     if era=="2016" or era=="2017":
-        columns += ["L1PreFiringWeight_Dn","L1PreFiringWeight_Nom","L1PreFiringWeight_Up"]
+        columns += ["Weight_L1Down","Weight_L1Up"]
     if era=="2018":
         columns += [
-            "JetSFWeight_jesHEMIssueUp"
-            ,"JetSFWeight_jesHEMIssueDown"
+            "Weight_jesHEMDown"
+            ,"Weight_jesHEMUp"
             ,"HTLT_jesHEMIssueUp"
             ,"HTLT_jesHEMIssueDown"
             ,"RelMET_jesHEMIssueUp"
