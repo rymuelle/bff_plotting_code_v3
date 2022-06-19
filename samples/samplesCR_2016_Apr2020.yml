@@ -1,7 +1,27 @@
 lumi: 35.5
 samples:
 
-
+- fileglob: BFFZprimeToMuMu_M_250_TuneCUETP8M1_13TeV-madgraph-pythia8
+  ismc: 1
+  name: BFFZprimeToMuMu_M_250_dbs0p04
+  nevts: 0
+  xsec: 112.5
+- fileglob: BFFZprimeToMuMu_M_300_TuneCUETP8M1_13TeV-madgraph-pythia8
+  ismc: 1
+  name: BFFZprimeToMuMu_M_300_dbs0p04
+  nevts: 0
+  xsec: 58.86
+- fileglob: BFFZprimeToMuMu_M_400_TuneCUETP8M1_13TeV-madgraph-pythia8
+  ismc: 1
+  name: BFFZprimeToMuMu_M_400_dbs0p04
+  nevts: 0
+  xsec: 17.42
+- fileglob: BFFZprimeToMuMu_M_450_TuneCUETP8M1_13TeV-madgraph-pythia8
+  ismc: 1
+  name: BFFZprimeToMuMu_M_450_dbs0p04
+  nevts: 0
+  xsec: 10.38
+  
 - fileglob: ZToEE_NNPDF30_13TeV-powheg_M_120_200
   ismc: 1
   name: ZToEE_M_120_200
