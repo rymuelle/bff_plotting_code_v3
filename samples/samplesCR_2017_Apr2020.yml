@@ -211,11 +211,11 @@ samples:
   name: BFFZprimeToMuMu_M_200_dbs0p5_private
   nevts: 0
   xsec: 626.2
-- fileglob: BFF_200_dbs1p0_deepflavour_bff
-  ismc: 1
-  name: BFFZprimeToMuMu_M_200_dbs1p0
-  nevts: 0
-  xsec: 1568
+#- fileglob: BFF_200_dbs1p0_deepflavour_bff
+#  ismc: 1
+#  name: BFFZprimeToMuMu_M_200_dbs1p0
+#  nevts: 0
+#  xsec: 1568
   
 - fileglob:  BFF_750_dbs0p04_deepflavour_bff
   ismc: 1
