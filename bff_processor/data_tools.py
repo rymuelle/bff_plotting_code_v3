@@ -22,4 +22,6 @@ def make_df(df_list, verbose=0):
     for fname in df_list:
         if verbose: print(fname)
         t_df = pd.concat([t_df, pd.read_csv(fname)])
+        t_df.replace([np.inf, -np.inf], np.nan, inplace=True)
+        t_df.dropna(subset =['Weight'],inplace=True)
     return t_df
