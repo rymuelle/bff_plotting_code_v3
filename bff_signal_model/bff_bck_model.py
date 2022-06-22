@@ -79,4 +79,43 @@ class bff_bck_model(zfit.pdf.ZPDF):
 
 def logistics_func(x, offset, widht):
     return 1/(1+10.**(-(x-offset)/widht))
+
+
+
+from scipy.interpolate import BPoly
+
+def make_bpoly(x, *constants, x_range=[105,900]):
+    constants = [[c] for c in constants]
+    bp = BPoly(constants, x_range )
+    return bp(x)
+    
+
+class bff_bck_model_bernstein(zfit.pdf.ZPDF):
+    _PARAMS = ['{}'.format(i) for i in range(7)]  # specify which parameters to take
+
+    def _unnormalized_pdf(self, x):  # implement function
+        data = z.unstack_x(x)
+        params = [self.params[i] for i in _PARAMS]
+        return make_bpoly(data, z.numpy, *params)
+
+    def scaled_pdf(self, x, sumW, area=0):
+        if area == 0: area = self.norm_range.area()
+        y = self.pdf(x)
+        n_bins = len(x)
+        plot_scaling = sumW / n_bins * area
+        return (y * plot_scaling).numpy()
+    
+    def par2ufloat(self, name): 
+        assert self.result, "Need to add result object"
+        from uncertainties import ufloat
+        return  ufloat(self.result.params[name]['value'], self.result.params[name]['minuit_hesse']['error'])
+
+    def super_sample(self, bins, supersample):
+        bin_edges, nBins = bins.bin_edges, bins.calc_nBins()
+        return [np.linspace(bin_edges[i], bin_edges[i+1], supersample) for i in range(nBins)]
+
+    def fill_bins(self, bins, *args, **kwargs):
+        y = self.super_sample(bins, *args, **kwargs)
+        unc  = np.array(y)**.5
+        return SysHist(y, -y*0, y*0, unc, bins.bin_edges)
     
