@@ -7,3 +7,9 @@ def cms_style():
     plt.rcParams.update({
         "text.usetex": True,
         })
+    
+lumi_dict = {"2016": 36.33 , "2017": 41.48 , "2018":59.83, "16-18":  137.65}
+    
+def cms_format_fig(era, ax, **kwargs):
+    lumi = lumi_dict[era]
+    lumi = hep.cms.label(ax=ax, lumi=lumi,year=era, **kwargs);
