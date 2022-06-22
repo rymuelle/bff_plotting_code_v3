@@ -1,5 +1,6 @@
 import pyarrow.feather as feather
 import pandas as pd
+import numpy as np
 
 def get_data(era):
     if era=='2016':
