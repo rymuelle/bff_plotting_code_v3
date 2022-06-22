@@ -8,7 +8,7 @@ import numpy as np
 from bff_plotting_tools.make_hists import SysHist
 
 try:
-    mu = zfit.Parameter("mu", 300,  100, 600)
+    mu = zfit.Parameter("mu", 300,  100, 900)
     sigma = zfit.Parameter("sigma", 20,  0, 100)
     alphal = zfit.Parameter("alphal", 2,  0, 100)
     nl = zfit.Parameter("nl", 3,  -10, 10)
