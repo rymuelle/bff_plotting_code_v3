@@ -19,4 +19,5 @@ def get_data(era):
         print("loaded all df")
     else:
         df = feather.read_feather('data/combined_{}.feather'.format(era))
+    df.replace([np.inf, -np.inf], 0, inplace=True)
     return df, lumi
