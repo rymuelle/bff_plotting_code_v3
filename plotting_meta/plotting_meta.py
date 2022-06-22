@@ -25,7 +25,7 @@ class Bins():
         return "{}".format(self.bin_edges)
 
 
-def make_bins(binning_type="split", minVal=110, maxVal=800):
+def make_bins(binning_type="split", minVal=110, maxVal=900):
     if binning_type=="constant":
         bin_edges = np.linspace(minVal,maxVal, int((maxVal-minVal)/5 + 1))
     elif binning_type=="split":
