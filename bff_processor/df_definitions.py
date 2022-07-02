@@ -149,9 +149,11 @@ def def_sf_and_weight(df,ismc, is_inclusive, name,sample_weight, era):
             if era=="2016" or era=="2017":
                 df = df.Define("Weight_L1Down", "Weight/L1PreFiringWeight_Nom*L1PreFiringWeight_Dn")
                 df = df.Define("Weight_L1Up", "Weight/L1PreFiringWeight_Nom*L1PreFiringWeight_Up")
-            else: 
-                df = df.Define("Weight_jesHEMUp", "Weight/JetSFWeight_jesHEMIssueUp")
-                df = df.Define("Weight_jesHEMDown", "Weight/JetSFWeight_jesHEMIssueDown")
+            else:
+                "nothing here"
+                #these are not required, and contain misleading values
+                #df = df.Define("Weight_jesHEMUp", "Weight*JetSFWeight_jesHEMIssueUp")
+                #df = df.Define("Weight_jesHEMDown", "Weight*JetSFWeight_jesHEMIssueDown")
         else: # Inclusive sample doesn't cut on btags, so no btag weight needed; also no PUID needed
             df = df.Define("Weight", "{}*copysign(1.,genWeight)*k_factor*puWeight*MuonSFweight*ElectronSFweight*TriggerWeight".format(sample_weight))
             df = df.Define("sample_weight", "1")
