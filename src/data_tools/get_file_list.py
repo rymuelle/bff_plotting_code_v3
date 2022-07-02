@@ -10,7 +10,6 @@ def get_value_from_df(row, sample_df, column):
     matched_row = sample_df[sample_df.file==file]
     if matched_row.shape[0]==1: return matched_row[column].values[0]
     else: 
-        print(matched_row)
         return -1
 
 def regex_select(era):
@@ -79,18 +78,20 @@ def get_gmu(string):
     if not 'BFF' in string: return None
     value = re.findall('.*gmu([0-9,p]+).*', string)
     if len(value)==1: return float(value[0].replace('p','.'))
-    else: 
-        mass = get_mass(string)
-        #experimental linear fit to paper values of gmu (.08, .14, .2) to (200, 350, 500)
-        return 4.00000000e-04*mass 
+    return 0.17
+   #else: 
+   #    mass = get_mass(string)
+   #    #experimental linear fit to paper values of gmu (.08, .14, .2) to (200, 350, 500)
+   #    return 4.00000000e-04*mass 
     
     
 def get_gb(row):
-    if row.type!="BFF": return None
+    if row.type!="sig": return None
     value = re.findall('.*gb([0-9,p]+).*', row.file)
     if len(value)==1: return float(value[0].replace('p','.'))
-    else: 
-        constant = 1.3*1e-5
-        return constant*(row.mass/100)**2/(row.gmu*row.dbs)  
+    return 0.02
+    #else: 
+    #    constant = 1.3*1e-5
+    #    return constant*(row.mass/100)**2/(row.gmu*row.dbs)  
            
   
