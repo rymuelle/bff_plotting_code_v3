@@ -51,16 +51,16 @@ class bff_bck_model(zfit.pdf.ZPDF):
         unc  = np.array(list(map(lambda x: x.std_dev,y_unc)))
         return SysHist(y, -y*0, y*0, unc, bins.bin_edges)
     
-    def super_sample_unc(self, bins, norm, supersample=100, area=0):
+    def super_sample_unc(self, bins, norm, supersample=100, area=0, **kwargs):
         bin_widths= bins.calc_bin_widths()
         supersampled_bins = self.super_sample(bins, supersample)
         percent_weight = bin_widths/np.sum(bin_widths)
-        supersampled_bin_values = list(map(lambda x: self.scaled_pdf_uncertainty(x, 1, area=area), supersampled_bins))
+        supersampled_bin_values = list(map(lambda x: self.scaled_pdf_uncertainty(x, 1, area=area), supersampled_bins, **kwargs))
         y_unc = np.sum(supersampled_bin_values, axis=1)*percent_weight
         y_unc = y_unc * norm / np.sum(y_unc)
         return y_unc
 
-    def scaled_pdf_uncertainty(self, data, norm, area=0):
+    def scaled_pdf_uncertainty(self, data, norm, area=0, **kwargs):
         data = np.array(data)
         import uncertainties.unumpy as unp
         name = []
@@ -70,7 +70,10 @@ class bff_bck_model(zfit.pdf.ZPDF):
             values.append(x.value().numpy())
         import uncertainties
         popt = uncertainties.correlated_values(values, self.result.covariance())
-        y = self.lognorm(data, unp, **{n:p for n, p in zip(name,popt)})
+        additional_params = {n:v.value().numpy() for n,v in self.params.items() if n not in name}
+        y = self.lognorm(data, unp, 
+                         **{n:p for n, p in zip(name,popt)},
+                        **additional_params)
         n_bins = len(x) 
         if area == 0: area = self.norm_range.area()
         #plot_scaling = float(sumW2 / n_bins * area)
