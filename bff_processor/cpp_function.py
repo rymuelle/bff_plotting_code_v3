@@ -121,10 +121,21 @@ def def_cpp():
             PDFuncertaintyDown+= pow(TMath::Max(TMath::Max(1.-LHEPdfWeight[2*i],1.-LHEPdfWeight[2*i+1]),0.),2);
           }
           //Scale weight usage based on conjecture that this works by choosing the maximal variation in each direction for renormalization and factorization, independently. Contents as of https://cms-nanoaod-integration.web.cern.ch/integration/master/mc94X_doc.html#LHE
-          float RenUncertaintyUp=TMath::Max(LHEScaleWeight[1]-1., TMath::Max(LHEScaleWeight[4]-1., TMath::Max(LHEScaleWeight[7]-1., 0.)));
-          float RenUncertaintyDown=TMath::Max(1.-LHEScaleWeight[1], TMath::Max(1.-LHEScaleWeight[4], TMath::Max(1.-LHEScaleWeight[7], 0.)));
-          float FactUncertaintyUp=TMath::Max(LHEScaleWeight[3]-1., TMath::Max(LHEScaleWeight[4]-1., TMath::Max(LHEScaleWeight[5]-1., 0.)));
-          float FactUncertaintyDown=TMath::Max(1.-LHEScaleWeight[3], TMath::Max(1.-LHEScaleWeight[4], TMath::Max(1.-LHEScaleWeight[5], 0.)));
+          float RenUncertaintyUp=99;
+          float RenUncertaintyDown=-99;
+          float FactUncertaintyUp=99;
+          float FactUncertaintyDown=-99;
+          if(LHEScaleWeight.size()==44){ 
+              RenUncertaintyUp=TMath::Max(LHEScaleWeight[9]-1., TMath::Max(LHEScaleWeight[23]-1., TMath::Max(LHEScaleWeight[38]-1., 0.)));
+              RenUncertaintyDown=TMath::Max(1.-LHEScaleWeight[9], TMath::Max(1.-LHEScaleWeight[23], TMath::Max(1.-LHEScaleWeight[38], 0.)));
+              FactUncertaintyUp=TMath::Max(LHEScaleWeight[19]-1., TMath::Max(LHEScaleWeight[23]-1., TMath::Max(LHEScaleWeight[28]-1., 0.)));
+              FactUncertaintyDown=TMath::Max(1.-LHEScaleWeight[19], TMath::Max(1.-LHEScaleWeight[23], TMath::Max(1.-LHEScaleWeight[28], 0.)));
+          } else if (LHEScaleWeight.size() == 9) {
+              RenUncertaintyUp=TMath::Max(LHEScaleWeight[1]-1., TMath::Max(LHEScaleWeight[4]-1., TMath::Max(LHEScaleWeight[7]-1., 0.)));
+              RenUncertaintyDown=TMath::Max(1.-LHEScaleWeight[1], TMath::Max(1.-LHEScaleWeight[4], TMath::Max(1.-LHEScaleWeight[7], 0.)));
+              FactUncertaintyUp=TMath::Max(LHEScaleWeight[3]-1., TMath::Max(LHEScaleWeight[4]-1., TMath::Max(LHEScaleWeight[5]-1., 0.)));
+              FactUncertaintyDown=TMath::Max(1.-LHEScaleWeight[3], TMath::Max(1.-LHEScaleWeight[4], TMath::Max(1.-LHEScaleWeight[5], 0.)));
+          }
           //according to Eq. 8 or 10 in https://arxiv.org/pdf/1101.0536.pdf, modified by Eq. 6 to a factor of 1/N_rep, which given each variation is up and down of one representation, should be 51-1
           float Nrep=LHEPdfWeight.size()/2.;
           weight[0]+=TMath::Sqrt(PDFuncertaintyUp  /(Nrep-1.)+pow(RenUncertaintyUp  ,2)+pow(FactUncertaintyUp  ,2));
