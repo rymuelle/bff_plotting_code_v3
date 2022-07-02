@@ -143,9 +143,7 @@ def make_columns(era, columns):
         columns += ["Weight_L1Down","Weight_L1Up"]
     if era=="2018":
         columns += [
-            "Weight_jesHEMDown"
-            ,"Weight_jesHEMUp"
-            ,"HTLT_jesHEMIssueUp"
+            "HTLT_jesHEMIssueUp"
             ,"HTLT_jesHEMIssueDown"
             ,"RelMET_jesHEMIssueUp"
             ,"RelMET_jesHEMIssueDown"
