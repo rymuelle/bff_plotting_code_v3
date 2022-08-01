@@ -188,6 +188,19 @@ def def_cpp():
           }
         }
         
+        
+        RVec<float> find_replace(const RVec<float> &find_replace_vec, float find, float replace){  
+            RVec<float> new_vec = {};
+             for(unsigned i = 0; i < find_replace_vec.size(); ++i){
+                 if (find_replace_vec[i] == find){
+                      new_vec.push_back(replace);
+                 } else {
+                     new_vec.push_back(find_replace_vec[i]);
+                 }
+             }
+             return new_vec;
+        }
+        
         float k_factor(int era, float mass){
           float a = 1.067;
           float b = -0.000112;

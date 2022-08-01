@@ -103,7 +103,13 @@ def def_sf_and_weight(df,ismc, is_inclusive, name,sample_weight, era):
             df = df.Define("PDF_ISRFSR_uncertainty","1")
             df = df.Define("PDF_ISRFSR_uncertaintyUp","1")
             df = df.Define("PDF_ISRFSR_uncertaintyDown","1")
-        df = df.Define("MuonSFweights","CalculateMuonScaleFactor(GoodMuon_effSF_trigger, GoodMuon_effSF_stat_trigger, GoodMuon_effSF_ID, GoodMuon_effSF_sys_ID, GoodMuon_effSF_stat_ID, GoodMuon_effSF_ISO, GoodMuon_effSF_sys_ISO, GoodMuon_effSF_stat_ISO)")
+        #correct incorrect muon GoodMuon_effSF_stat_trigger value
+        df = df.Define('GoodMuon_effSF_stat_trigger_corr', 'find_replace(GoodMuon_effSF_stat_trigger, 1., .0)')
+        
+        
+        
+        
+        df = df.Define("MuonSFweights","CalculateMuonScaleFactor(GoodMuon_effSF_trigger, GoodMuon_effSF_stat_trigger_corr, GoodMuon_effSF_ID, GoodMuon_effSF_sys_ID, GoodMuon_effSF_stat_ID, GoodMuon_effSF_ISO, GoodMuon_effSF_sys_ISO, GoodMuon_effSF_stat_ISO)")
         df = df.Define("MuonSFweight","MuonSFweights[0]")
         df = df.Define("MuonSFweightUp","MuonSFweights[1]")
         df = df.Define("MuonSFweightDown","MuonSFweights[2]")
