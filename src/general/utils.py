@@ -10,7 +10,53 @@ def toVector(vtype, list):
         v.push_back(o)
     return v
 
-def get_nEvents(fileglob, key = 'nEventsGenWeighted'):
+
+def remove_old_runs(files):
+    import re
+    import pandas as pd
+    #make file dataframe
+    file_list = []
+    for f in files:
+        try:
+            run = re.findall('/([0-9]+_[0-9]+)/0000', f)[0]
+            subera = re.findall('/([^/]+)/{}'.format(run), f)[0]
+        except:
+            print(f, run)
+            run = 0
+            subera = 0 
+            
+        file_list.append({'file': f, 'run':run, 'subera':subera})
+    df = pd.DataFrame(file_list)
+    
+    #filter out old runs
+    accepted_runs = []
+    suberas = df.subera.unique()
+    for subera in suberas:
+        tdf = df[df.subera ==subera]
+        runs = tdf.run.unique()
+        run = max(runs)
+        accepted_runs.append(run)
+    df_filtered = df[df.run.isin(accepted_runs)]
+    return df_filtered
+
+
+def test_open_file(filename, key = 'nEventsGenWeighted'):
+    '''
+    returns total number of events if exists
+    '''
+    try:
+        up_f = uproot.open(filename)
+        try:
+            total = up_f[key].values()[0]
+        except:
+            total = up_f[key].numpy()[0][0]
+        return total
+    except Exception as ex:
+        print(filename)
+        print(ex)
+        return -1 
+    
+def get_files(dirName, sample_path, key = 'nEventsGenWeighted'):
     '''
     Finds total events pre cut.
     Input:
@@ -20,16 +66,33 @@ def get_nEvents(fileglob, key = 'nEventsGenWeighted'):
     Output:
         scalar of total events added.
     '''
-    file_path = fileglob
-    total = 0
-    for file in fileglob:
-        up_f = uproot.open(file)
-        # Try two different methods to get value
-        try:
-            total += up_f[key].values()[0]
-        except:
-            total += up_f[key].numpy()[0][0]
-    return total
+    from pathlib import Path
+    from os.path import exists
+    import re
+    
+    filePathName = sample_path.format(dirName)
+
+    files_paths = list(Path(filePathName).rglob('*.root'))
+    files = list(map(lambda x: str(x), files_paths))
+    
+    #remove old runs from crab
+    df_files = remove_old_runs(files)
+    #return df_files, 0
+    df_files['nEvents'] = df_files.file.apply(test_open_file)
+    return df_files
+
+def prep_filelist(files_df, ismc, maxEvents=1e6):
+    if ismc:
+        total_events = files_df.nEvents.sum()
+        cum_sum = 0
+        files = []
+        for i, row in files_df.iterrows():
+            cum_sum += row.nEvents
+            files.append(row.file)
+            if cum_sum >= maxEvents:break
+    else:
+        files = files_df.file.to_list()
+    return files
 
 def make_view(mass_cut = [-np.inf,np.inf], HTLT = np.inf, RelMET = np.inf, SBM = 0, MET_filter = 1, region=0):
     view =  {
