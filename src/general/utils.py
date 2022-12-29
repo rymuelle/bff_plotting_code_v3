@@ -81,7 +81,9 @@ def get_files(dirName, sample_path, key = 'nEventsGenWeighted'):
     df_files['nEvents'] = df_files.file.apply(test_open_file)
     return df_files
 
-def prep_filelist(files_df, ismc, maxEvents=1e6):
+def prep_filelist(files_df, ismc, maxEvents=1e6, verbose=False):
+    total_events = files_df.nEvents.sum()
+    nEvents = min(total_events, maxEvents)
     if ismc:
         total_events = files_df.nEvents.sum()
         cum_sum = 0
@@ -90,9 +92,13 @@ def prep_filelist(files_df, ismc, maxEvents=1e6):
             cum_sum += row.nEvents
             files.append(row.file)
             if cum_sum >= maxEvents:break
+        if verbose: print("{} out of {} files selected, {:.1f}% of events".format(
+                            len(files), files_df.shape[0], (nEvents+.0)/total_events*100
+                            )
+                         )
     else:
         files = files_df.file.to_list()
-    return files
+    return files, nEvents
 
 def make_view(mass_cut = [-np.inf,np.inf], HTLT = np.inf, RelMET = np.inf, SBM = 0, MET_filter = 1, region=0):
     view =  {
