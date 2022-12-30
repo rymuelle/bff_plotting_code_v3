@@ -1,11 +1,179 @@
 lumi: 35.5
 samples:
+- fileglob: y3_250_deepflavour_bff
+  ismc: 1
+  name: y3_250_deepflavour_bff
+  nevts: 0
+  xsec: 10.1
+- fileglob: y3_400_deepflavour_bff
+  ismc: 1
+  name: y3_400_deepflavour_bff
+  nevts: 0
+  xsec: 2.9
+- fileglob: y3_1000_deepflavour_bff
+  ismc: 1
+  name: y3_1000_deepflavour_bff
+  nevts: 0
+  xsec: .2
+- fileglob: y3_700_deepflavour_bff
+  ismc: 1
+  name: y3_700_deepflavour_bff
+  nevts: 0
+  xsec: .6
+
+
+
+- fileglob: ST_t-channel_top_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1
+  ismc: 1
+  name: ST_t-channel_top_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1
+  nevts: 0
+  xsec: 113300
+- fileglob: ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1
+  ismc: 1
+  name: ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1
+  nevts: 0
+  xsec: 3365
+- fileglob: WWZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8
+  ismc: 1
+  name: WWZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8
+  nevts: 0
+  xsec: 165.1
+- fileglob: ZZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8
+  ismc: 1
+  name: ZZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8
+  nevts: 0
+  xsec: 13.98
+- fileglob: WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8
+  ismc: 1
+  name: WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8
+  nevts: 0
+  xsec: 55.65
+- fileglob: WWW_4F_TuneCUETP8M1_13TeV-amcatnlo-pythia8
+  ismc: 1
+  name: WWW_4F_TuneCUETP8M1_13TeV-amcatnlo-pythia8
+  nevts: 0
+  xsec: 208.6
+#- fileglob: WJetsToQQ_HT400to600_qc19_3j_TuneCUETP8M1_13TeV-madgraphMLM-pythia8
+#  ismc: 1
+#  name: WJetsToQQ_HT400to600_qc19_3j_TuneCUETP8M1_13TeV-madgraphMLM-pythia8
+#  nevts: 0
+#  xsec: 315200
+- fileglob: WJetsToQQ_HT-800toInf_qc19_3j_TuneCUETP8M1_13TeV-madgraphMLM-pythia8
+  ismc: 1
+  name: WJetsToQQ_HT-800toInf_qc19_3j_TuneCUETP8M1_13TeV-madgraphMLM-pythia8
+  nevts: 0
+  xsec: 34690
+#- fileglob: WJetsToQQ_HT600to800_qc19_3j_TuneCUETP8M1_13TeV-madgraphMLM-pythia8
+#  ismc: 1
+#  name: WJetsToQQ_HT600to800_qc19_3j_TuneCUETP8M1_13TeV-madgraphMLM-pythia8
+#  nevts: 0
+#  xsec: 68580
+- fileglob: WJetsToQQ_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8
+  ismc: 1
+  name: WJetsToQQ_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8
+  nevts: 0
+  xsec: 99650
+- fileglob: WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8
+  ismc: 1
+  name: WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8
+  nevts: 0
+  xsec: 50260000
+- fileglob: TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8
+  ismc: 1
+  name: TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8
+  nevts: 0
+  xsec: 405
+- fileglob: TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8
+  ismc: 1
+  name: TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8
+  nevts: 0
+  xsec: 200.1
+- fileglob: TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8
+  ismc: 1
+  name: TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8
+  nevts: 0
+  xsec: 529.7
+- fileglob: TTZToLL_M-1to10_TuneCUETP8M1_13TeV-madgraphMLM-pythia8
+  ismc: 1
+  name: TTZToLL_M-1to10_TuneCUETP8M1_13TeV-madgraphMLM-pythia8
+  nevts: 0
+  xsec: 53.24
+- fileglob: TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8
+  ismc: 1
+  name: TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8
+  nevts: 0
+  xsec: 252.9
+
+- fileglob: ttHToMuMu_M125_TuneCP5_PSweights_13TeV-powheg-pythia8
+  ismc: 1
+  name: ttHToMuMu_M125_TuneCP5_PSweights_13TeV-powheg-pythia8
+  nevts: 0
+  xsec: 0.1103232
+- fileglob: ZH_HToMuMu_ZToAll_M125_TuneCP5_PSweights_13TeV_powheg_pythia8
+  ismc: 1
+  name: ZH_HToMuMu_ZToAll_M125_TuneCP5_PSweights_13TeV_powheg_pythia8
+  nevts: 0
+  xsec: 0.17170816
+- fileglob: WplusH_HToMuMu_WToAll_M125_TuneCP5_PSweights_13TeV_powheg_pythia8
+  ismc: 1
+  name: WplusH_HToMuMu_WToAll_M125_TuneCP5_PSweights_13TeV_powheg_pythia8
+  nevts: 0
+  xsec: 0.2987648
+- fileglob: VBFHToMuMu_M125_TuneCP5_PSweights_13TeV_amcatnlo_pythia8
+  ismc: 1
+  name: VBFHToMuMu_M125_TuneCP5_PSweights_13TeV_amcatnlo_pythia8
+  nevts: 0
+  xsec: 0.8229632
+- fileglob: GluGluHToMuMu_M125_TuneCP5_PSweights_13TeV_amcatnloFXFX_pythia8
+  ismc: 1
+  name: GluGluHToMuMu_M125_TuneCP5_PSweights_13TeV_amcatnloFXFX_pythia8
+  nevts: 0
+  xsec: 10.571008
+
+
+
+
+- fileglob: DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8
+  ismc: 1
+  name: DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8
+  nevts: 0
+  xsec: 5929000
+- fileglob: DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8
+  ismc: 1
+  name: DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8
+  nevts: 0
+  xsec: 4944000
+- fileglob: DYJetsToLL_M-100to200_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8
+  ismc: 1
+  name: DYJetsToLL_M-100to200_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8
+  nevts: 0
+  xsec: 226000
+- fileglob: DYJetsToLL_M-500to700_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8
+  ismc: 1
+  name: DYJetsToLL_M-500to700_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8
+  nevts: 0
+  xsec: 240
+- fileglob: DYJetsToLL_M-400to500_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8
+  ismc: 1
+  name: DYJetsToLL_M-400to500_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8
+  nevts: 0
+  xsec: 423
+- fileglob: DYJetsToLL_M-200to400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8
+  ismc: 1
+  name: DYJetsToLL_M-200to400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8
+  nevts: 0
+  xsec: 7670
+- fileglob: DYJetsToLL_M-800to1000_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8
+  ismc: 1
+  name: DYJetsToLL_M-800to1000_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8
+  nevts: 0
+  xsec: 30
 
 - fileglob: BFFZprimeToMuMu_M_250_TuneCUETP8M1_13TeV-madgraph-pythia8
   ismc: 1
   name: BFFZprimeToMuMu_M_250_dbs0p04
   nevts: 0
-  xsec: 112.5
+  xsec: 122.5
 - fileglob: BFFZprimeToMuMu_M_300_TuneCUETP8M1_13TeV-madgraph-pythia8
   ismc: 1
   name: BFFZprimeToMuMu_M_300_dbs0p04
@@ -16,11 +184,11 @@ samples:
   name: BFFZprimeToMuMu_M_400_dbs0p04
   nevts: 0
   xsec: 17.42
-- fileglob: BFFZprimeToMuMu_M_450_TuneCUETP8M1_13TeV-madgraph-pythia8
-  ismc: 1
-  name: BFFZprimeToMuMu_M_450_dbs0p04
-  nevts: 0
-  xsec: 10.38
+#- fileglob: BFFZprimeToMuMu_M_450_TuneCUETP8M1_13TeV-madgraph-pythia8
+#  ismc: 1
+#  name: BFFZprimeToMuMu_M_450_dbs0p04
+#  nevts: 0
+#  xsec: 10.38
   
 - fileglob: ZToEE_NNPDF30_13TeV-powheg_M_120_200
   ismc: 1
@@ -173,62 +341,62 @@ samples:
   xsec: 592.6
   
 
-- fileglob:  BFF_125_dbs0p04_deepflavour_bff
+- fileglob:  BFF_125_dbs0p04_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_125_dbs0p04
   nevts: 0
   xsec: 1528
 
-- fileglob: BFF_125_dbs0p5_deepflavour_bff
+- fileglob: BFF_125_dbs0p5_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_125_dbs0p5
   nevts: 0
   xsec: 3119
 
-- fileglob: BFF_125_dbs1p0_deepflavour_bff
+- fileglob: BFF_125_dbs1p0_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_125_dbs1p0
   nevts: 0
   xsec: 7866
 
-- fileglob:  BFF_150_dbs0p04_deepflavour_bff
+- fileglob:  BFF_150_dbs0p04_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_150_dbs0p04
   nevts: 0
   xsec: 815.0
 
-- fileglob:  BFF_150_dbs0p5_deepflavour_bff
+- fileglob:  BFF_150_dbs0p5_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_150_dbs0p5
   nevts: 0
   xsec: 1673.
 
-- fileglob: BFF_150_dbs1p0_deepflavour_bff
+- fileglob: BFF_150_dbs1p0_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_150_dbs1p0
   nevts: 0
   xsec: 4187.
 
-- fileglob: BFF_175_dbs0p04_deepflavour_bff
+- fileglob: BFF_175_dbs0p04_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_175_dbs0p04
   nevts: 0
   xsec: 471.2
 
-- fileglob: BFF_175_dbs0p5_deepflavour_bff
+- fileglob: BFF_175_dbs0p5_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_175_dbs0p5
   nevts: 0
   xsec: 969.8
 
-- fileglob:  BFF_175_dbs1p0_deepflavour_bff
+- fileglob:  BFF_175_dbs1p0_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_175_dbs1p0
   nevts: 0
   xsec: 2438.
   
   
-- fileglob:  BFF_750_dbs0p04_deepflavour_bff
+- fileglob:  BFF_750_dbs0p04_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_750_dbs0p04
   nevts: 0

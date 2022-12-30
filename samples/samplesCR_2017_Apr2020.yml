@@ -1,5 +1,43 @@
 lumi: 41.85
 samples:
+
+- fileglob: DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8
+  ismc: 1
+  name: DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8
+  nevts: 0
+  xsec: 5929000
+- fileglob: DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8
+  ismc: 1
+  name: DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8
+  nevts: 0
+  xsec: 4944000
+- fileglob: DYJetsToLL_M-100to200_TuneCP5_13TeV-amcatnloFXFX-pythia8
+  ismc: 1
+  name: DYJetsToLL_M-100to200_TuneCP5_13TeV-amcatnloFXFX-pythia8
+  nevts: 0
+  xsec: 226000
+- fileglob: DYJetsToLL_M-500to700_TuneCP5_13TeV-amcatnloFXFX-pythia8
+  ismc: 1
+  name: DYJetsToLL_M-500to700_TuneCP5_13TeV-amcatnloFXFX-pythia8
+  nevts: 0
+  xsec: 240
+- fileglob: DYJetsToLL_M-400to500_TuneCP5_13TeV-amcatnloFXFX-pythia8
+  ismc: 1
+  name: DYJetsToLL_M-400to500_TuneCP5_13TeV-amcatnloFXFX-pythia8
+  nevts: 0
+  xsec: 423
+- fileglob: DYJetsToLL_M-200to400_TuneCP5_13TeV-amcatnloFXFX-pythia8
+  ismc: 1
+  name: DYJetsToLL_M-200to400_TuneCP5_13TeV-amcatnloFXFX-pythia8
+  nevts: 0
+  xsec: 7670
+- fileglob: DYJetsToLL_M-800to1000_TuneCP5_13TeV-amcatnloFXFX-pythia8
+  ismc: 1
+  name: DYJetsToLL_M-800to1000_TuneCP5_13TeV-amcatnloFXFX-pythia8
+  nevts: 0
+  xsec: 30
+
+
 - fileglob: BFFZprimeToMuMu_M_200
   ismc: 1
   name: BFFZprimeToMuMu_M_200_dbs0p04
@@ -156,75 +194,75 @@ samples:
   nevts: 0
   xsec: 16523.0
   
-- fileglob: BFF_125_dbs0p04_deepflavour_bff
+- fileglob: BFF_125_dbs0p04_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_125_dbs0p04
   nevts: 0
   xsec: 1592
-- fileglob: BFF_125_dbs0p5_deepflavour_bff
+- fileglob: BFF_125_dbs0p5_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_125_dbs0p5
   nevts: 0
   xsec: 3224
-- fileglob: BFF_125_dbs0p04_deepflavour_bff
+- fileglob: BFF_125_dbs0p04_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_125_dbs1p0
   nevts: 0
   xsec: 8079
-- fileglob: BFF_150_dbs0p04_deepflavour_bff
+- fileglob: BFF_150_dbs0p04_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_150_dbs0p04
   nevts: 0
   xsec: 856.4
-- fileglob: BFF_150_dbs0p5_deepflavour_bff
+- fileglob: BFF_150_dbs0p5_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_150_dbs0p5
   nevts: 0
   xsec: 1736
-- fileglob: BFF_150_dbs1p0_deepflavour_bff
+- fileglob: BFF_150_dbs1p0_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_150_dbs1p0
   nevts: 0
   xsec: 4361.
-- fileglob: BFF_175_dbs0p04_deepflavour_bff
+- fileglob: BFF_175_dbs0p04_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_175_dbs0p04
   nevts: 0
   xsec: 497.6
-- fileglob: BFF_175_dbs0p5_deepflavour_bff
+- fileglob: BFF_175_dbs0p5_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_175_dbs0p5
   nevts: 0
   xsec: 1011
-- fileglob: BFF_175_dbs1p0_deepflavour_bff
+- fileglob: BFF_175_dbs1p0_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_175_dbs1p0
   nevts: 0
   xsec: 2541
-- fileglob: BFF_200_dbs0p04_deepflavour_bff
+- fileglob: BFF_200_dbs0p04_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_200_dbs0p04_private
   nevts: 0
   xsec: 304.6
-- fileglob: BFF_200_dbs0p5_deepflavour_bff
+- fileglob: BFF_200_dbs0p5_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_200_dbs0p5_private
   nevts: 0
   xsec: 626.2
-#- fileglob: BFF_200_dbs1p0_deepflavour_bff
+#- fileglob: BFF_200_dbs1p0_deepflavour_bffv2
 #  ismc: 1
 #  name: BFFZprimeToMuMu_M_200_dbs1p0
 #  nevts: 0
 #  xsec: 1568
   
-- fileglob:  BFF_750_dbs0p04_deepflavour_bff
+- fileglob:  BFF_750_dbs0p04_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_750_dbs0p04
   nevts: 0
   xsec: 1.007
   
-- fileglob:  BFF_200_dbs0p04_gmu0p16_gb0p008125_deepflavour_bff
-  ismc: 1
-  name: BFFZprimeToMuMu_M_200_dbs0p04_gmu0p16_gb0p008125
-  nevts: 0
-  xsec:  51.11
+#- fileglob:  BFF_200_dbs0p04_gmu0p16_gb0p008125_deepflavour_bffv2
+#  ismc: 1
+#  name: BFFZprimeToMuMu_M_200_dbs0p04_gmu0p16_gb0p008125
+#  nevts: 0
+#  xsec:  51.11
