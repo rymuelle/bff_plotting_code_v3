@@ -12,7 +12,7 @@ def beep(sr = 22050,T = 0.5,):
 def beep_repeat(delay=2, **kwargs):
     while True:
         beep()
-        time.sleep(2.4)
+        time.sleep(delay)
 
 
 def beep_on_error(*args, beep_func=beep_repeat, **kwargs):
