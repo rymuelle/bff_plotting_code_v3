@@ -27,7 +27,7 @@ You should now be able to open up the jupyter notebook launch page from the link
 # Making skims:
 Takes yml files and produces csv skims. Tested in 12_1_0.
 
-0_bff_skimmer.ipynb
+0_bff_skimmer-bffv2.ipynb
 
 # calculating sig cuts:
 Creates bff_dict of cut values. Needed to produced .dill file of cut values used in the next step. Tested in 12_1_0.
@@ -146,3 +146,16 @@ Tested in 12_1_0
 Tested in 12_1_0
 
 3_region_statistics.ipynb
+
+
+
+# current procedure:
+
+0_bff_skimmer-bffv2.ipynb
+
+2_produce_combined_df.ipynb
+3_stack_plot.ipynb
+
+1. 4_interp_signal_v2
+2. 5_interp_signal_v2_makedf
+3. with combine: 6_make_combined_cards
