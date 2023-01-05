@@ -248,12 +248,3 @@ def quad(x, b, m, m2):
     return m2 * x ** 2 + m * x + b
 
 
-
-def beep(sr = 22050,T = 0.5,):
-    ''' make a noise when code finishes running'''
-    import IPython.display as ipd
-    import numpy
-    from IPython.core.display import display
-    t = numpy.linspace(0, T, int(T*sr), endpoint=False) # time variable
-    x = 0.5*numpy.sin(2*numpy.pi*440*t)              # pure sine wave at 440 Hz
-    display(ipd.Audio(x, rate=sr, autoplay=True)) # load a NumPy array

@@ -95,5 +95,25 @@ def process_sample(row, verbose=False):
     df = df.replace([np.inf, -np.inf], 0)
     return df
 
+
+def process_sample_from_file(file, verbose=False):
+    '''Applies bff cuts optimized previously'''
+    #get stuff for bff samples
+    name = re.findall('data\/tw_[0-9]{4}_(.+).csv', file)[0]
+    #open file and filter out events with bff selection
+    df = pd.read_csv(file)
+    #loop over regions
+    for reg in df.filter(regex='(?:SR|CR)\d+_.+'):
+        nJets, jv = re.findall('(?:SR|CR)(\d)\d*_(.+)', reg)[0]
+        # selected events are ==1, events pre bff selection are .5
+        df[reg] = df[reg]*(1+bff_no_tmb_value[nJets](df, jv))/2
+    selected_events = df.filter(regex='(?:SR|CR)\d+_.+').sum(axis=1)>0
+    in_at_least_one_region_post_bff = (df.filter(regex='(?:SR|CR)\d+_.+')==1).sum(axis=1)>0
+    if verbose:
+        print(name)
+        print("\t{} remaining".format(  in_at_least_one_region_post_bff.mean()))
+    df = df[selected_events]
+    return df
+
 if __name__=="__main__":
     print(param_dict)

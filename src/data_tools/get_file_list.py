@@ -27,15 +27,21 @@ def get_file_df(regex_select='tw_(?:2016|2017|2018).+\.csv', path='data'):
     VB = [{'type': 'bck','category':'VB', 'file':x} for x in files if re.match('.+mc_(?:ww|wz|zz)', x)]
     TT = [{'type': 'bck','category':'TT', 'file':x} for x in files if re.match('.+ttbar', x)]
     BFF = [{'type': 'sig','category':'BFF', 'file':x} for x in files if re.match('.+BFFZp', x)]
+    Y3 = [{'type': 'sig','category':'Y3', 'file':x} for x in files if re.match('.+y3.+', x)]
     data = [{'type': 'data','category':'data', 'file':x} for x in files if re.match('.+_data_', x)]    
     ST_extra  = [{'type': 'bck_ext', 'category': 'ST_extra', 'file': x} for x in files if re.match('.+ST_.+', x)]
     TB  = [{'type': 'bck_ext', 'category': 'TB', 'file': x} for x in files if re.match('.+[W,Z]{3}.+', x)]
     WJ  = [{'type': 'bck_ext', 'category': 'WJ', 'file': x} for x in files if re.match('.+_WJets.+', x)]
     TTV  = [{'type': 'bck_ext', 'category': 'TTV', 'file': x} for x in files if re.match('.+TT[W,Z].+', x)]
-    higgs  = [{'type': 'bck_ext', 'category': 'higgs', 'file': x} for x in files if one_in(['ggH','VBF', 'Wp', 'Wm', 'ZH', 'ttH'],x)]
-    DYLL  = [{'category': 'bck_ext', 'type': 'DYLL', 'file': x} for x in files if re.match('.+DYJLL.+', x)]
-    all_lists = DY + ST + VB + TT + BFF + data + ST_extra + TB + WJ + TTV + higgs + DYLL
-    assert len(files) == len(all_lists), "duplicate or uncaught file"
+    higgs  = [{'type': 'bck_ext', 'category': 'higgs', 'file': x} for x in files if one_in(['ggH','VBF', 'Wp', 'Wm', 'ZH', 'ttH', 'GluGluHToMuMu'],x)]
+    DYLL  = [{'type': 'bck_ext', 'category': 'DYLL', 'file': x} for x in files if re.match('.+DYJetsToLL.+[0-9]+to[0-9]+.+', x)]
+    DYAMad  = [{'type': 'bck_ext', 'category': 'DYAMad', 'file': x} for x in files if re.match('.+DYJetsToLL.+M-50_.+mad.+', x)]
+    DYAMC  = [{'type': 'bck_ext', 'category': 'DYAMC', 'file': x} for x in files if re.match('.+DYJetsToLL.+M-50_.+amc.+', x)]
+    all_lists = Y3 + DY + ST + VB + TT + BFF + data + ST_extra + TB + WJ + TTV + higgs + DYLL + DYAMad + DYAMC
+    all_list_list = [ x['file'] for x in all_lists]
+    not_in_all_lists = list(set(files) - set(all_list_list))
+    if len(not_in_all_lists)!=0: print("not in all lists: {}".format(not_in_all_lists))
+    assert len(files) == len(all_lists), "duplicate or uncaught file nfiles: {} vs ncaptured: {}".format(len(files), len(all_lists))
     df = pd.DataFrame(all_lists)
     df['mass'] = df.file.apply(get_mass)
     df['dbs'] = df.file.apply(get_dbs)

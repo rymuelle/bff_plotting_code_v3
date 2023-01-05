@@ -20,17 +20,17 @@ def def_cpp():
         
         RVec<float> GetPDFWeight(const RVec<float> &LHEPdfWeight){
             // based on https://arxiv.org/pdf/2203.05506.pdf
-            
             auto LHEPdfWeight_sorted = Sort(LHEPdfWeight);
             ///take 68% envelope
             int nVariations = LHEPdfWeight_sorted.size();
             float percentOffEnds = (1.-.68)/2.;
             int numberOffEnds = floor(percentOffEnds*(float)nVariations);
-            
-            float up = LHEPdfWeight_sorted[nVariations-numberOffEnds];
-            float down = LHEPdfWeight_sorted[numberOffEnds];
-            float delta = abs(up-down)/2;
-            
+            float delta = 0;
+            if (nVariations > 0){
+                float up = LHEPdfWeight_sorted.at(nVariations-numberOffEnds);
+                float down = LHEPdfWeight_sorted.at(numberOffEnds);
+                delta = (float)abs(up-down)/2;
+            }
             RVec<float> weight={(float)1.-delta,(float)1.+delta};
             return weight;
         }

@@ -14,6 +14,24 @@ class SysHist(Bins):
         self.sys = sys
     def add_sys(self, key, down, up):
         self.sys[key] = [down, up]
+    def sys_summary(self):
+        nom = self.nominal.sum()
+        sys_string = "nominal: {:.1f}:".format(nom)
+        for sys, (down, up) in self.sys.items():
+            sys_string+="\n\t{}: {:.2f} to {:.2f}".format(sys, np.sum(down)/nom, np.sum(up)/nom)
+        return sys_string
+    
+    
+    def sys_from_sys_dict(self):
+        ''' updates up down values from the sys dict object'''
+        up_list, down_list = [], []
+        for sys, (down, up) in self.sys.items():
+            up_list.append(up)
+            down_list.append(down)
+        def sum_in_quad(sys_list): return (np.stack(sys_list)**2).sum(axis=0)**.5
+        up, down, = sum_in_quad(up_list), -sum_in_quad(down_list)
+        self.up = up
+        self.down = down        
     def sys_per_from_add_sys(self):
         sys_tot = 0
         nom = np.sum(self.nominal)
@@ -163,69 +181,8 @@ def make_hist(x, bin_edges=bins.bin_edges, weights=1, std=0):
 
 def isin(df,region, select_level=1): return df[df[region]>=select_level]
 
-def make_sys_hist(mdf, column, reg, replace_dict = {}, bin_edges=bins.bin_edges,
-                 ind_sys_hist=False, select_level=1):
-    nom_mdf = isin(mdf,'{}_nom'.format(reg), select_level=select_level)
-    nom_hist, nom_std =  make_hist(
-        nom_mdf[column],
-        weights=nom_mdf.Weight,
-        std=1,
-        bin_edges=bin_edges
-    )
-    sys_list = []
-    sys_weight_columns = mdf.filter(regex='^Weight.*Up').columns
-    sys_weight_columns_down = mdf.filter(regex='^Weight.*Down').columns
-    
-    sys_weights = {}
-    for down, up in list(zip(sys_weight_columns_down, sys_weight_columns)):
-        down_hist =  make_hist(
-            nom_mdf[column],
-            weights=nom_mdf[down],
-        bin_edges=bin_edges)-nom_hist
-        up_hist =  make_hist(
-            nom_mdf[column],
-            weights=nom_mdf[up],
-        bin_edges=bin_edges)-nom_hist
-        sorted_sys_hist = list(sorted([down_hist,up_hist], key=lambda x: np.sum(x)))
-        sys_weights[up]=sorted_sys_hist
-    
-    region_sys_columns = mdf.filter(regex='{}.*Up'.format(reg)).columns
-    region_sys_columns_down = mdf.filter(regex='{}.*Down'.format(reg)).columns
-    
-    sys_region = {}
-    for down, up in list(zip(region_sys_columns_down, region_sys_columns)):
-        sys_mdf = isin(mdf,down, select_level=select_level)
-        down_hist =  make_hist(
-            sys_mdf[column],
-            weights=sys_mdf.Weight,
-        bin_edges=bin_edges)-nom_hist
-        sys_mdf = isin(mdf,up, select_level=select_level)
-        up_hist =  make_hist(
-            sys_mdf[column],
-            weights=sys_mdf.Weight,
-        bin_edges=bin_edges)-nom_hist
-        sorted_sys_hist = list(sorted([down_hist,up_hist], key=lambda x: np.sum(x)))
-        sys_region[up]=sorted_sys_hist
-        
-    all_sys = {**sys_region, **sys_weights}
-    #def replace bad sys for some years
-    for sys in all_sys.keys():
-        for w,v in replace_dict.items():
-            if w in sys: 
-                all_sys[sys] = [
-                    nom_hist*(-v),
-                    nom_hist*(v)
-                ]
-                
-    all_sys_arr = np.array([x for _, x in all_sys.items()])
-    sign = (all_sys_arr+1e-4)/abs(all_sys_arr+1e-4)
-    all_sys_arr = (all_sys_arr**2).sum(axis=0)**.5
-    all_sys_arr[0] = all_sys_arr[0]*-1
-    if ind_sys_hist:
-        return SysHist(nom_hist, all_sys_arr[0], all_sys_arr[1], nom_std, bin_edges), all_sys
-    return SysHist(nom_hist, all_sys_arr[0], all_sys_arr[1], nom_std, bin_edges)
 
-def make_sys_hist_v2(mdf, column, reg, replace_dict = {}, bin_edges=bins.bin_edges,
+def make_sys_hist(mdf, column, reg, replace_dict = {}, bin_edges=bins.bin_edges,
                  ind_sys_hist=False, select_level=1):
     
     
@@ -288,12 +245,15 @@ def make_sys_hist_v2(mdf, column, reg, replace_dict = {}, bin_edges=bins.bin_edg
     all_sys_arr[0] = all_sys_arr[0]*-1
     if ind_sys_hist:
         syshist = SysHist(nom_hist, all_sys_arr[0], all_sys_arr[1], nom_std, bin_edges), all_sys
-    else: syshist = SysHist(nom_hist, all_sys_arr[0], all_sys_arr[1], nom_std, bin_edges)
+    else: syshist = SysHist(nom_hist, all_sys_arr[0], all_sys_arr[1], nom_std, bin_edges, sys={})
     for key, (down, up) in all_sys.items():
         syshist.add_sys(key, down, up)
     return syshist
 
 
-def era_corrected_sys_hist(era, *args, **kwargs):
-    if era=='2016': kwargs['replace_dict'] = {'Weight_MuonSF':.16}
+def make_sys_hist_v2(*args, **kwargs):
     return make_sys_hist(*args, **kwargs)
+
+#def era_corrected_sys_hist(era, *args, **kwargs):
+#    if era=='2016': kwargs['replace_dict'] = {'Weight_MuonSF':.16}
+#    return make_sys_hist(*args, **kwargs)

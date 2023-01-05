@@ -46,6 +46,7 @@ columns_data = [
 'CR24_nom',
 'nLep',
 'nLowPtLep',
+'HLT_*'
 ]
 
 columns_mc = [

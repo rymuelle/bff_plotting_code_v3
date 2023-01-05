@@ -4,7 +4,7 @@ import uproot
 import numpy as np
 
 
-def log_norm(x, norm, sigma, theta, mean):
+def log_norm_np(x, norm, sigma, theta, mean):
     return norm/((x-theta)*sigma*2*3.14159)*np.exp(-(np.log((x-theta)/mean))**2/(2*sigma**2))
 
 def log_norm_unp(x, norm, sigma, theta, mean):
@@ -41,6 +41,11 @@ def constant(x, b):
 def linear(x, m, b):
     return m * x + b
 
+linear_old=linear
+
+#def linear_old(x,m1,m2):
+#    return m1*x+m2
+
 def quad(x, b, m, m2):
     return m2 * x ** 2 + m * x + b
 
@@ -75,6 +80,17 @@ def make_bpoly(x, *constants, x_range=[105,900]):
     bp = BPoly(constants, x_range )
     return bp(x)
 
+
+def make_bpoly_exp(x, *args, **kwargs):
+    ''' for fitting a bernstein poly on log scale'''
+    return np.exp(make_bpoly(x, *args, **kwargs))
+
+def lognorm(x, norm, sigma, mean, theta, module=np):
+    import math
+    pi = math.pi
+    ln = 1./((x-theta)*sigma*2*pi)*module.exp(-(module.log((x-theta)/mean))**2/(2*sigma**2))
+    ln = ln/ln.sum()
+    return norm*ln
 
 
 ### limit plotting
