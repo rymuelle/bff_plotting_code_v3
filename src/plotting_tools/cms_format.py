@@ -1,5 +1,6 @@
 import mplhep as hep
 import matplotlib.pyplot as plt
+from src.assets.lumi import lumi_dict
 
 def cms_style():
     hep.style.use(hep.style.CMS)
@@ -8,8 +9,6 @@ def cms_style():
         "text.usetex": True,
         })
     
-
-lumi_dict = {"2016": 36.33 , "2017": 41.48 , "2018":59.83, "16-18":  137.65}
 lumi_dict["201X"] =  lumi_dict["16-18"]  
 lumi_dict["Run 2"] =  lumi_dict["16-18"]  
 

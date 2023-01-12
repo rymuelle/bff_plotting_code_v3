@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from src.assets.lumi import lumi_dict
 
 def get_data_from_csv(file):
     df = pd.read_csv(file)
@@ -18,13 +19,13 @@ import pyarrow.feather as feather
 def get_data(era, df_filter=lambda x: x.DiLepMass_jet_nom_muon_corrected_pt_ele_pt>0, stitch_dy=1, verbose=0):
     if verbose: print("loading")
     if era=='2016':
-        lumi=35.50
+        lumi=lumi_dict['2016']
     if era=='2017':
-        lumi=41.85
+        lumi=lumi_dict['2017']
     if era=='2018':
-        lumi=58.88
+        lumi=lumi_dict['2018']
     if era=='16-18':
-        lumi = 35.5+41.85+58.88
+        lumi = lumi_dict['2016']+lumi_dict['2017']+lumi_dict['2018']
         df = feather.read_feather('data/combined_2016.feather'.format(era))
         print(df.shape)
         df = df.append( feather.read_feather('data/combined_2017.feather'.format(era)))
