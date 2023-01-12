@@ -295,11 +295,11 @@ def def_HLT(df, ismc, era):
             df = df.Define("TriggerRegion1", "HLT_Mu50>0 or HLT_DoubleEle33_CaloIdL_MW>0")
             df = df.Define("TriggerRegion2", "HLT_Mu50>0 or HLT_TkMu50>0 or HLT_DoubleEle33_CaloIdL_MW>0")
             df = df.Define("TriggerRegion3", "HLT_Mu50>0 or HLT_TkMu50>0 or HLT_DoubleEle33_CaloIdL_MW>0 or HLT_DoubleEle33_CaloIdL_GsfTrkIdVL>0")
-            df = df.Define("TriggerWeight", "TriggerRegion1*0.073+TriggerRegion2*(1.0-0.073-0.3087428721)+TriggerRegion3*0.3087428721")
+            df = df.Define("TriggerWeight", "TriggerRegion1*0.077+TriggerRegion2*(1.0-0.077-0.302)+TriggerRegion3*0.302")
         elif era == "2017":
             df = df.Define("TriggerRegion1", "HLT_Mu50>0 or HLT_OldMu100>0 or HLT_TkMu100>0 or HLT_DoubleEle33_CaloIdL_MW>0")
             df = df.Define("TriggerRegion2", "HLT_Mu50>0 or HLT_OldMu100>0 or HLT_TkMu100>0 or HLT_DoubleEle33_CaloIdL_MW>0 or HLT_DoubleEle25_CaloIdL_MW>0")
-            df = df.Define("TriggerWeight", "TriggerRegion1*(1-0.6528268793)+TriggerRegion2*0.6528268793")
+            df = df.Define("TriggerWeight", "TriggerRegion1*(1-0.347)+TriggerRegion2*0.347")
         elif era == "2018":
             df = df.Define("TriggerRegion1", "HLT_Mu50>0 or HLT_OldMu100>0 or HLT_TkMu100>0 or HLT_DoubleEle25_CaloIdL_MW>0")
             df = df.Define("TriggerWeight", "TriggerRegion1")
