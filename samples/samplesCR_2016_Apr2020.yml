@@ -1,4 +1,4 @@
-lumi: 35.5
+lumi: 36.31 
 samples:
 - fileglob: y3_250_deepflavour_bff
   ismc: 1
