@@ -83,8 +83,8 @@ def get_files(dirName, sample_path, key = 'nEventsGenWeighted'):
 
 def prep_filelist(files_df, ismc, maxEvents=1e6, verbose=False):
     total_events = files_df.nEvents.sum()
-    nEvents = min(total_events, maxEvents)
     if ismc:
+        nEvents = min(total_events, maxEvents)
         total_events = files_df.nEvents.sum()
         cum_sum = 0
         files = []
@@ -97,6 +97,7 @@ def prep_filelist(files_df, ismc, maxEvents=1e6, verbose=False):
                             )
                          )
     else:
+        nEvents = total_events
         files = files_df.file.to_list()
     return files, nEvents
 
