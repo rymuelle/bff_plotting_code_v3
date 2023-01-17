@@ -16,7 +16,8 @@ def clean_data(df):
 
 
 import pyarrow.feather as feather
-def get_data(era, df_filter=lambda x: x.DiLepMass_jet_nom_muon_corrected_pt_ele_pt>0, stitch_dy=1, verbose=0):
+def get_data(era, df_filter=lambda x: x.DiLepMass_jet_nom_muon_corrected_pt_ele_pt>0, stitch_dy=1, verbose=0,
+            blinded=True):
     if verbose: print("loading")
     if era=='2016':
         lumi=lumi_dict['2016']
@@ -65,4 +66,12 @@ def get_data(era, df_filter=lambda x: x.DiLepMass_jet_nom_muon_corrected_pt_ele_
     df['Weight_MuonTriggerDown'] = df['Weight'] - df['Weight_MuonTriggerDown'] 
     df['Weight_MuonTriggerUp'] += df['Weight']
 
+    # blind SR
+    print(df.shape)
+    if blinded:
+        in_sr = df.filter(regex='SR[1|2]').sum(axis=1) > 0
+        is_data = df.type.str.contains('data')
+        nob_blinded =  (is_data  & in_sr) != 1
+        df = df[nob_blinded]
+    print(df.shape)
     return df, lumi
