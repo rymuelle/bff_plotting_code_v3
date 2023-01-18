@@ -183,7 +183,7 @@ def isin(df,region, select_level=1): return df[df[region]>=select_level]
 
 
 def make_sys_hist(mdf, column, reg, replace_dict = {}, bin_edges=bins.bin_edges,
-                 ind_sys_hist=False, select_level=1):
+                 ind_sys_hist=False, select_level=1, isdata=0):
     
     
     nom_mdf = isin(mdf,'{}_jet_nom_muon_corrected_pt_ele_pt'.format(reg), select_level=select_level)
@@ -248,6 +248,11 @@ def make_sys_hist(mdf, column, reg, replace_dict = {}, bin_edges=bins.bin_edges,
     else: syshist = SysHist(nom_hist, all_sys_arr[0], all_sys_arr[1], nom_std, bin_edges, sys={})
     for key, (down, up) in all_sys.items():
         syshist.add_sys(key, down, up)
+        
+    if isdata:
+        syshist.sys = {}
+        syshist.up *= 0 
+        syshist.down *= 0 
     return syshist
 
 

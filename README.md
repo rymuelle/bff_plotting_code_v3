@@ -155,6 +155,8 @@ Tested in 12_1_0
 
 2_produce_combined_df.ipynb
 3_stack_plot.ipynb
+4_closure_test_lognorm_mc
+4_closure_test_lognorm_data
 
 1. 4_interp_signal_v2
 2. 5_interp_signal_v2_makedf
