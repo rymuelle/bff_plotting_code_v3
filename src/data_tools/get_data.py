@@ -16,7 +16,7 @@ def clean_data(df):
 
 
 import pyarrow.feather as feather
-def get_data(era, df_filter=lambda x: x.DiLepMass_jet_nom_muon_corrected_pt_ele_pt>0, stitch_dy=1, verbose=0,
+def get_data(era, path, df_filter=lambda x: x.DiLepMass_jet_nom_muon_corrected_pt_ele_pt>0, stitch_dy=1, verbose=0,
             blinded=True):
     if verbose: print("loading")
     if era=='2016':
@@ -27,15 +27,15 @@ def get_data(era, df_filter=lambda x: x.DiLepMass_jet_nom_muon_corrected_pt_ele_
         lumi=lumi_dict['2018']
     if era=='16-18':
         lumi = lumi_dict['2016']+lumi_dict['2017']+lumi_dict['2018']
-        df = feather.read_feather('data/combined_2016.feather'.format(era))
+        df = feather.read_feather('{}/data/combined_2016.feather'.format(path, era))
         print(df.shape)
-        df = df.append( feather.read_feather('data/combined_2017.feather'.format(era)))
+        df = df.append( feather.read_feather('{}/data/combined_2017.feather'.format(path,era)))
         print(df.shape)
-        df = df.append( feather.read_feather('data/combined_2018.feather'.format(era)))
+        df = df.append( feather.read_feather('{}/data/combined_2018.feather'.format(path,era)))
         print(df.shape)
         print("loaded all df")
     else:
-        df = feather.read_feather('data/combined_{}.feather'.format(era))
+        df = feather.read_feather('{}/data/combined_{}.feather'.format(path, era))
     clean_data(df)
     df = df[df_filter(df)]
     if verbose: print("loaded")
