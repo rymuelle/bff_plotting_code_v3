@@ -14,10 +14,13 @@ def clean_data(df):
     df.loc[df.type=='data', weight_columns] = 1
     df.fillna(0, inplace=True)
 
+def delta_r_cut(df, dr):
+    deltar_columns = ['minGoodJetElDR_jet_nom_muon_corrected_pt_ele_pt', 'minGoodJetMuDR_jet_nom_muon_corrected_pt_ele_pt']
+    return df[df[deltar_columns].min(axis=1) > dr]
 
 import pyarrow.feather as feather
 def get_data(era, path, df_filter=lambda x: x.DiLepMass_jet_nom_muon_corrected_pt_ele_pt>0, stitch_dy=1, verbose=0,
-            blinded=True):
+            blinded=True, filterdeltar=True):
     if verbose: print("loading")
     if era=='2016':
         lumi=lumi_dict['2016']
@@ -65,12 +68,16 @@ def get_data(era, path, df_filter=lambda x: x.DiLepMass_jet_nom_muon_corrected_p
     # Muon Trigger SFs have the standard weight subtracted out accidentally
     df['Weight_MuonTriggerDown'] = df['Weight'] - df['Weight_MuonTriggerDown'] 
     df['Weight_MuonTriggerUp'] += df['Weight']
-
+    
+    # filter out delta r
+    if filterdeltar: df = delta_r_cut(df, 0.4)
+            
     # blind SR
     if blinded:
         in_sr = df.filter(regex='SR[1|2]').sum(axis=1) > 0
         is_data = df.type.str.contains('data')
         nob_blinded =  (is_data  & in_sr) != 1
         df = df[nob_blinded]
+        
 
     return df, lumi
