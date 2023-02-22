@@ -27,6 +27,7 @@ def get_file_df(regex_select='tw_(?:2016|2017|2018).+\.csv', path='data'):
     VB = [{'type': 'bck','category':'VB', 'file':x} for x in files if re.match('.+mc_(?:ww|wz|zz)', x)]
     TT = [{'type': 'bck','category':'TT', 'file':x} for x in files if re.match('.+ttbar', x)]
     BFF = [{'type': 'sig','category':'BFF', 'file':x} for x in files if re.match('.+BFFZp', x)]
+    PRI = [{'type': 'pri','category':'pri', 'file':x} for x in files if re.match('.+Private', x)]
     Y3 = [{'type': 'sig','category':'Y3', 'file':x} for x in files if re.match('.+y3.+', x)]
     data = [{'type': 'data','category':'data', 'file':x} for x in files if re.match('.+_data_', x)]    
     ST_extra  = [{'type': 'bck_ext', 'category': 'ST_extra', 'file': x} for x in files if re.match('.+ST_.+', x)]
@@ -37,7 +38,7 @@ def get_file_df(regex_select='tw_(?:2016|2017|2018).+\.csv', path='data'):
     DYLL  = [{'type': 'bck_ext', 'category': 'DYLL', 'file': x} for x in files if re.match('.+DYJetsToLL.+[0-9]+to[0-9]+.+', x)]
     DYAMad  = [{'type': 'bck_ext', 'category': 'DYAMad', 'file': x} for x in files if re.match('.+DYJetsToLL.+M-50_.+mad.+', x)]
     DYAMC  = [{'type': 'bck_ext', 'category': 'DYAMC', 'file': x} for x in files if re.match('.+DYJetsToLL.+M-50_.+amc.+', x)]
-    all_lists = Y3 + DY + ST + VB + TT + BFF + data + ST_extra + TB + WJ + TTV + higgs + DYLL + DYAMad + DYAMC
+    all_lists = Y3 + DY + ST + VB + TT + BFF + PRI +  data + ST_extra + TB + WJ + TTV + higgs + DYLL + DYAMad + DYAMC
     all_list_list = [ x['file'] for x in all_lists]
     not_in_all_lists = list(set(files) - set(all_list_list))
     if len(not_in_all_lists)!=0: print("not in all lists: {}".format(not_in_all_lists))
@@ -49,7 +50,7 @@ def get_file_df(regex_select='tw_(?:2016|2017|2018).+\.csv', path='data'):
     df['gb'] = df.apply(get_gb, axis=1)
     df['era'] = df.file.apply(lambda x: int(re.findall('.*tw_([0-9]+)_.*', x)[0]))
     #get xsec
-    sample_df = make_sample_df()
+    sample_df = make_sample_df(path)
     df['xsec'] = df.apply(lambda x: get_value_from_df(x,sample_df, 'xsec'), axis=1)
     df['sample_name'] = df.apply(lambda x: get_value_from_df(x,sample_df, 'name'), axis=1)
     return df
@@ -66,22 +67,23 @@ def linearCut2d(x, y, x0, y0, x1, y1, lessThan=False, greaterThan=False):
     if lessThan and not greaterThan:
         return  y-y0 < m*(x-x0)
     
-    
+def signal_select(string): return not (('BFF' in string) or ('Private' in string))
+
 def get_mass(string):
-    if not 'BFF' in string: return None
+    if signal_select(string): return None
     mass = re.findall('.*M_([0-9]+).*', string)
     if len(mass)==1: return float(mass[0])
     else: return None
     
     
 def get_dbs(string):
-    if not 'BFF' in string: return None
+    if signal_select(string): return None
     value = re.findall('.*dbs([0-9,p]+).*', string)
     if len(value)==1: return float(value[0].replace('p','.'))
     else: return None
     
 def get_gmu(string):
-    if not 'BFF' in string: return None
+    if signal_select(string): return None
     value = re.findall('.*gmu([0-9,p]+).*', string)
     if len(value)==1: return float(value[0].replace('p','.'))
     return 0.17
