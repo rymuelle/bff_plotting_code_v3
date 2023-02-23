@@ -18,6 +18,17 @@ def delta_r_cut(df, dr):
     deltar_columns = ['minGoodJetElDR_jet_nom_muon_corrected_pt_ele_pt', 'minGoodJetMuDR_jet_nom_muon_corrected_pt_ele_pt']
     return df[df[deltar_columns].min(axis=1) > dr]
 
+
+def read_feather_parquet(path):
+    import pyarrow.feather as feather
+    import pyarrow.parquet as parquet
+    import pandas as pd
+    try:
+         df = feather.read_feather(path+'.feather')
+    except:
+         df = pd.read_parquet(path+'.parquet')
+    return df
+
 import pyarrow.feather as feather
 def get_data(era, path, df_filter=lambda x: x.DiLepMass_jet_nom_muon_corrected_pt_ele_pt>0, stitch_dy=1, verbose=0,
             blinded=True, filterdeltar=True):
@@ -30,15 +41,15 @@ def get_data(era, path, df_filter=lambda x: x.DiLepMass_jet_nom_muon_corrected_p
         lumi=lumi_dict['2018']
     if era=='16-18':
         lumi = lumi_dict['2016']+lumi_dict['2017']+lumi_dict['2018']
-        df = feather.read_feather('{}/data/combined_2016.feather'.format(path, era))
+        df = read_feather_parquet('{}/data/combined_2016'.format(path,era))
         print(df.shape)
-        df = df.append( feather.read_feather('{}/data/combined_2017.feather'.format(path,era)))
+        df = df.append( read_feather_parquet('{}/data/combined_2017'.format(path,era)))
         print(df.shape)
-        df = df.append( feather.read_feather('{}/data/combined_2018.feather'.format(path,era)))
+        df = df.append( read_feather_parquet('{}/data/combined_2018'.format(path,era)))
         print(df.shape)
         print("loaded all df")
     else:
-        df = feather.read_feather('{}/data/combined_{}.feather'.format(path, era))
+        df = read_feather_parquet('{}/data/combined_{}'.format(path,era))
     clean_data(df)
     df = df[df_filter(df)]
     if verbose: print("loaded")
