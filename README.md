@@ -151,13 +151,56 @@ Tested in 12_1_0
 
 # current procedure:
 
-0_bff_skimmer-bffv2.ipynb
+0_bff_skimmer-bffv2.ipynb: outputs to outdir, not tested 
 
-2_produce_combined_df.ipynb
-3_stack_plot.ipynb
-4_closure_test_lognorm_mc
-4_closure_test_lognorm_data
+2_produce_combined_df.ipynb: reads from and output to output_dir not tested
+3_stack_plot.ipynb : reads and outputs to output_dir, semi tested
+3_fit_signal_interp_bff_v2.ipynb: outputs to output_dir, not tested or commited
+4_closure_test_lognorm_mc: outputs to output_dir, not tested or commited
+4_closure_test_lognorm_data: outputs to output_dir, not tested or commited
+4_interp_signal_v2 : reads and outputs to output_dir, semi tested, not commited
+5_interp_signal_v2_makedf:  reads and outputs to output_dir, semi tested, not commited
+
+
+6_make_combined_cards.ipynb: reads and outputs to output_dir, semi tested, commited
+
+
+6_fit_cross_sec_func: semi tested not commited, reads and outputs to outputdir
+7_make_acceptance: updated, semi tested, not commited
+7_make_comb_csv_bffv2.ipynb: updated ish
+8_draw_limits: not updated, but not commited or tested
+
+0_pt_res_dimuon_broadening.ipynb: semi tested
 
 1. 4_interp_signal_v2
 2. 5_interp_signal_v2_makedf
 3. with combine: 6_make_combined_cards
+
+# btag eff plot:
+0_btag_eff.ipynb
+
+# smearing test:
+0_pt_res_dimuon_broadening.ipynb
+
+to commit :
+ src.plotting_tools.colors 
+ src/assets/lumi.py
+6_fit_cross_sec_func.ipynb
+gb_dbs_constraings
+colors
+src/plotting_tools/utils.py
+README
+7_make_comb_csv_bffv2.ipynb
+
+
+mystery: 5_interp_signal_v2_makedf.ipynb abcd factor of e off in recomputation. good news is the value used in higgs combine is fine
+
+5_interp_signal_v2_makedf.ipynb: fixing abcd scaling with bin size changing
+
+7_make_comb_csv_bffv2: spike in nominal value around 200
+8_draw_limits: interpolate_counts
+
+
+draw_stack_plot_hists.py: removed kwargs from make_sys_hist
+
+4_interp_signal_v2: added interpolation test
