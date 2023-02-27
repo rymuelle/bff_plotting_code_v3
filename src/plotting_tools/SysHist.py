@@ -89,12 +89,16 @@ class SysHist(Bins):
         up = self.up[select]
         down = self.down[select]
         std = self.std[select]
+        sys = {}
+        for sys_key, (_down, _up) in self.sys.items():
+            sys[sys_key] =  [_down[select],_up[select]]
         bin_edges = self.bin_edges[(self.bin_edges < top) & (self.bin_edges>bottom)]
         return SysHist(nom, 
             down, 
             up, 
             std, 
-            bin_edges)        
+            bin_edges,
+            sys=sys)        
         
     def calc_ratio(self, divisor):
         sys = self.sys
