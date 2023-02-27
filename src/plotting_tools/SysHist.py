@@ -20,8 +20,6 @@ class SysHist(Bins):
         for sys, (down, up) in self.sys.items():
             sys_string+="\n\t{}: {:.2f} to {:.2f}".format(sys, np.sum(down)/nom, np.sum(up)/nom)
         return sys_string
-    
-    
     def sys_from_sys_dict(self):
         ''' updates up down values from the sys dict object'''
         up_list, down_list = [], []
@@ -58,7 +56,7 @@ class SysHist(Bins):
         y  = np.array(list(map(lambda x: x.nominal_value,ufloats)))
         unc  = np.array(list(map(lambda x: x.std_dev,ufloats)))
         return cls(y, -y*0, y*0, unc, bins.bin_edges)
-    def rebin(self, nGroup):
+    def rebin_legacy(self, nGroup):
         def rebin1D(x): return rebin(x.shape(1,-1), (1,nGroup))
         nominal = rebin1D(self.nominal)
         down = rebin1D(self.down)
@@ -66,6 +64,20 @@ class SysHist(Bins):
         var = std**2
         var = rebin1D(var)
         std = var**.5
+    def rebin(self, new_bins):
+        nominal = rebin_np(self.bins.calc_bin_centers(), new_bins, self.nominal) 
+        down = rebin_np(self.bins.calc_bin_centers(), new_bins, self.down)
+        up = rebin_np(self.bins.calc_bin_centers(), new_bins, self.up)
+        std = rebin_np(self.bins.calc_bin_centers(), new_bins, self.std**2) **.5
+        sys = {}
+        for sys_key, (_down, _up) in self.sys.items():
+            sys[sys_key] =  [rebin_np(self.bins.calc_bin_centers(), new_bins, _down), rebin_np(self.bins.calc_bin_centers(), new_bins, _up) ] 
+        return SysHist(nominal, 
+            down, 
+            up, 
+            std, 
+            new_bins,
+            sys=sys)  
         
     def reduce_range(self, top=np.inf, bottom=-np.inf):
         bin_edges = self.bin_edges[(self.bin_edges < top) & (self.bin_edges>bottom)]
@@ -114,7 +126,7 @@ class SysHist(Bins):
         return self.calc_ratio(self.calc_sum())
     def to_dict(self):
         return {'nom': self.nominal, 'up':self.up, 'down':self.down,
-                'std':self.std, 'bins': self.bin_edges}
+                'std':self.std, 'bins': self.bin_edges, "sys": self.sys}
     
     @classmethod
     def from_dict(cls, hist_dict):
@@ -123,7 +135,7 @@ class SysHist(Bins):
         down[np.isnan(down)]=0
         up[np.isnan(up)]=0
         return cls(hist_dict['nom'],hist_dict['down'],hist_dict['up'],
-                   hist_dict['std'],hist_dict['bins'])
+                   hist_dict['std'],hist_dict['bins'], sys=hist_dict['sys'])
     
     def calc_total_unc(self):
         return (((self.up-self.down)/2)**2 + self.std**2)**.5
@@ -146,8 +158,12 @@ class SysHist(Bins):
         sys2 = other.sys
         new_sys = {}
         for key, (down, up) in sys.items():
-            new_sys[key] = [(sys[key]['down']**2 + sys2[key]['down']**2)**.5,
+            try:
+                new_sys[key] = [(sys[key]['down']**2 + sys2[key]['down']**2)**.5,
                             (sys[key]['up']**2 + sys2[key]['up']**2)**.5]
+            except: 
+                new_sys[key] = [(sys[key][0]**2 + sys2[key][0]**2)**.5,
+                            (sys[key][1]**2 + sys2[key][1]**2)**.5]
             
         assert (self.bin_edges == other.bin_edges).all(), "must be same binning" 
         nom = self.nominal + other.nominal
@@ -166,7 +182,12 @@ class SysHist(Bins):
             self.up * mul, 
             self.std * mul, 
             self.bin_edges,
-            sys = new_sys)        
+            sys = new_sys)       
+    
+    
+def rebin_np(oldbins, newbins, data):
+    values = np.histogram(oldbins, newbins, weights = data)
+    return values[0]
 
 def make_hist(x, bin_edges=bins.bin_edges, weights=1, std=0):
     hist = np.histogram(x,
@@ -184,8 +205,6 @@ def isin(df,region, select_level=1): return df[df[region]>=select_level]
 
 def make_sys_hist(mdf, column, reg, replace_dict = {}, bin_edges=bins.bin_edges,
                  ind_sys_hist=False, select_level=1, isdata=0):
-    
-    
     nom_mdf = isin(mdf,'{}_jet_nom_muon_corrected_pt_ele_pt'.format(reg), select_level=select_level)
     nom_hist, nom_std =  make_hist(
         nom_mdf[column+'_jet_nom_muon_corrected_pt_ele_pt'],
