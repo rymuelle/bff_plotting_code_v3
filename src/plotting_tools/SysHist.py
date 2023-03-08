@@ -117,9 +117,10 @@ class SysHist(Bins):
     def make_density_hist(self, scale=1):
         width = np.array(self.calc_bin_widths()*scale)
         return self.calc_ratio(width)
-    def draw(self, ax, color='blue', error_scale=1, draw_sys=True, **kwargs):
+    def draw(self, ax, color='blue', error_scale=1, draw_sys=True, 
+             sys_label=None, **kwargs):
         ax.errorbar(self.calc_bin_centers(), self.nominal, yerr=self.std*error_scale, drawstyle='steps-mid',color=color, **kwargs)
-        if draw_sys: ax.fill_between(self.calc_bin_centers(), self.up+self.nominal, self.down+self.nominal, step='mid', alpha=.5,color=color)
+        if draw_sys: ax.fill_between(self.calc_bin_centers(), self.up+self.nominal, self.down+self.nominal, step='mid', alpha=.5, color='gray', label=sys_label)
     def calc_sum(self):
         return np.sum(self.nominal)
 

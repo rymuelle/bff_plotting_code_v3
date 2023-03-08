@@ -80,7 +80,7 @@ def draw_stackplot(ax, df, feature, reg, era, lumi,  draw_sig_sys=1, draw_bck_sy
     #draw data
     if 'CR' in reg:
         total = draw_data(ax, df[df.type=='data'], feature, reg, era, **kwargs)
-        _bhist = make_sys_hist(background_df, feature, reg, **kwargs)
+        _bhist = make_sys_hist(background_df, feature, reg)
         background_total = _bhist.nominal.sum()       
     #draws background
     draw_bckground(ax,  background_df, feature, reg, era, draw_sys=draw_bck_sys, error_scale=error_scale, **kwargs)
