@@ -24,9 +24,9 @@ def read_feather_parquet(path):
     import pyarrow.parquet as parquet
     import pandas as pd
     try:
-         df = feather.read_feather(path+'.feather')
-    except:
          df = pd.read_parquet(path+'.parquet')
+    except:
+         df = feather.read_feather(path+'.feather')
     return df
 
 import pyarrow.feather as feather

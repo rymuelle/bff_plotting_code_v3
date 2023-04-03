@@ -71,7 +71,6 @@ def get_files(dirName, sample_path, key = 'nEventsGenWeighted'):
     import re
     
     filePathName = sample_path.format(dirName)
-
     files_paths = list(Path(filePathName).rglob('*.root'))
     files = list(map(lambda x: str(x), files_paths))
     
@@ -249,3 +248,6 @@ def quad(x, b, m, m2):
     return m2 * x ** 2 + m * x + b
 
 
+def is_equal(x,y):
+    if type(x)!=type(y): return False
+    return x==y

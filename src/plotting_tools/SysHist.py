@@ -79,7 +79,7 @@ class SysHist(Bins):
             new_bins,
             sys=sys)  
         
-    def reduce_range(self, top=np.inf, bottom=-np.inf):
+    def reduce_range(self, bottom=-np.inf, top=np.inf):
         bin_edges = self.bin_edges[(self.bin_edges < top) & (self.bin_edges>bottom)]
         new_bins = Bins(bin_edges)
         centers = new_bins.calc_bin_centers()
@@ -118,9 +118,17 @@ class SysHist(Bins):
         width = np.array(self.calc_bin_widths()*scale)
         return self.calc_ratio(width)
     def draw(self, ax, color='blue', error_scale=1, draw_sys=True, 
-             sys_label=None, **kwargs):
-        ax.errorbar(self.calc_bin_centers(), self.nominal, yerr=self.std*error_scale, drawstyle='steps-mid',color=color, **kwargs)
-        if draw_sys: ax.fill_between(self.calc_bin_centers(), self.up+self.nominal, self.down+self.nominal, step='mid', alpha=.5, color='gray', label=sys_label)
+             sys_label=None, errorbar=True, **kwargs):
+        
+        if errorbar: ax.errorbar(self.calc_bin_centers(), self.nominal, yerr=self.std*error_scale, drawstyle='steps-mid',color=color, **kwargs)
+        else:
+            ax.plot(self.calc_bin_centers(), self.nominal, drawstyle='steps-mid',color=color, **kwargs)
+        if draw_sys: 
+            sys_diff = self.up.sum()-self.down.sum()
+            std_sig = sys_diff/abs(sys_diff)
+            down = self.down-std_sig*self.std
+            up = self.up+std_sig*self.std
+            ax.fill_between(self.calc_bin_centers(), up+self.nominal, down+self.nominal, step='mid', alpha=.5, color='gray', label=sys_label)
     def calc_sum(self):
         return np.sum(self.nominal)
 

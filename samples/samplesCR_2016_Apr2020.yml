@@ -1,21 +1,21 @@
 lumi: 36.31 
 samples:
-- fileglob: y3_250_deepflavour_bff
+- fileglob: y3_250_deepflavour_bffv2
   ismc: 1
   name: y3_250_deepflavour_bff
   nevts: 0
   xsec: 10.1
-- fileglob: y3_400_deepflavour_bff
+- fileglob: y3_400_deepflavour_bffv2
   ismc: 1
   name: y3_400_deepflavour_bff
   nevts: 0
   xsec: 2.9
-- fileglob: y3_1000_deepflavour_bff
+- fileglob: y3_1000_deepflavour_bffv2
   ismc: 1
   name: y3_1000_deepflavour_bff
   nevts: 0
   xsec: .2
-- fileglob: y3_700_deepflavour_bff
+- fileglob: y3_700_deepflavour_bffv2
   ismc: 1
   name: y3_700_deepflavour_bff
   nevts: 0
@@ -339,7 +339,26 @@ samples:
   name: BFFZprimeToMuMu_M_200_dbs0p5
   nevts: 0
   xsec: 592.6
-  
+ 
+###
+- fileglob: BFF_200_dbs0p04_deepflavour_bffv2
+  ismc: 1
+  name: Private_M_200_dbs0p04
+  nevts: 0
+  xsec: 288.9
+
+- fileglob: BFF_200_dbs1p0_deepflavour_bffv2
+  ismc: 1
+  name: Private_M_200_dbs1p0
+  nevts: 0
+  xsec: 1486
+
+- fileglob: BFF_200_dbs0p5_deepflavour_bffv2
+  ismc: 1
+  name: Private_M_200_dbs0p5
+  nevts: 0
+  xsec: 592.6
+### 
 
 - fileglob:  BFF_125_dbs0p04_deepflavour_bffv2
   ismc: 1

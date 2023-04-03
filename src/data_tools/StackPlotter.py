@@ -14,10 +14,13 @@ class StackPlotter():
         self.era = era
         self.rebin = rebin
         self.x_range = x_range
-    def make_hist(self, row):
+        self.scale=1
+        
+    def make_hist(self, row, preserve_binning=False):
         sh = SysHist.from_dict(row)
-        if not is_equal(self.rebin, 0): sh = sh.rebin(self.rebin)
-        sh = sh.reduce_range(bottom=self.x_range[0], top=self.x_range[1])
+        sh *= self.scale
+        if (not is_equal(self.rebin, 0) and not preserve_binning): sh = sh.rebin(self.rebin)
+        if not preserve_binning: sh = sh.reduce_range(bottom=self.x_range[0], top=self.x_range[1])
         # ST isr fsr issue
         if row.sample_name in ['mc_santitop','mc_stop']:
             sh.sys['Weight_ISRFSR_Up'] = [sh.sys['Weight_ISRFSR_Up'][0]*0, sh.sys['Weight_ISRFSR_Up'][0]*0]
@@ -26,25 +29,51 @@ class StackPlotter():
     
     def feature_reg_df(self, feature, reg):
         return self.plot_df[(self.plot_df.reg==reg) & (self.plot_df.feature==feature) & (self.plot_df.era==int(self.era))]
+    
+    def stich_dy(self, feature, reg):
+        '''stitched dy samples and replaces old seperate ones'''
+        
+        dy_sel = (self.plot_df.category.str.contains('DY')) & (self.plot_df.category != 'DYLL') & (self.plot_df.sample_name != 'dy_stitched')
+        feat_reg = (self.plot_df.feature==feature) & (self.plot_df.reg==reg)
+        ncategorys = len(self.plot_df[dy_sel].category.unique())
+        
+        dy_df = self.plot_df[dy_sel & feat_reg]
+        comb_hist  = self.combine_hists(dy_df, preserve_binning=True).calc_ratio(ncategorys)
+        
+        #now label prestitched so it is not used in stack
+        self.plot_df.loc[dy_sel & feat_reg,"type"] = 'bck_prestitched'
+        #add new stitched row
+        hist_dict = {"type": "bck", "category": "DY",  "sample_name": "dy_stitched", 'file':'dy_stitched',
+                     "era": int(self.era), "reg": reg, "feature": feature,
+                     **comb_hist.to_dict()}
+        self.plot_df = self.plot_df.append(hist_dict, ignore_index=True)
+        #avoid duplicates if run multiple times
+        self.plot_df.drop_duplicates(subset=['type', 'category', 'file', 'mass', 'dbs', 'gmu', 'gb', 
+                                             'era', 'xsec', 'sample_name','reg', 'feature'], inplace=True)
+        return comb_hist
+    
     def bck_df(self, feature, reg):
         tdf = self.feature_reg_df(feature, reg)
         return tdf[tdf.type=="bck"]
-    def combine_hists(self, df):
+    def combine_hists(self, df, **kwargs):
         nhists = 0
         for i, row in df.iterrows():
             if not nhists:
-                chist = self.make_hist(row)
-            else: chist += self.make_hist(row)
+                chist = self.make_hist(row, **kwargs)
+            else: chist += self.make_hist(row, **kwargs)
             nhists += 1
         return chist
     def combine_back(self, feature, reg):
+        self.stich_dy(feature, reg)
         bdf = self.bck_df(feature, reg)
         return self.combine_hists(bdf)     
-    def draw_background(self, ax, feature, reg, ratio = -1, draw_sys=1,  error_scale=1, make_density=1, scale = 1, sys_label = None, **kwargs):
+    def draw_background(self, ax, feature, reg, ratio = -1, draw_sys=1,  error_scale=1, make_density=1, scale = 1, sys_label = None, nom_color='red', **kwargs):
+        self.stich_dy(feature, reg)
         bdf = self.bck_df(feature, reg)
         hist_dict = {}
         nhists = 0
         _nominal_values = []
+        bck_dict['DY'] = ['dy_stitched']
         for cat in bck_dict:
             _name_list = bck_dict[cat]
             _name_tdf = bdf[bdf.sample_name.isin(_name_list)]
@@ -55,7 +84,7 @@ class StackPlotter():
                      labels=[signal_type_dict[x] for x in bck_dict], alpha=1, step='mid', colors=bck_colors)
         bhist = self.combine_back(feature, reg)
         if make_density: bhist = bhist.make_density_hist()
-        bhist.draw(ax, alpha=.5, draw_sys=draw_sys, error_scale=error_scale, color='red', sys_label=sys_label, label="MC background", **kwargs)
+        bhist.draw(ax, alpha=.5, draw_sys=draw_sys, error_scale=error_scale, color=nom_color, sys_label=sys_label, label="MC background", **kwargs)
         return bhist
     def select_hists(self,**kwargs):
         tdf = self.plot_df

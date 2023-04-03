@@ -5,7 +5,7 @@ from scipy.optimize import curve_fit
 from zfit.models.physics import double_crystalball_func
 from bff_signal_model.functions import *
 import numpy as np
-from bff_plotting_tools.make_hists import SysHist
+from src.plotting_tools.SysHist import SysHist
 from math import pi 
 
 try:

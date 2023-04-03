@@ -6,11 +6,11 @@ regions = [temp.format(nJet) for temp in regions_template for nJet in nJets]
 
 
 # This dict lists regions and provieds a latex string
-region_and_label = {'SR1': "#mu#mu_{b}", 
+region_and_label = {'SR1': "SR_b^{\mu\mu}", 
            'CR10': "#mu#mu_{j}", 
            'CR13': "ee_{b}", 
            'CR14': "ee_{j}", 
-           'SR2': "#mu#mu_{1,2 b}", 
+           'SR2': "SR_{b+j/b}^{\mu\mu}", 
            'CR20': "#mu#mu_{2 j}", 
            'CR23': "ee_{1,2 b}", 
            'CR24': "ee_{2 j}", 

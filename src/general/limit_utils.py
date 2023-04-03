@@ -13,14 +13,14 @@ def compute_acceptance(x_df, reg):
 #compute expected xsec from mass
 
 
-def branching_ratio(x):
+def branching_ratio_df(x):
     '''Computes branching ratio from xsec dataframe.'''
     gbgm_ratio = x.gb/x.gmu
     return 2/3*(1 + gbgm_ratio**2 * (1 + 2*x.dbs**2))**-1
 
-def total_xsec(x):
+def total_xsec_df(x):
     '''Computes xsec from xsec dataframe with branching ratio.'''
-    return x.xsec/branching_ratio(x)
+    return x.xsec/branching_ratio_df(x)
 
 # formula to fit for c1 and k per mass point 
 def mm_xsec_func(x, c1, k):
@@ -28,7 +28,7 @@ def mm_xsec_func(x, c1, k):
     gb = x.gb
     return c1 * gb**2 * (1 + k * x.dbs**2) * x.gmu**2
 # formula to fit for c1 and k per mass point 
-def total_xsec_func(x, c1, k):
+def total_xsec_func_df(x, c1, k):
     '''Formula for xsec from gb, dbs'''
     gb = x.gb
     return c1 * gb**2 * (1 + k * x.dbs**2) 
@@ -65,7 +65,7 @@ def compute_expected_xsec(x, popt_c1, popt_k):
     '''compute xsec using c1 and k from params'''
     mass = x.mass
     c1, k  = compute_c1(mass, popt_c1), compute_k(mass, popt_k)
-    return total_xsec_func(x, c1, k)
+    return total_xsec_func_df(x, c1, k)
 
 
 def produce_xsec_model(popt_c1, popt_k):
@@ -172,7 +172,7 @@ def dbs_acceptance_fit(x, c1, c2, c3, c4, c5, *params):
 #gb dbs 
 ##
 def draw_other_experiments(ax, mass, gb = np.linspace(1e-8, 0.25,1000)):
-    from plotting_meta.plotting_meta import  BS_BS_y, trident_y
+    from src.physics.gb_dbs_constraings import  BS_BS_y, trident_y
     #this draws exclusion curves from other experiments
     #draw BS-BS, neutrino triden
     
@@ -182,10 +182,10 @@ def draw_other_experiments(ax, mass, gb = np.linspace(1e-8, 0.25,1000)):
     ax.fill_between(gb,bsbsy,bsbsy+999, color='#F3E5AB', label=r'$B_s-\bar{B_s}$', zorder=0)
     ax.fill_between(gb,ty, color='#ffd7ff', label='$\\nu$ Trident', zorder=0)
     return {"gb": gb, "bsbsy":bsbsy, "ty":ty}
-def draw_gmu_curve(ax, mass, percent=1):
+def draw_gmu_curve(ax, mass, percent=1, **kwargs):
     #draw gmu width curve
     gb, dbs = curve_of_const_gmu(mass, width_to_gmu(percent))
-    ax.plot(gb, dbs, color='black',linestyle='-.', zorder=1, label='width $<$ 1\%')
+    ax.plot(gb, dbs, **kwargs)
     return {"gb": gb, "dbs":dbs}
 def format_gb_gmu_plot(ax, mass=""):
     ax.set_ylim(0,1.01)
