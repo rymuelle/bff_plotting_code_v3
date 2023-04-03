@@ -152,12 +152,18 @@ Tested in 12_1_0
 # current procedure:
 
 0_bff_skimmer-bffv2.ipynb: outputs to outdir, not tested 
+2_produce_flat_hists.ipynb
+2_produce_combined_df.ipynb (only contains bff data for signal model fitting)
+3_fit_signal_interp_bff_v2,ipynb (usses 2_produce_combined_df)
+
+
 
 2_produce_combined_df.ipynb: reads from and output to output_dir not tested
 3_stack_plot.ipynb : reads and outputs to output_dir, semi tested
 3_fit_signal_interp_bff_v2.ipynb: outputs to output_dir, not tested or commited
 4_closure_test_lognorm_mc: outputs to output_dir, not tested or commited
 4_closure_test_lognorm_data: outputs to output_dir, not tested or commited
+4p5_abcd_comparison
 4_interp_signal_v2 : reads and outputs to output_dir, semi tested, not commited
 5_interp_signal_v2_makedf:  reads and outputs to output_dir, semi tested, not commited
 
