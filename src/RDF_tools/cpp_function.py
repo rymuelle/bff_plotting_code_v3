@@ -16,6 +16,37 @@ def def_cpp():
              }
              return 1.0-divided;
          }
+         
+        bool hard_process(int value){
+            return ((value & (1 << 7)) == (1 << 7)) || ((value & (1 << 8)) == (1 << 8));
+        }
+        
+        int GetNbJets(const RVec<int> &GenPart_statusFlags, const RVec<int> &GenPart_pdgId){
+            int nBJets =  0;
+            std::cout << "-----" << std::endl;
+            for (unsigned i = 0; i < GenPart_statusFlags.size(); ++i) {
+            
+            std::cout << GenPart_statusFlags.at(i) <<  " " << GenPart_pdgId.at(i) << std::endl;
+            
+            std::cout << hard_process(GenPart_statusFlags.at(i)) << " " << (abs(GenPart_pdgId.at(i))==5) << std::endl;
+            
+            std::cout << ((GenPart_statusFlags.at(i) & (1 << 7)) == (1 << 7)) << std::endl;
+                nBJets += int(hard_process(GenPart_statusFlags.at(i)) && (abs(GenPart_pdgId.at(i))==5));
+
+            }
+            std::cout << "..." << std::endl;
+            std:: cout <<  GenPart_statusFlags.size() << " " <<  nBJets << std::endl;
+            return nBJets;
+        }
+        
+        int GetNsJets(const RVec<int> &GenPart_statusFlags, const RVec<int> &GenPart_pdgId){
+            int nSJets =  0;
+            for (unsigned i = 0; i < GenPart_statusFlags.size(); ++i) {
+                nSJets += int(hard_process(GenPart_statusFlags.at(i)) && (abs(GenPart_pdgId.at(i))==3));
+            }
+            std:: cout <<  nSJets << std::endl;
+            return nSJets;
+        }
             
         
         RVec<float> GetPDFWeight(const RVec<float> &LHEPdfWeight){
