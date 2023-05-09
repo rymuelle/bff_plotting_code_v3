@@ -26,16 +26,9 @@ def def_cpp():
             std::cout << "-----" << std::endl;
             for (unsigned i = 0; i < GenPart_statusFlags.size(); ++i) {
             
-            std::cout << GenPart_statusFlags.at(i) <<  " " << GenPart_pdgId.at(i) << std::endl;
-            
-            std::cout << hard_process(GenPart_statusFlags.at(i)) << " " << (abs(GenPart_pdgId.at(i))==5) << std::endl;
-            
-            std::cout << ((GenPart_statusFlags.at(i) & (1 << 7)) == (1 << 7)) << std::endl;
                 nBJets += int(hard_process(GenPart_statusFlags.at(i)) && (abs(GenPart_pdgId.at(i))==5));
 
             }
-            std::cout << "..." << std::endl;
-            std:: cout <<  GenPart_statusFlags.size() << " " <<  nBJets << std::endl;
             return nBJets;
         }
         
@@ -44,8 +37,78 @@ def def_cpp():
             for (unsigned i = 0; i < GenPart_statusFlags.size(); ++i) {
                 nSJets += int(hard_process(GenPart_statusFlags.at(i)) && (abs(GenPart_pdgId.at(i))==3));
             }
-            std:: cout <<  nSJets << std::endl;
             return nSJets;
+        }
+        
+        
+        int GetGenMultiplicity(const RVec<int> &GenPart_statusFlags, const RVec<int> &GenPart_pdgId, const RVec<float> &GenPart_pt){
+            int multiplicity = -1;
+            int nGen = GenPart_pdgId.size();
+            bool _ishard;
+            float _pt;
+            float _pdgid;
+            
+            //find initial state information
+            int inBs=0;
+            int inSs=0;
+            int inGluons=0;
+            for (unsigned i = 0; i < nGen; ++i) {
+                    _ishard = hard_process(GenPart_statusFlags.at(i));
+                    _pt = GenPart_pt.at(i);
+                    _pdgid = GenPart_pdgId.at(i);
+                    //only take hard process particles
+                    if (!_ishard) continue;
+                    // only initial state has pt of 0
+                    if (!(_pt==0)) continue;
+                    if (abs(_pdgid)==5) inBs+=1;
+                    if (abs(_pdgid)==3) inSs+=1;
+                    if (abs(_pdgid)==21) inGluons+=1; 
+            }
+            
+            //final state information
+            float higestPtBplus = 0;
+            float higestPtBminus = 0;
+            float higestPtB = 0;
+            float higestPtS = 0;
+            for (unsigned i = 0; i < nGen; ++i) {
+                _ishard = hard_process(GenPart_statusFlags.at(i));
+                _pt = GenPart_pt.at(i);
+                _pdgid = GenPart_pdgId.at(i);
+                //only take hard process particles
+                if (!_ishard) continue;
+                std::cout << _pdgid << " " << _pt << " " << _ishard << " " << GenPart_statusFlags.at(i) <<  std::endl;
+                if (_pt==0) continue;
+                if ((_pdgid==5) && (_pt > higestPtBplus)) higestPtBplus = _pt;
+                if ((_pdgid==-5) && (_pt > higestPtBminus)) higestPtBminus = _pt;
+                if ((abs(_pdgid)==3) && (_pt > higestPtS)) higestPtS = _pt;
+            }
+            higestPtB = max(higestPtBplus, higestPtBminus);
+            
+            // multiplicity logic, based on combined initial state and final state
+            // 0j: 1, 1b: 1, 1s: 2, 1b+1s: 3, 2b: 4, not-categorized: -1
+            if ((inBs==2) && (inSs==0) && (inGluons==0)) multiplicity = 0;
+            if ((inBs==1) && (inSs==1) && (inGluons==0)) multiplicity = 0;
+            if ((inBs==0) && (inSs==1) && (inGluons==1)) multiplicity = 1;
+            if ((inBs==1) && (inSs==0) && (inGluons==1)){
+                if (higestPtB>higestPtS) multiplicity = 1;
+                if (higestPtS>higestPtB) multiplicity = 2;
+            }
+            if ((inBs==0) && (inSs==0) && (inGluons==2)){
+                if (((higestPtS>higestPtBplus) || (higestPtS>higestPtBminus)) &&  (higestPtB>0)) multiplicity = 3;
+                if ((higestPtBplus>higestPtS) && (higestPtBminus>higestPtS)) multiplicity = 4;
+            }
+    //std::cout << "----------------" << std::endl;   
+    //std::cout << "inBs: " << inBs << std::endl;
+    //std::cout << "inSs: " << inSs << std::endl;
+    //std::cout << "inGluons: " << inGluons << std::endl;
+    //std::cout << "higestPtBplus: " << higestPtBplus << std::endl;
+    //std::cout << "higestPtBminus: " << higestPtBminus << std::endl;
+    //std::cout << "higestPtB: " << higestPtB << std::endl;
+    //std::cout << "higestPtS: " << higestPtS << std::endl;
+    //std::cout << ((inBs==1) && (inSs==1) && (inGluons==0)) << std::endl;
+    //std::cout << (inBs==1) << (inSs==1) << (inGluons==0) << std::endl;
+    //std::cout << multiplicity << std::endl;
+            return multiplicity;                            
         }
             
         
