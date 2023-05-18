@@ -29,7 +29,7 @@ bool hard_process(int value){
 
 int GetGenMultiplicity(const RVec<int> &GenPart_statusFlags, const RVec<int> &GenPart_pdgId,
                     const RVec<float> &GenPart_pt, const RVec<float> &GenPart_eta, const RVec<float> &GenPart_phi){
-    int multiplicity = -1;
+    int multiplicity = 0;
     int nGen = GenPart_pdgId.size();
     bool _ishard;
     float _pt;
@@ -105,61 +105,61 @@ int GetGenMultiplicity(const RVec<int> &GenPart_statusFlags, const RVec<int> &Ge
     }
         
     // multiplicity logic, based on combined initial state and final state
-    // 0j: 1, 1b: 1, 1s: 2, 1b+1s: 3, 2b: 4, not-categorized: -1
+    // 0j: 0,1, 1b: 2,3,4, 1s: 5,6, 1b+1s: 7,8,9,10, 2b: 11,12,13,14
     //5 5
     if ((inBs == 2) && (inSs == 0) && (inOQs == 0) && (inGs == 0)){
         //0b
-        multiplicity = 0;
+        multiplicity += pow(2,0);
         //2b'
         if ((leadOutB>0) && (subLeadOutB>0)){ 
-            multiplicity = 4;
+            multiplicity += pow(2,11);
         //1b1s'
-        } else if ((leadOutB>0) && (leadOutS>0)) multiplicity = 3;
+        } else if ((leadOutB>0) && (leadOutS>0)) multiplicity += pow(2,7);
     }
     //5 3 
     if ((inBs == 1) && (inSs == 1) && (inOQs == 0) && (inGs == 0)) {
         //0b
-        multiplicity = 0;
+        multiplicity += pow(2,0);
         //2b'
-        if ((leadOutB>0) && (subLeadOutB>0)) multiplicity = 4;
+        if ((leadOutB>0) && (subLeadOutB>0)) multiplicity += pow(2,12);
     }
     //5 21
     if ((inBs == 1) && (inSs == 0) && (inOQs == 0) && (inGs == 1)){
     
         //1b
-        if (leadOutB > leadOutS) multiplicity = 1;
+        if (leadOutB > leadOutS) multiplicity += pow(2,2);
         //1s
-        if (leadOutS > leadOutB) multiplicity = 2;
+        if (leadOutS > leadOutB) multiplicity += pow(2,5);
     }
     //3 21
-    if ((inBs == 0) && (inSs == 1) && (inOQs == 0) && (inGs == 1)) multiplicity = 1;
+    if ((inBs == 0) && (inSs == 1) && (inOQs == 0) && (inGs == 1)) multiplicity += pow(2,3);
     //21 21
     if ((inBs == 0) && (inSs == 0) && (inOQs == 0) && (inGs == 2)){
         //2b
         if ((leadOutBPlus > leadOutS) && (leadOutBMinus > leadOutS)){
-            multiplicity = 4;
+            multiplicity += pow(2,13);
         //1b+1s
-        } else if ((leadOutS > 0) && (leadOutB > 0)) multiplicity = 3;
+        } else if ((leadOutS > 0) && (leadOutB > 0)) multiplicity += pow(2,8);
     }
     //5 + x        
     if ((inBs == 1) && (inSs == 0) && (inOQs == 1) && (inGs ==0)){
         //1b+1s'
         if ((leadOutB>0) && (leadOutS>0)) {
-            multiplicity = 3;
+            multiplicity += pow(2,9);
         //1b
-        } else if (leadOutB>0) multiplicity = 1;
+        } else if (leadOutB>0) multiplicity += pow(2,4);
         //1s
-        if (leadOutS>0) multiplicity = 2;
+        if (leadOutS>0) multiplicity += pow(2,6);
     }
     //3 + x        
     if ((inBs == 0) && (inSs == 1) && (inOQs == 1) && (inGs ==0)){
         //1b
-        multiplicity = 3;
+        multiplicity += pow(2,10);
     }
     //2 q       
     if ((inBs == 0) && (inSs == 0) && (inOQs == 2) && (inGs ==0)){
         //2b
-        multiplicity = 4;
+        multiplicity += pow(2,14);
     }
 
     return multiplicity;
