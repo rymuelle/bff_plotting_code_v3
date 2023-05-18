@@ -1,133 +1,222 @@
 from ROOT import gInterpreter
 def def_cpp():
         return gInterpreter.Declare('''
-        #include <math.h>
-        #include <TLorentzVector.h>
-        #include <algorithm> 
-        
-        TH2F *bTagEff = 0;
-        
-        using namespace ROOT::VecOps;
-        
-         RVec<float> DivideVec(const RVec<float> &one, const RVec<float> &two){
-             RVec<float> divided = {};
-             for (unsigned j = 0; j < one.size(); ++j) {
-                 divided.push_back(one[j]/two[j]);
-             }
-             return 1.0-divided;
-         }
-         
-        bool hard_process(int value){
-            return ((value & (1 << 7)) == (1 << 7)) || ((value & (1 << 8)) == (1 << 8));
-        }
-        
-        int GetNbJets(const RVec<int> &GenPart_statusFlags, const RVec<int> &GenPart_pdgId){
-            int nBJets =  0;
-            std::cout << "-----" << std::endl;
-            for (unsigned i = 0; i < GenPart_statusFlags.size(); ++i) {
-            
-                nBJets += int(hard_process(GenPart_statusFlags.at(i)) && (abs(GenPart_pdgId.at(i))==5));
+#include <math.h>
+#include <TLorentzVector.h>
+#include <algorithm> 
 
-            }
-            return nBJets;
-        }
-        
-        int GetNsJets(const RVec<int> &GenPart_statusFlags, const RVec<int> &GenPart_pdgId){
-            int nSJets =  0;
-            for (unsigned i = 0; i < GenPart_statusFlags.size(); ++i) {
-                nSJets += int(hard_process(GenPart_statusFlags.at(i)) && (abs(GenPart_pdgId.at(i))==3));
-            }
-            return nSJets;
-        }
+TH2F *bTagEff = 0;
+
+using namespace ROOT::VecOps;
         
         
-        int GetGenMultiplicity(const RVec<int> &GenPart_statusFlags, const RVec<int> &GenPart_pdgId, const RVec<float> &GenPart_pt){
-            int multiplicity = -1;
-            int nGen = GenPart_pdgId.size();
-            bool _ishard;
-            float _pt;
-            float _pdgid;
-            
-            //find initial state information
-            int inBs=0;
-            int inSs=0;
-            int inGluons=0;
-            for (unsigned i = 0; i < nGen; ++i) {
-                    _ishard = hard_process(GenPart_statusFlags.at(i));
-                    _pt = GenPart_pt.at(i);
-                    _pdgid = GenPart_pdgId.at(i);
-                    //only take hard process particles
-                    if (!_ishard) continue;
-                    // only initial state has pt of 0
-                    if (!(_pt==0)) continue;
-                    if (abs(_pdgid)==5) inBs+=1;
-                    if (abs(_pdgid)==3) inSs+=1;
-                    if (abs(_pdgid)==21) inGluons+=1; 
-            }
-            
-            //final state information
-            float higestPtBplus = 0;
-            float higestPtBminus = 0;
-            float higestPtB = 0;
-            float higestPtS = 0;
-            for (unsigned i = 0; i < nGen; ++i) {
-                _ishard = hard_process(GenPart_statusFlags.at(i));
-                _pt = GenPart_pt.at(i);
-                _pdgid = GenPart_pdgId.at(i);
-                //only take hard process particles
-                if (!_ishard) continue;
-                std::cout << _pdgid << " " << _pt << " " << _ishard << " " << GenPart_statusFlags.at(i) <<  std::endl;
-                if (_pt==0) continue;
-                if ((_pdgid==5) && (_pt > higestPtBplus)) higestPtBplus = _pt;
-                if ((_pdgid==-5) && (_pt > higestPtBminus)) higestPtBminus = _pt;
-                if ((abs(_pdgid)==3) && (_pt > higestPtS)) higestPtS = _pt;
-            }
-            higestPtB = max(higestPtBplus, higestPtBminus);
-            
-            // multiplicity logic, based on combined initial state and final state
-            // 0j: 1, 1b: 1, 1s: 2, 1b+1s: 3, 2b: 4, not-categorized: -1
-            if ((inBs==2) && (inSs==0) && (inGluons==0)) multiplicity = 0;
-            if ((inBs==1) && (inSs==1) && (inGluons==0)) multiplicity = 0;
-            if ((inBs==0) && (inSs==1) && (inGluons==1)) multiplicity = 1;
-            if ((inBs==1) && (inSs==0) && (inGluons==1)){
-                if (higestPtB>higestPtS) multiplicity = 1;
-                if (higestPtS>higestPtB) multiplicity = 2;
-            }
-            if ((inBs==0) && (inSs==0) && (inGluons==2)){
-                if (((higestPtS>higestPtBplus) || (higestPtS>higestPtBminus)) &&  (higestPtB>0)) multiplicity = 3;
-                if ((higestPtBplus>higestPtS) && (higestPtBminus>higestPtS)) multiplicity = 4;
-            }
-    //std::cout << "----------------" << std::endl;   
-    //std::cout << "inBs: " << inBs << std::endl;
-    //std::cout << "inSs: " << inSs << std::endl;
-    //std::cout << "inGluons: " << inGluons << std::endl;
-    //std::cout << "higestPtBplus: " << higestPtBplus << std::endl;
-    //std::cout << "higestPtBminus: " << higestPtBminus << std::endl;
-    //std::cout << "higestPtB: " << higestPtB << std::endl;
-    //std::cout << "higestPtS: " << higestPtS << std::endl;
-    //std::cout << ((inBs==1) && (inSs==1) && (inGluons==0)) << std::endl;
-    //std::cout << (inBs==1) << (inSs==1) << (inGluons==0) << std::endl;
-    //std::cout << multiplicity << std::endl;
-            return multiplicity;                            
-        }
-            
+float CalcMinPhi(float phi1, float phi2){
+   float diff = fmod((phi1-phi2 +3.1415), (2 *3.1415)) - 3.1415;
+   if (diff < -3.1415) {
+       diff = diff + 3.1415*2;
+   }
+   return diff;
+}
+
+float CalcDeltaR(float eta1, float  eta2, float  phi1, float  phi2) {
+    return pow(pow(eta1-eta2, 2) + pow(CalcMinPhi(phi1, phi2), 2), .5);
+}        
         
-        RVec<float> GetPDFWeight(const RVec<float> &LHEPdfWeight){
-            // based on https://arxiv.org/pdf/2203.05506.pdf
-            auto LHEPdfWeight_sorted = Sort(LHEPdfWeight);
-            ///take 68% envelope
-            int nVariations = LHEPdfWeight_sorted.size();
-            float percentOffEnds = (1.-.68)/2.;
-            int numberOffEnds = floor(percentOffEnds*(float)nVariations);
-            float delta = 0;
-            if (nVariations > 0){
-                float up = LHEPdfWeight_sorted.at(nVariations-numberOffEnds);
-                float down = LHEPdfWeight_sorted.at(numberOffEnds);
-                delta = (float)abs(up-down)/2;
-            }
-            RVec<float> weight={(float)1.-delta,(float)1.+delta};
-            return weight;
+bool hard_process(int value){
+    return ((value & (1 << 7)) == (1 << 7)) || ((value & (1 << 8)) == (1 << 8));
+}      
+        
+
+int GetGenMultiplicity(const RVec<int> &GenPart_statusFlags, const RVec<int> &GenPart_pdgId,
+                    const RVec<float> &GenPart_pt, const RVec<float> &GenPart_eta, const RVec<float> &GenPart_phi){
+    int multiplicity = -1;
+    int nGen = GenPart_pdgId.size();
+    bool _ishard;
+    float _pt;
+    float _eta;
+    float _phi;
+    float _pdgid;
+    
+    //find initial state information
+    int inBs=0;
+    int inSs=0;
+    int inOQs=0;
+    int inGs=0;
+    for (unsigned i = 0; i < nGen; ++i) {
+            _ishard = hard_process(GenPart_statusFlags.at(i));
+            _pt = GenPart_pt.at(i);
+            _pdgid = GenPart_pdgId.at(i);
+            //only take hard process particles
+            if (!_ishard) continue;
+            // only initial state has pt of 0
+            if (!(_pt==0)) continue;
+            if (abs(_pdgid)==5) inBs+=1;
+            if (abs(_pdgid)==3) inSs+=1;
+            if ((abs(_pdgid)<=9) && (abs(_pdgid)!=3) && (abs(_pdgid)!=5)) inOQs+=1;
+            if (abs(_pdgid)==21) inGs+=1; 
+    }
+    
+    //final state information
+    //leading quark stats
+    float leadOutB = 0;
+    float leadOutB_id = 0;
+    float leadOutB_eta = 0;
+    float leadOutB_phi = 0;
+    float leadOutBMinus = 0;
+    float leadOutBPlus = 0;
+    float leadOutS = 0;
+    for (unsigned i = 0; i < nGen; ++i) {
+        _ishard = hard_process(GenPart_statusFlags.at(i));
+        _pt = GenPart_pt.at(i);
+        _eta = GenPart_eta.at(i);
+        _phi = GenPart_phi.at(i);
+        _pdgid = GenPart_pdgId.at(i);
+        
+        //only take hard process particles
+        if (!_ishard) continue;
+        if (_pt==0) continue;
+        if ((abs(_pdgid)==5) && (_pt > leadOutB)){
+            leadOutB = _pt;
+            leadOutB_id = _pdgid;
+            leadOutB_eta = _eta;
+            leadOutB_phi = _phi;
         }
+        if ((_pdgid==5) && (_pt > leadOutBPlus)) leadOutBPlus = _pt;
+        if ((_pdgid==-5) && (_pt > leadOutBMinus)) leadOutBMinus = _pt;
+        if ((abs(_pdgid)==3) && (_pt > leadOutS)) leadOutS = _pt;
+    }
+    //subleading b quark stats
+    float subLeadOutB = 0;
+    float deltaR = 0;
+    for (unsigned i = 0; i < nGen; ++i) {
+        _ishard = hard_process(GenPart_statusFlags.at(i));
+        _pt = GenPart_pt.at(i);
+        _eta = GenPart_eta.at(i);
+        _phi = GenPart_phi.at(i);
+        _pdgid = GenPart_pdgId.at(i);
+        //only take hard process particles
+        if (!_ishard) continue;
+        if (_pt==0) continue;
+        //only b
+        if (abs(_pdgid)!=5) continue;
+        deltaR = CalcDeltaR(_eta, leadOutB_eta, _phi, leadOutB_phi);
+        if ((deltaR < .4) && (_pdgid == leadOutB_id)) continue;
+        if ((_pt < leadOutB) && (_pt > subLeadOutB)) subLeadOutB = _pt;
+    }
+        
+    // multiplicity logic, based on combined initial state and final state
+    // 0j: 1, 1b: 1, 1s: 2, 1b+1s: 3, 2b: 4, not-categorized: -1
+    //5 5
+    if ((inBs == 2) && (inSs == 0) && (inOQs == 0) && (inGs == 0)){
+        //0b
+        multiplicity = 0;
+        //2b'
+        if ((leadOutB>0) && (subLeadOutB>0)){ 
+            multiplicity = 4;
+        //1b1s'
+        } else if ((leadOutB>0) && (leadOutS>0)) multiplicity = 3;
+    }
+    //5 3 
+    if ((inBs == 1) && (inSs == 1) && (inOQs == 0) && (inGs == 0)) {
+        //0b
+        multiplicity = 0;
+        //2b'
+        if ((leadOutB>0) && (subLeadOutB>0)) multiplicity = 4;
+    }
+    //5 21
+    if ((inBs == 1) && (inSs == 0) && (inOQs == 0) && (inGs == 1)){
+    
+        //1b
+        if (leadOutB > leadOutS) multiplicity = 1;
+        //1s
+        if (leadOutS > leadOutB) multiplicity = 2;
+    }
+    //3 21
+    if ((inBs == 0) && (inSs == 1) && (inOQs == 0) && (inGs == 1)) multiplicity = 1;
+    //21 21
+    if ((inBs == 0) && (inSs == 0) && (inOQs == 0) && (inGs == 2)){
+        //2b
+        if ((leadOutBPlus > leadOutS) && (leadOutBMinus > leadOutS)){
+            multiplicity = 4;
+        //1b+1s
+        } else if ((leadOutS > 0) && (leadOutB > 0)) multiplicity = 3;
+    }
+    //5 + x        
+    if ((inBs == 1) && (inSs == 0) && (inOQs == 1) && (inGs ==0)){
+        //1b+1s'
+        if ((leadOutB>0) && (leadOutS>0)) {
+            multiplicity = 3;
+        //1b
+        } else if (leadOutB>0) multiplicity = 1;
+        //1s
+        if (leadOutS>0) multiplicity = 2;
+    }
+    //3 + x        
+    if ((inBs == 0) && (inSs == 1) && (inOQs == 1) && (inGs ==0)){
+        //1b
+        multiplicity = 3;
+    }
+    //2 q       
+    if ((inBs == 0) && (inSs == 0) && (inOQs == 2) && (inGs ==0)){
+        //2b
+        multiplicity = 4;
+    }
+
+    return multiplicity;
+}
+       
+        
+        
+      
+        
+        
+RVec<float> DivideVec(const RVec<float> &one, const RVec<float> &two){
+    RVec<float> divided = {};
+    for (unsigned j = 0; j < one.size(); ++j) {
+        divided.push_back(one[j]/two[j]);
+    }
+    return 1.0-divided;
+}
+         
+
+        
+int GetNbJets(const RVec<int> &GenPart_statusFlags, const RVec<int> &GenPart_pdgId){
+    int nBJets =  0;
+    std::cout << "-----" << std::endl;
+    for (unsigned i = 0; i < GenPart_statusFlags.size(); ++i) {
+    
+        nBJets += int(hard_process(GenPart_statusFlags.at(i)) && (abs(GenPart_pdgId.at(i))==5));
+
+    }
+    return nBJets;
+}
+
+int GetNsJets(const RVec<int> &GenPart_statusFlags, const RVec<int> &GenPart_pdgId){
+    int nSJets =  0;
+    for (unsigned i = 0; i < GenPart_statusFlags.size(); ++i) {
+        nSJets += int(hard_process(GenPart_statusFlags.at(i)) && (abs(GenPart_pdgId.at(i))==3));
+    }
+    return nSJets;
+}
+
+
+RVec<float> GetPDFWeight(const RVec<float> &LHEPdfWeight){
+    // based on https://arxiv.org/pdf/2203.05506.pdf
+    auto LHEPdfWeight_sorted = Sort(LHEPdfWeight);
+    ///take 68% envelope
+    int nVariations = LHEPdfWeight_sorted.size();
+    float percentOffEnds = (1.-.68)/2.;
+    int numberOffEnds = floor(percentOffEnds*(float)nVariations);
+    float delta = 0;
+    if (nVariations > 0){
+        float up = LHEPdfWeight_sorted.at(nVariations-numberOffEnds);
+        float down = LHEPdfWeight_sorted.at(numberOffEnds);
+        delta = (float)abs(up-down)/2;
+    }
+    RVec<float> weight={(float)1.-delta,(float)1.+delta};
+    return weight;
+}     
+       
         
  RVec<float> GetScaleUncertainty( const RVec<float> &LHEScaleWeight){
           RVec<float> weight={1.,1.};
