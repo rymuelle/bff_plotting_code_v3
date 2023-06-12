@@ -65,12 +65,18 @@ int GetGenMultiplicity(const RVec<int> &GenPart_statusFlags, const RVec<int> &Ge
     float leadOutBMinus = 0;
     float leadOutBPlus = 0;
     float leadOutS = 0;
+    float leadOutS_id = 0;
+    float leadOutS_eta = 0;
+    float leadOutS_phi = 0;
+    float leadOutUnderlyingB = 0;
     for (unsigned i = 0; i < nGen; ++i) {
         _ishard = hard_process(GenPart_statusFlags.at(i));
         _pt = GenPart_pt.at(i);
         _eta = GenPart_eta.at(i);
         _phi = GenPart_phi.at(i);
         _pdgid = GenPart_pdgId.at(i);
+        /// underlying b
+        if ((!_ishard) && (abs(_pdgid)==5) && (_pt > leadOutUnderlyingB)) leadOutUnderlyingB = _pt;
         
         //only take hard process particles
         if (!_ishard) continue;
@@ -84,9 +90,17 @@ int GetGenMultiplicity(const RVec<int> &GenPart_statusFlags, const RVec<int> &Ge
         if ((_pdgid==5) && (_pt > leadOutBPlus)) leadOutBPlus = _pt;
         if ((_pdgid==-5) && (_pt > leadOutBMinus)) leadOutBMinus = _pt;
         if ((abs(_pdgid)==3) && (_pt > leadOutS)) leadOutS = _pt;
+        
+        if ((abs(_pdgid)==3) && (_pt > leadOutS)){
+            leadOutS = _pt;
+            leadOutS_id = _pdgid;
+            leadOutS_eta = _eta;
+            leadOutS_phi = _phi;
+        }
     }
     //subleading b quark stats
     float subLeadOutB = 0;
+    float subLeadOutS = 0;
     float deltaR = 0;
     for (unsigned i = 0; i < nGen; ++i) {
         _ishard = hard_process(GenPart_statusFlags.at(i));
@@ -98,14 +112,20 @@ int GetGenMultiplicity(const RVec<int> &GenPart_statusFlags, const RVec<int> &Ge
         if (!_ishard) continue;
         if (_pt==0) continue;
         //only b
-        if (abs(_pdgid)!=5) continue;
-        deltaR = CalcDeltaR(_eta, leadOutB_eta, _phi, leadOutB_phi);
-        if ((deltaR < .4) && (_pdgid == leadOutB_id)) continue;
-        if ((_pt < leadOutB) && (_pt > subLeadOutB)) subLeadOutB = _pt;
+        if (abs(_pdgid)==5){
+            deltaR = CalcDeltaR(_eta, leadOutB_eta, _phi, leadOutB_phi);
+            if ((deltaR < .4) && (_pdgid == leadOutB_id)) continue;
+            if ((_pt < leadOutB) && (_pt > subLeadOutB)) subLeadOutB = _pt;
+        }
+        if (abs(_pdgid)==3){
+            deltaR = CalcDeltaR(_eta, leadOutS_eta, _phi, leadOutS_phi);
+            if ((deltaR < .4) && (_pdgid == leadOutS_id)) continue;
+            if ((_pt < leadOutS) && (_pt > subLeadOutS)) subLeadOutS = _pt;
+        }
     }
         
     // multiplicity logic, based on combined initial state and final state
-    // 0j: 0,1, 1b: 2,3,4, 1s: 5,6, 1b+1s: 7,8,9,10, 2b: 11,12,13,14
+    // 0j: 0,1, 1b: 2,3,4, 1s: 5,6, 1b+1s: 7,8,9,10, 2b: 11,12,13,14, 2s: 15, 16, underlying: 17
     //5 5
     if ((inBs == 2) && (inSs == 0) && (inOQs == 0) && (inGs == 0)){
         //0b
@@ -113,8 +133,12 @@ int GetGenMultiplicity(const RVec<int> &GenPart_statusFlags, const RVec<int> &Ge
         //2b'
         if ((leadOutB>0) && (subLeadOutB>0)){ 
             multiplicity += pow(2,11);
+        //2s
+        } else if ((leadOutS>0) && (subLeadOutS>subLeadOutB)) {
+            multiplicity += pow(2,16);
         //1b1s'
         } else if ((leadOutB>0) && (leadOutS>0)) multiplicity += pow(2,7);
+        
     }
     //5 3 
     if ((inBs == 1) && (inSs == 1) && (inOQs == 0) && (inGs == 0)) {
@@ -122,6 +146,7 @@ int GetGenMultiplicity(const RVec<int> &GenPart_statusFlags, const RVec<int> &Ge
         multiplicity += pow(2,0);
         //2b'
         if ((leadOutB>0) && (subLeadOutB>0)) multiplicity += pow(2,12);
+        if ((leadOutS>0) && (subLeadOutS>subLeadOutB)) multiplicity += pow(2,15);
     }
     //5 21
     if ((inBs == 1) && (inSs == 0) && (inOQs == 0) && (inGs == 1)){
@@ -162,11 +187,10 @@ int GetGenMultiplicity(const RVec<int> &GenPart_statusFlags, const RVec<int> &Ge
         multiplicity += pow(2,14);
     }
 
+    //underlying
+    if  (((multiplicity == pow(2,0)) || (multiplicity == pow(2,1))) && (leadOutUnderlyingB>20)) multiplicity += pow(2,17);
     return multiplicity;
 }
-       
-        
-        
       
         
         
