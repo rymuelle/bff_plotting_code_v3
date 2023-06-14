@@ -210,3 +210,17 @@ mystery: 5_interp_signal_v2_makedf.ipynb abcd factor of e off in recomputation. 
 draw_stack_plot_hists.py: removed kwargs from make_sys_hist
 
 4_interp_signal_v2: added interpolation test
+
+
+#model independant:
+
+0_bff_skimmer-bffv2.ipynb
+0_bff_skimmer-bffv2-no_cuts_b_s-straight_from_nanoaod.ipynb
+
+1_b_s_multiplicty_plot-acceptance_drop_investigation-full_multiplicity
+2_b_s_multiplicty_plot-acceptance_drop_investigation-full_multiplicity.ipynb
+
+5_interp_signal_model_ind_makedf-indp_bins
+5_interp_signal_model_ind_makedf-indp_bins
+
+7_make_comb_csv_bffv2-model_ind.ipynb > also produce limit plots atm

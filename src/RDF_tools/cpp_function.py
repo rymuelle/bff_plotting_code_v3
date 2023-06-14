@@ -125,38 +125,54 @@ int GetGenMultiplicity(const RVec<int> &GenPart_statusFlags, const RVec<int> &Ge
     }
         
     // multiplicity logic, based on combined initial state and final state
-    // 0j: 0,1, 1b: 2,3,4, 1s: 5,6, 1b+1s: 7,8,9,10, 2b: 11,12,13,14, 2s: 15, 16, underlying: 17
+    // 0j: 0,1, 1b: 2,3,4, 1s: 5,6, 1b+1s: 7,8,9,10, 2b: 11,12,13,14, 2s: 15, 16, underlying: 17 other: 18
     //5 5
     if ((inBs == 2) && (inSs == 0) && (inOQs == 0) && (inGs == 0)){
-        //0b
-        multiplicity += pow(2,0);
+
         //2b'
         if ((leadOutB>0) && (subLeadOutB>0)){ 
             multiplicity += pow(2,11);
         //2s
-        } else if ((leadOutS>0) && (subLeadOutS>subLeadOutB)) {
+        } else if ((leadOutS>0) && (subLeadOutS>leadOutB)) {
             multiplicity += pow(2,16);
         //1b1s'
-        } else if ((leadOutB>0) && (leadOutS>0)) multiplicity += pow(2,7);
+        } else if ((leadOutB>0) && (leadOutS>0)) { 
+            multiplicity += pow(2,7) ;
+        } else {
+            //0b
+            multiplicity += pow(2,0);
+        }
         
     }
     //5 3 
     if ((inBs == 1) && (inSs == 1) && (inOQs == 0) && (inGs == 0)) {
-        //0b
-        multiplicity += pow(2,0);
+
         //2b'
-        if ((leadOutB>0) && (subLeadOutB>0)) multiplicity += pow(2,12);
-        if ((leadOutS>0) && (subLeadOutS>subLeadOutB)) multiplicity += pow(2,15);
+        if ((leadOutB>0) && (subLeadOutB>0)) {
+            multiplicity += pow(2,12);
+        //2s
+        } else if ((leadOutS>0) && (subLeadOutS>leadOutB)) {
+            multiplicity += pow(2,15);
+        } else {
+            //0b
+            multiplicity += pow(2,1);
+        }
     }
     //5 21
     if ((inBs == 1) && (inSs == 0) && (inOQs == 0) && (inGs == 1)){
     
         //1b
-        if (leadOutB > leadOutS) multiplicity += pow(2,2);
-        //1s
-        if (leadOutS > leadOutB) multiplicity += pow(2,5);
+        if (leadOutB > leadOutS) {
+            multiplicity += pow(2,2);
+        } else if (leadOutS > leadOutB) {
+            //1s
+            multiplicity += pow(2,5);
+        } else {
+            multiplicity += pow(2,18);
+        }
     }
     //3 21
+    //1b
     if ((inBs == 0) && (inSs == 1) && (inOQs == 0) && (inGs == 1)) multiplicity += pow(2,3);
     //21 21
     if ((inBs == 0) && (inSs == 0) && (inOQs == 0) && (inGs == 2)){
@@ -172,9 +188,12 @@ int GetGenMultiplicity(const RVec<int> &GenPart_statusFlags, const RVec<int> &Ge
         if ((leadOutB>0) && (leadOutS>0)) {
             multiplicity += pow(2,9);
         //1b
-        } else if (leadOutB>0) multiplicity += pow(2,4);
-        //1s
-        if (leadOutS>0) multiplicity += pow(2,6);
+        } else if (leadOutB>0) {
+            multiplicity += pow(2,4);
+        } else if (leadOutS>0) {
+            //1s
+            multiplicity += pow(2,6);
+        }
     }
     //3 + x        
     if ((inBs == 0) && (inSs == 1) && (inOQs == 1) && (inGs ==0)){
@@ -183,15 +202,26 @@ int GetGenMultiplicity(const RVec<int> &GenPart_statusFlags, const RVec<int> &Ge
     }
     //2 q       
     if ((inBs == 0) && (inSs == 0) && (inOQs == 2) && (inGs ==0)){
+    
         //2b
-        multiplicity += pow(2,14);
+        if ((leadOutBPlus > leadOutS) && (leadOutBMinus > leadOutS)){
+            multiplicity += pow(2,14);
+        //1b+1s
+        } else if ((leadOutS > 0) && (leadOutB > 0)){
+            multiplicity += pow(2,19);
+        //catch random events
+        } else multiplicity += pow(2,20);
+        
     }
 
     //underlying
-    if  (((multiplicity == pow(2,0)) || (multiplicity == pow(2,1))) && (leadOutUnderlyingB>20)) multiplicity += pow(2,17);
+    if  ((multiplicity == pow(2,0)) && (leadOutUnderlyingB>20)) multiplicity += pow(2,17);
+    if  ((multiplicity == pow(2,1)) && (leadOutUnderlyingB>20)) multiplicity += pow(2,21);
+
+    //code goes here
+    
     return multiplicity;
 }
-      
         
         
 RVec<float> DivideVec(const RVec<float> &one, const RVec<float> &two){
