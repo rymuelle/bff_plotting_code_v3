@@ -41,8 +41,8 @@ def bff2_value(df, jv): return np.array([RelMET_filter2(df, 'RelMET_{}'.format(j
 
 bff_value = {"1":bff1_value,"2":bff2_value}
 
-def bff1_no_tmb_value(df, jv): return np.array([RelMET_filter1(df, 'RelMET_{}'.format(jv), jv)*5/8, HTLT_filter1(df, 'HTLT_{}'.format(jv), jv)*3/8]).sum(axis=0)
-def bff2_no_tmb_value(df, jv): return np.array([RelMET_filter2(df, 'RelMET_{}'.format(jv), jv)*5/8, HTLT_filter2(df, 'HTLT_{}'.format(jv), jv)*3/8]).sum(axis=0)
+def bff1_no_tmb_value(df, jv): return np.array([RelMET_filter1(df, 'RelMET_{}'.format(jv), jv)*2, HTLT_filter1(df, 'HTLT_{}'.format(jv), jv)*4]).sum(axis=0)
+def bff2_no_tmb_value(df, jv): return np.array([RelMET_filter2(df, 'RelMET_{}'.format(jv), jv)*2, HTLT_filter2(df, 'HTLT_{}'.format(jv), jv)*4]).sum(axis=0)
 
 bff_no_tmb_value = {"1":bff1_no_tmb_value,"2":bff2_no_tmb_value}
 
@@ -52,6 +52,7 @@ def is_muon_reg(reg):
     return ('SR' in reg) or ('CR10' in reg) or ('CR20' in reg)
 
 def trigger_filter(df, reg, era):
+    era = int(era)
     if era == 2016:
         if is_muon_reg(reg): triggers =  ['HLT_Mu50', 'HLT_TkMu50']
         else: triggers =  ['HLT_DoubleEle33_CaloIdL_MW'], #'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL']
@@ -81,7 +82,17 @@ def process_sample(row, era, verbose=False, trigger_fix=False):
     for reg in df.filter(regex='(?:SR|CR)\d+_.+'):
         nJets, jv = re.findall('(?:SR|CR)(\d)\d*_(.+)', reg)[0]
         # selected events are ==1, events pre bff selection are .5
-        df[reg] = trigger_filter(df, reg, era)*(1+bff_no_tmb_value[nJets](df, jv))/2
+        # trigger=1, relmet==2, htlt ==4, mudr=8, eledr = 16
+        bff = bff_no_tmb_value[nJets](df, jv)
+        trigger = trigger_filter(df, reg, era)
+        mudr = (df['minGoodJetMuDR_{}'.format(jv)] > 0.4)*8
+        eldr = (df['minGoodJetElDR_{}'.format(jv)] > 0.4)*16
+        df[reg] = trigger_filter(df, reg, era)
+        df[reg] += bff
+        df[reg] += mudr
+        df[reg] += eldr
+        df[reg] *= trigger_filter(df, reg, era)/31
+        
     selected_events = df.filter(regex='(?:SR|CR)\d+_.+').sum(axis=1)>0
     in_at_least_one_region_post_bff = (df.filter(regex='(?:SR|CR)\d+_.+')==1).sum(axis=1)>0
     if verbose:
