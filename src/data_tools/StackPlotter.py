@@ -23,7 +23,8 @@ class StackPlotter():
         if not preserve_binning: sh = sh.reduce_range(bottom=self.x_range[0], top=self.x_range[1])
         # ST isr fsr issue
         if row.sample_name in ['mc_santitop','mc_stop']:
-            sh.sys['Weight_ISRFSR_Up'] = [sh.sys['Weight_ISRFSR_Up'][0]*0, sh.sys['Weight_ISRFSR_Up'][0]*0]
+            if 'Weight_ISRFSR_Up' in sh.sys: 
+                sh.sys['Weight_ISRFSR_Up'] = [sh.sys['Weight_ISRFSR_Up'][0]*0, sh.sys['Weight_ISRFSR_Up'][0]*0]
         if sh.sys != {}: sh.sys_from_sys_dict()
         return sh 
     
@@ -80,8 +81,11 @@ class StackPlotter():
             _chist = self.combine_hists(_name_tdf)
             if make_density: _chist = _chist.make_density_hist()
             _nominal_values.append(_chist.nominal) 
+            
+        labels = [signal_type_dict[x] for x in bck_dict]
+
         ax.stackplot(_chist.calc_bin_centers(), _nominal_values,
-                     labels=[signal_type_dict[x] for x in bck_dict], alpha=1, step='mid', colors=bck_colors)
+                     labels=labels, alpha=1, step='mid', colors=bck_colors)
         bhist = self.combine_back(feature, reg)
         if make_density: bhist = bhist.make_density_hist()
         bhist.draw(ax, alpha=.5, draw_sys=draw_sys, error_scale=error_scale, color=nom_color, sys_label=sys_label, label="MC background", **kwargs)
@@ -117,6 +121,24 @@ class StackPlotter():
                 _shist = self.make_hist(_sdf.iloc[0])
                 if make_density: _shist = _shist.make_density_hist()
                 _shist.draw(ax, color=color, label='{} GeV'.format(int(mass)), draw_sys=draw_sys)
+                
+    def draw_signals_compare_dbs(self, ax, feature, reg,
+                     dbs_values = [0.04, 1.0], mass_values = [125., 350.], 
+                                 lss =['solid', 'dashed'],
+                                c1='#ff2f00', c2='#0486ff',
+                                ratio=-1,  draw_sys=1, make_density=1, **kwargs):
+        nmass = len(mass_values)
+        colors = [color_fader(c1,c2,mix=(i+.0)/(nmass-1)) for i in range(nmass)]
+        
+        tdf = self.feature_reg_df(feature, reg)
+        sdf =  tdf[tdf.type=='sig']
+        for ls, dbs in zip(lss,dbs_values):
+            for color, mass in zip(colors, mass_values): 
+                _sdf = sdf[(sdf.mass==mass) & (sdf.dbs==dbs)]
+                _shist = self.make_hist(_sdf.iloc[0])
+                if make_density: _shist = _shist.make_density_hist()
+                _shist.normalize().draw(ax, color=color, label='{} GeV $\delta_{{bs}}$ = {}'.format(int(mass), dbs), draw_sys=draw_sys, ls=ls)
+        return _shist
                 
     def make_data_hist(self, feature, reg, blinded=True):
         mu_regions = ['SR1', 'SR2', 'CR10', 'CR20']
