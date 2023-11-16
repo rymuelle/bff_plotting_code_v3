@@ -217,26 +217,6 @@ def finalize_weights(df,ismc, is_inclusive, name,sample_weight, era):
         
     return df
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def setup_btag_puid(ismc, era, bTagEff_list):
     if not ismc: return None, None
     '''read only one btag eff file'''
@@ -440,3 +420,56 @@ def def_lep_selections(df):
     df = df.Define("IncEmuLocal", "nEle==1 && nMuons==1 && oppositeSignEmu==1")
     df = df.Define("IncEmuLocalLow", "IncEmuLocal && nEleLowPt==1 && nMuonsLowPt==1")
     return df
+
+
+def test_data_abcd(df, ismc, bDiscValueLoose, postfix="" ):
+    df = df.Define("GoodJet_subloose"+postfix, 
+                   "GoodLJet_jet_nom_muon_corrected_pt_ele_pt && Jet_btagDeepFlavB<={}".format(bDiscValueLoose)
+                  )\
+           .Define("GoodJet_subloosePt"+postfix, "Jet_pt[GoodJet_subloose{}]".format(postfix))\
+           .Define("GoodJet_sublooseEta"+postfix, "Jet_eta[GoodJet_subloose{}]".format(postfix))\
+           .Define("nGoodJet_subloose"+postfix, "GoodJet_subloosePt{}.size()".format(postfix))
+                   
+                   
+    df = df.Define("GoodJet_loose_to_medium"+postfix, 
+                   "GoodLJet_jet_nom_muon_corrected_pt_ele_pt && Jet_btagDeepFlavB>{}".format(bDiscValueLoose)
+                  )\
+           .Define("GoodJet_loose_to_mediumPt"+postfix, "Jet_pt[GoodJet_loose_to_medium{}]".format(postfix))\
+           .Define("GoodJet_loose_to_mediumEta"+postfix, "Jet_eta[GoodJet_loose_to_medium{}]".format(postfix))\
+           .Define("nGoodJet_loose_to_medium"+postfix, "GoodJet_loose_to_mediumPt{}.size()".format(postfix))
+    
+    #regions
+    #CRD: mumu + subloose
+    #CRA: mumu + loose
+    #CRC: ee + subloose
+    #CRB: ee + loose
+    
+    #CRD2: mumu + subloose, ==2
+    #CRA2: mumu + loose>=1 
+    #CRC2: ee + subloose==2
+    #CRB2: ee + loose >= 1
+    df = df.Define('CRA'+postfix, 'CR10_jet_nom_muon_corrected_pt_ele_pt && nGoodJet_subloose{}==0'.format(postfix))
+    df = df.Define('CRB'+postfix, 'CR14_jet_nom_muon_corrected_pt_ele_pt && nGoodJet_subloose{}==0'.format(postfix))
+    df = df.Define('CRC'+postfix, 'CR14_jet_nom_muon_corrected_pt_ele_pt && nGoodJet_subloose{}==1'.format(postfix))
+    df = df.Define('CRD'+postfix, 'CR10_jet_nom_muon_corrected_pt_ele_pt && nGoodJet_subloose{}==1'.format(postfix))
+    
+    df = df.Define('CRA2'+postfix, 'CR20_jet_nom_muon_corrected_pt_ele_pt && nGoodJet_subloose{}!=2'.format(postfix))
+    df = df.Define('CRB2'+postfix, 'CR24_jet_nom_muon_corrected_pt_ele_pt && nGoodJet_subloose{}!=2'.format(postfix))
+    df = df.Define('CRC2'+postfix, 'CR24_jet_nom_muon_corrected_pt_ele_pt && nGoodJet_subloose{}==2'.format(postfix))
+    df = df.Define('CRD2'+postfix, 'CR20_jet_nom_muon_corrected_pt_ele_pt && nGoodJet_subloose{}==2'.format(postfix))    
+    return df
+
+def medium_to_tight_region(df, ismc, bDiscValueTight, postfix="" ):
+    df = df.Define("GoodJet_tight_to_medium"+postfix, 
+                   "GoodBJet_jet_nom_muon_corrected_pt_ele_pt && Jet_btagDeepFlavB<={}".format(bDiscValueTight)
+                  )\
+           .Define("GoodJet_tight_to_mediumPt"+postfix, "Jet_pt[GoodJet_tight_to_medium{}]".format(postfix))\
+           .Define("GoodJet_tight_to_mediumEta"+postfix, "Jet_eta[GoodJet_tight_to_medium{}]".format(postfix))\
+           .Define("nGoodJet_tight_to_medium"+postfix, "GoodJet_tight_to_mediumPt{}.size()".format(postfix))
+                           
+    df = df.Define('CRA_tight_to_medium'+postfix, 'SR1_jet_nom_muon_corrected_pt_ele_pt && nGoodJet_tight_to_medium{}==0'.format(postfix))
+
+    df = df.Define('CRA2_tight_to_medium'+postfix, 'SR2_jet_nom_muon_corrected_pt_ele_pt && nGoodJet_tight_to_medium{}!=2'.format(postfix))
+    return df
+                    
+        
