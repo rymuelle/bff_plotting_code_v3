@@ -141,7 +141,8 @@ class StackPlotter():
         return _shist
                 
     def make_data_hist(self, feature, reg, blinded=True):
-        mu_regions = ['SR1', 'SR2', 'CR10', 'CR20']
+        mu_regions = ['SR1', 'SR2', 'CR10', 'CR20', 'CRA', 'CRD', 'CRA2', 'CRD2', 
+                      'CR20_median', 'CRA_median', 'CRD_median', 'CRA2_median', 'CRD2_median']
         
         tdf = self.feature_reg_df(feature, reg)
         data_string = '_el.csv'

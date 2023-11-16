@@ -49,19 +49,20 @@ bff_no_tmb_value = {"1":bff1_no_tmb_value,"2":bff2_no_tmb_value}
 
 
 def is_muon_reg(reg):
-    return ('SR' in reg) or ('CR10' in reg) or ('CR20' in reg)
+    return ('SR' in reg) or ('CR10' in reg) or ('CR20' in reg) or ('CRA' in reg) or ('CRD' in reg)
 
 def trigger_filter(df, reg, era):
     era = int(era)
     if era == 2016:
         if is_muon_reg(reg): triggers =  ['HLT_Mu50', 'HLT_TkMu50']
-        else: triggers =  ['HLT_DoubleEle33_CaloIdL_MW'], #'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL']
+        else: triggers =  ['HLT_DoubleEle33_CaloIdL_MW', 'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL']
     if era == 2017:
         if is_muon_reg(reg): triggers =  ['HLT_Mu50', 'HLT_OldMu100', 'HLT_TkMu100']
         else: triggers =  ['HLT_DoubleEle33_CaloIdL_MW', 'HLT_DoubleEle25_CaloIdL_MW']
     if era == 2018:
         if is_muon_reg(reg): triggers =  ['HLT_Mu50', 'HLT_OldMu100', 'HLT_TkMu100']
         else: triggers =  ['HLT_DoubleEle25_CaloIdL_MW']
+
     tdf = df[df[reg]==1]
     filter_list = np.full(df.shape[0], 0)
     for trig in triggers:
@@ -79,8 +80,15 @@ def process_sample(row, era, verbose=False, trigger_fix=False):
     #open file and filter out events with bff selection
     df = pd.read_csv(row.file)
     #loop over regions
-    for reg in df.filter(regex='(?:SR|CR)\d+_.+'):
-        nJets, jv = re.findall('(?:SR|CR)(\d)\d*_(.+)', reg)[0]
+    for reg in df.filter(regex='(?:CR[A-D]|(?:SR|CR)(?:\d+|[A-D](?:|2))_.+)'):
+    #loop over regions
+        if re.findall('(?:SR|CR)(\d)\d*_(.+)', reg):
+            nJets, jv = re.findall('(?:SR|CR)(\d)\d*_(.+)', reg)[0]
+        #for the CRA-CRD regions
+        else:
+            nJets = re.findall('CR[A-D](2?)', reg)[0]
+            jv = 'jet_nom_muon_corrected_pt_ele_pt'
+            if nJets == "": nJets = "1"
         # selected events are ==1, events pre bff selection are .5
         # trigger=1, relmet==2, htlt ==4, mudr=8, eledr = 16
         bff = bff_no_tmb_value[nJets](df, jv)
@@ -128,8 +136,15 @@ def process_sample_from_file(file, verbose=False):
     #open file and filter out events with bff selection
     df = pd.read_csv(file)
     #loop over regions
-    for reg in df.filter(regex='(?:SR|CR)\d+_.+'):
-        nJets, jv = re.findall('(?:SR|CR)(\d)\d*_(.+)', reg)[0]
+    for reg in df.filter(regex='(?:CR[A-D]|(?:SR|CR)(?:\d+|[A-D](?:|2))_.+)'):
+    #loop over regions
+        if re.findall('(?:SR|CR)(\d)\d*_(.+)', reg):
+            nJets, jv = re.findall('(?:SR|CR)(\d)\d*_(.+)', reg)[0]
+        #for the CRA-CRD regions
+        else:
+            nJets = re.findall('CR[A-D](2?)', reg)[0]
+            jv = 'jet_nom_muon_corrected_pt_ele_pt'
+            if nJets == "": nJets = "1"
         # selected events are ==1, events pre bff selection are .5
         df[reg] = df[reg]*(1+bff_no_tmb_value[nJets](df, jv))/2
     selected_events = df.filter(regex='(?:SR|CR)\d+_.+').sum(axis=1)>0

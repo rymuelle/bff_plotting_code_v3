@@ -124,14 +124,18 @@ class SysHist(Bins):
         else:
             ax.plot(self.calc_bin_centers(), self.nominal, drawstyle='steps-mid',color=color, **kwargs)
         if draw_sys: 
-            sys_diff = self.up.sum()-self.down.sum()
+            sys_diff = self.up-self.down
+            sys_diff[np.isnan(sys_diff)] = 0
+            sys_diff = sys_diff.sum()
+            
             std_sig = sys_diff/abs(sys_diff)
             down = self.down-std_sig*self.std
             up = self.up+std_sig*self.std
             ax.fill_between(self.calc_bin_centers(), up+self.nominal, down+self.nominal, step='mid', alpha=.5, color='gray', label=sys_label)
     def calc_sum(self):
         return np.sum(self.nominal)
-
+    def calc_integral(self):
+        return np.sum(self.nominal*bins.calc_bin_widths())
     def uncertainty_std_dev(self):
         return np.array([uncertainties.ufloat(nom, std) for nom, std in zip(self.nominal, self.std)])
     
@@ -217,10 +221,12 @@ def isin(df,region, select_level=1): return df[df[region]>=select_level]
 
 
 def make_sys_hist(mdf, column, reg, replace_dict = {}, bin_edges=bins.bin_edges,
-                 ind_sys_hist=False, select_level=1, isdata=0):
-    nom_mdf = isin(mdf,'{}_jet_nom_muon_corrected_pt_ele_pt'.format(reg), select_level=select_level)
+                 ind_sys_hist=False, select_level=1, isdata=0,
+                 nom_string = "_jet_nom_muon_corrected_pt_ele_pt",
+                 nom_string_feature = "_jet_nom_muon_corrected_pt_ele_pt"):
+    nom_mdf = isin(mdf,'{}{}'.format(reg, nom_string), select_level=select_level)
     nom_hist, nom_std =  make_hist(
-        nom_mdf[column+'_jet_nom_muon_corrected_pt_ele_pt'],
+        nom_mdf[column+nom_string_feature],
         weights=nom_mdf.Weight,
         std=1,
         bin_edges=bin_edges
@@ -232,11 +238,11 @@ def make_sys_hist(mdf, column, reg, replace_dict = {}, bin_edges=bins.bin_edges,
     sys_weights = {}
     for down, up in list(zip(sys_weight_columns_down, sys_weight_columns)):
         down_hist =  make_hist(
-            nom_mdf[column+'_jet_nom_muon_corrected_pt_ele_pt'],
+            nom_mdf[column+nom_string_feature],
             weights=nom_mdf[down],
         bin_edges=bin_edges)-nom_hist
         up_hist =  make_hist(
-            nom_mdf[column+'_jet_nom_muon_corrected_pt_ele_pt'],
+            nom_mdf[column+nom_string_feature],
             weights=nom_mdf[up],
         bin_edges=bin_edges)-nom_hist
         sorted_sys_hist = list(sorted([down_hist,up_hist], key=lambda x: np.sum(x)))
