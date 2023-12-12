@@ -129,9 +129,12 @@ class SysHist(Bins):
             sys_diff = sys_diff.sum()
             
             std_sig = sys_diff/abs(sys_diff)
-            down = self.down-std_sig*self.std
-            up = self.up+std_sig*self.std
-            ax.fill_between(self.calc_bin_centers(), up+self.nominal, down+self.nominal, step='mid', alpha=.5, color='gray', label=sys_label)
+            down = ( self.nominal+self.down-std_sig*self.std).repeat(2)
+            up = ( self.nominal+self.up+std_sig*self.std).repeat(2)
+            
+            edges = self.bin_edges.repeat(2)[1:-1]
+
+            ax.fill_between(edges, up, down, step='mid', alpha=.5, color='gray', label=sys_label)
     def calc_sum(self):
         return np.sum(self.nominal)
     def calc_integral(self):
