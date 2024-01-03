@@ -193,76 +193,92 @@ samples:
   name: mc_zz
   nevts: 0
   xsec: 16523.0
+
   
 - fileglob: BFF_125_dbs0p04_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_125_dbs0p04
   nevts: 0
   xsec: 1592
+  eff_path: BFF_125_dbs0p04_deepflavour_bff_eff
 - fileglob: BFF_125_dbs0p5_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_125_dbs0p5
   nevts: 0
   xsec: 3224
+  eff_path: BFF_125_dbs0p5_deepflavour_bff_eff
 - fileglob: BFF_125_dbs0p04_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_125_dbs1p0
   nevts: 0
   xsec: 8079
+  eff_path: BFF_125_dbs1p0_deepflavour_bff_eff
 - fileglob: BFF_150_dbs0p04_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_150_dbs0p04
   nevts: 0
   xsec: 856.4
+  eff_path: BFF_150_dbs0p04_deepflavour_bff_eff
 - fileglob: BFF_150_dbs0p5_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_150_dbs0p5
   nevts: 0
   xsec: 1736
+  eff_path: BFF_150_dbs0p5_deepflavour_bff_eff
 - fileglob: BFF_150_dbs1p0_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_150_dbs1p0
   nevts: 0
   xsec: 4361.
+  eff_path: BFF_150_dbs1p0_deepflavour_bff_eff
 - fileglob: BFF_175_dbs0p04_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_175_dbs0p04
   nevts: 0
   xsec: 497.6
+  eff_path: BFF_175_dbs0p04_deepflavour_bff_eff
 - fileglob: BFF_175_dbs0p5_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_175_dbs0p5
   nevts: 0
   xsec: 1011
+  eff_path: BFF_175_dbs0p5_deepflavour_bff_eff
 - fileglob: BFF_175_dbs1p0_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_175_dbs1p0
   nevts: 0
   xsec: 2541
+  eff_path: BFF_175_dbs1p0_deepflavour_bff_eff
 - fileglob: BFF_200_dbs0p04_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_200_dbs0p04_private
   nevts: 0
   xsec: 304.6
+  eff_path: BFF_200_dbs0p04_deepflavour_bff_eff
 - fileglob: BFF_200_dbs0p5_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_200_dbs0p5_private
   nevts: 0
   xsec: 626.2
+  eff_path: BFF_200_dbs0p5_deepflavour_bff_eff
 #- fileglob: BFF_200_dbs1p0_deepflavour_bffv2
 #  ismc: 1
 #  name: BFFZprimeToMuMu_M_200_dbs1p0
 #  nevts: 0
 #  xsec: 1568
+#  eff_path: BFF_200_dbs1p0_deepflavour_bff_eff
   
 - fileglob:  BFF_750_dbs0p04_deepflavour_bffv2
   ismc: 1
   name: BFFZprimeToMuMu_M_750_dbs0p04
   nevts: 0
   xsec: 1.007
+  eff_path: BFF_750_dbs0p04_deepflavour_bff_eff
   
 #- fileglob:  BFF_200_dbs0p04_gmu0p16_gb0p008125_deepflavour_bffv2
 #  ismc: 1
 #  name: BFFZprimeToMuMu_M_200_dbs0p04_gmu0p16_gb0p008125
 #  nevts: 0
 #  xsec:  51.11
+#  eff_path: BFF_200_dbs0p04_gmu0p16_gb0p008125_deepflavour_bff_eff
+
