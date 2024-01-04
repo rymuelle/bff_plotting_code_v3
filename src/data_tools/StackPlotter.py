@@ -109,7 +109,7 @@ class StackPlotter():
     def draw_signals(self, ax, feature, reg,
                      dbs_values = [0.04], mass_values = [125., 150., 175., 200., 250, 300, 350.],
                     c1='#ff2f00', c2='#0486ff',
-                    ratio=-1,  draw_sys=1, make_density=1, **kwargs):
+                    ratio=-1,  draw_sys=1, make_density=1, labels=True, **kwargs):
         nmass = len(mass_values)
         colors = [color_fader(c1,c2,mix=(i+.0)/nmass) for i in range(nmass)]
         
@@ -120,7 +120,8 @@ class StackPlotter():
                 _sdf = sdf[(sdf.mass==mass) & (sdf.dbs==dbs)]
                 _shist = self.make_hist(_sdf.iloc[0])
                 if make_density: _shist = _shist.make_density_hist()
-                _shist.draw(ax, color=color, label='{} GeV'.format(int(mass)), draw_sys=draw_sys)
+                label = '{} GeV'.format(int(mass)) if labels==True else None
+                _shist.draw(ax, color=color, label=label, draw_sys=draw_sys)
                 
     def draw_signals_compare_dbs(self, ax, feature, reg,
                      dbs_values = [0.04, 1.0], mass_values = [125., 350.], 
@@ -154,7 +155,7 @@ class StackPlotter():
         return _dhist
     
     def draw_data(self, ax, feature, reg, return_hist=0, make_density=1, **kwargs):
-        _dhist = self.make_data_hist(feature, reg)
+        _dhist = self.make_data_hist(feature, reg, **kwargs)
         if make_density: _dhist = _dhist.make_density_hist()
         ax.errorbar(_dhist.calc_bin_centers(), _dhist.nominal, yerr=_dhist.std, color='black',
                     label='Observed', ls='', marker='o')
