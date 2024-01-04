@@ -100,7 +100,15 @@ class SysHist(Bins):
             up, 
             std, 
             bin_edges,
-            sys=sys)        
+            sys=sys) 
+    
+    def get_value_at(self, target):
+        bin_centers = self.calc_bin_centers()
+        delta = np.abs(np.array(bin_centers) - target)
+        min_index = np.where(delta==delta.min())[0]
+        assert len(min_index) == 1, "Degenerate minimum values"
+        min_index = min_index[0]
+        return self.nominal[min_index], self.std[min_index]
         
     def calc_ratio(self, divisor):
         sys = self.sys
