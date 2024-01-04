@@ -18,7 +18,9 @@ class SysHist(Bins):
         nom = self.nominal.sum()
         sys_string = "nominal: {:.1f}:".format(nom)
         for sys, (down, up) in self.sys.items():
-            sys_string+="\n\t{}: {:.2f} to {:.2f}".format(sys, np.sum(down)/nom, np.sum(up)/nom)
+            sys_down =  np.sum(down)/nom if nom!=0 else 0
+            sys_up =  np.sum(down)/nom if nom!=0 else 0
+            sys_string+="\n\t{}: {:.2f} to {:.2f}".format(sys, sys_down, sys_up)
         return sys_string
     def sys_from_sys_dict(self):
         ''' updates up down values from the sys dict object'''
@@ -154,8 +156,16 @@ class SysHist(Bins):
         up = hist_dict['up']
         down[np.isnan(down)]=0
         up[np.isnan(up)]=0
-        return cls(hist_dict['nom'],hist_dict['down'],hist_dict['up'],
-                   hist_dict['std'],hist_dict['bins'], sys=hist_dict['sys'])
+        hist_sys = {}
+        for key, item in hist_dict['sys'].items():
+            if np.isnan(item).any(): print("warning, removing nans from systematics")
+            item[0][np.isnan(item[0])]=0
+            item[1][np.isnan(item[1])]=0
+            hist_sys[key] = item
+        _cls = cls(hist_dict['nom'],hist_dict['down'],hist_dict['up'],
+                   hist_dict['std'],hist_dict['bins'], sys=hist_sys)
+
+        return _cls
     
     def calc_total_unc(self):
         return (((self.up-self.down)/2)**2 + self.std**2)**.5
