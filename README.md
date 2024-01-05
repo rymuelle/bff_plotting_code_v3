@@ -151,21 +151,27 @@ Tested in 12_1_0
 
 # current procedure:
 
-0_bff_skimmer-bffv2.ipynb: outputs to outdir, not tested 
-2_produce_flat_hists.ipynb
-2_produce_combined_df.ipynb (only contains bff data for signal model fitting)
-3_fit_signal_interp_bff_v2,ipynb (usses 2_produce_combined_df)
+0_bff_skimmer-bffv2.ipynb: makes the skims
+2_produce_flat_hists.ipynb: applies final selections for different plots, and makes flat histographs for later use
+3_stack_plot.ipynb : draws histograms for visualization purposes
+4_interp_signal_v2.ipynb: makes a signal model
+4_closure_test_lognorm_data.ipynb: makes background prediciton
+5_ABCD_Closure_UNC: make abcd unc
 
+BFF:
+    5_interp_signal_v2_makedf-indp_bins.ipynb: makes the combine card and interpolates mass points
+    6_fit_cross_sec_func.ipynb: computes branching ratio, acceptenaces, etc...
+    run using condor
+    7_make_comb_csv_bffv2.ipynb: combine results after
+Model ind:
+    0_bff_skimmer-bffv2-no_cuts_b_s-straight_from_nanoaod.ipynb: creates unselected skims for acceptance calc
+    1_b_s_multiplicty_plot-acceptance_drop_investigation-full_multiplicity.ipynb
+    2_b_s_multiplicty_plot-acceptance_drop_investigation-full_multiplicity.ipynb: computes acceptances
+    5_interp_signal_model_ind_makedf-indp_bins: makes model indep. cards
+    run using condor
+    7_make_comb_csv_bffv2-model_ind.ipynb: produce model ind limits
 
-
-2_produce_combined_df.ipynb: reads from and output to output_dir not tested
-3_stack_plot.ipynb : reads and outputs to output_dir, semi tested
-3_fit_signal_interp_bff_v2.ipynb: outputs to output_dir, not tested or commited
-4_closure_test_lognorm_mc: outputs to output_dir, not tested or commited
-4_closure_test_lognorm_data: outputs to output_dir, not tested or commited
-4p5_abcd_comparison
-4_interp_signal_v2 : reads and outputs to output_dir, semi tested, not commited
-5_interp_signal_v2_makedf:  reads and outputs to output_dir, semi tested, not commited
+#5_interp_signal_v2_makedf:  reads and outputs to output_dir, semi tested, not commited
 
 
 6_make_combined_cards.ipynb: reads and outputs to output_dir, semi tested, commited
@@ -224,3 +230,16 @@ draw_stack_plot_hists.py: removed kwargs from make_sys_hist
 5_interp_signal_model_ind_makedf-indp_bins
 
 7_make_comb_csv_bffv2-model_ind.ipynb > also produce limit plots atm
+
+
+# for width broadening:
+
+make pickl here: 
+
+4_interp_signal_v2-broadening_test
+5_interp_signal_v2_makedf-indp_bins-broadening_test
+
+
+# ABCD closure test:
+
+4_closure_test_lognorm_data-ABCD_test.ipynb
