@@ -56,3 +56,38 @@ def calc_bin_widths(arr):
 
 def calc_bin_centers(arr):
     return pair_wise_list_operation(arr)
+
+def rebin_np(oldbins, newbins, data, drawplot=False):
+    values = np.histogram(oldbins, newbins, weights = data)
+    return values[0]
+
+# this is much better than the np method
+def rebin_integrate(x,y, xnew_binedges, keep_norm=False, usequad=False, straight_interpolate = False, sample_density=100):
+    from scipy.interpolate import interp1d
+    from scipy.integrate import quad
+    f = interp1d(x,y, fill_value=0, bounds_error=False)
+     
+    centers = np.array(Bins(bin_edges).calc_bin_centers())
+    widths = np.array(Bins(bin_edges).calc_bin_widths())
+    if usequad:
+        ynew_int = []
+        for i, center in enumerate(centers):
+            integral = quad(f, xnew_binedges[i], xnew_binedges[i+1])[0]
+            ynew_int.append(integral)
+        ynew_int = np.array(ynew_int)
+    elif straight_interpolate:
+        ynew_int = f(centers)*widths
+    else:
+        ynew_int = []
+        for i, (center, widht) in enumerate(zip(centers, widths)):
+            sample_points = np.linspace(xnew_binedges[i], xnew_binedges[i+1],int(sample_density*widht))
+            integral = f(sample_points).sum()/sample_density
+            ynew_int.append(integral)
+        ynew_int = np.array(ynew_int)
+        
+    
+    
+    if keep_norm:  
+        y_total = y[(x>=np.min(bin_edges)) & (x<=np.max(bin_edges))].sum()
+        return centers, ynew_int/ynew_int.sum()*y_total
+    return centers, ynew_int
