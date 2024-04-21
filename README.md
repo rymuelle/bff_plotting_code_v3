@@ -158,6 +158,12 @@ Tested in 12_1_0
 4_closure_test_lognorm_data.ipynb: makes background prediciton
 5_ABCD_Closure_UNC: make abcd unc
 
+
+Combined:
+    4_fit_function_variations_correlations.ipynb: background csv maker
+    4_signal_csv
+    4_1_make_card
+    
 BFF:
     5_interp_signal_v2_makedf-indp_bins.ipynb: makes the combine card and interpolates mass points
     6_fit_cross_sec_func.ipynb: computes branching ratio, acceptenaces, etc...
@@ -243,3 +249,61 @@ make pickl here:
 # ABCD closure test:
 
 4_closure_test_lognorm_data-ABCD_test.ipynb
+
+
+# to make 1 GeV range plots
+aka the whole range is 1gev wide
+
+0_setup_asset_dir.ipynb
+    make_dir(asset_dir+'/abcd_1gev_range')
+
+
+changes in in 4_closure_test_lognorm_data-1_gdv_range: 
+
+    split_bins = Bins(np.linspace(110,900, int((900-110)+1/1))) (makes 1 gev bins)
+
+    outdir = '{}/abcd_1gev_range'.format(output_dir)
+
+5_interp_signal_v2_makedf-indp_bins.ipynb
+
+    outname="{}/abcd_1gev_range/abcd_dict_data_{}_ismc0_v2.pkl".format(outdir, era)
+    with open(outname,'rb') as f:
+        abcd = pkl.load(f)
+    
+
+    # but keeping closure the same for now
+    
+    path = '{}/combine_data_1gev_range/BFF'.format(outdir)
+    
+    
+5_interp_signal_model_ind_makedf
+    added code for comparison plot
+
+
+    outname="{}/abcd_1gev_range/abcd_dict_data_{}_ismc0_v2.pkl".format(outdir, era)
+    with open(outname,'rb') as f:
+        abcd = pkl.load(f)
+        
+        
+    sp.rebin=0
+7_make_comb_csv_bffv2-model_ind-1gev_range
+    filestring = '/afs/cern.ch/work/r/rymuelle/public/nanoAODzPrime/CMSSW_12_1_0/src/bff_plotting_code_v3/combine_data_1gev_range/model_ind/out/{}/*.out'.format(era)
+    
+    
+5_ABCD_Closure_UNC-1gev_binning
+    for era in [2016, 2017, 2018]:
+        outname="{}/abcd_1gev_range/abcd_dict_data_{}_ismc0_v2.pkl".format(outdir, era)
+        with open(outname,'rb') as f:
+            abcd_dict[era] = pkl.load(f)
+            
+    outname="{}/abcd_1gev_range/ABCD_closure_unc.pkl".format(output_dir, era)
+        with open(outname, 'wb') as f:
+        pkl.dump(uncertainty_dict, f)
+    
+            
+    mc_hist = mc_hist.reduce_range(bottom=120, top = 405)
+
+    splotters = {}
+    for era in [2016, 2017, 2018]:
+        splotters[era] = get_stack_plotter(output_dir, era)
+        splotters[era].rebin = 0 
