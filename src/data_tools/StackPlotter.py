@@ -1,5 +1,7 @@
 from src.plotting_tools.colors import color_fader
 from src.assets.file_groups import bck_dict, bck_list, bck_colors
+from src.plotting_tools.colors import accessible_colors_1, accessible_colors_2
+
 import numpy as np
 import pandas as pd
 from src.general.utils import is_equal
@@ -9,18 +11,20 @@ from src.plotting_tools.latexAssets import signal_type_dict
 split_bins = bins
 
 class StackPlotter():
-    def __init__(self, plot_df, era, rebin=0, x_range=(-np.inf, np.inf)):
+    def __init__(self, plot_df, era, binning=0, x_range=(-np.inf, np.inf)):
         self.plot_df = plot_df
         self.era = era
-        self.rebin = rebin
+        self.binning = binning
         self.x_range = x_range
         self.scale=1
         
     def make_hist(self, row, preserve_binning=False):
         sh = SysHist.from_dict(row)
         sh *= self.scale
-        if (not is_equal(self.rebin, 0) and not preserve_binning): sh = sh.rebin(self.rebin)
-        if not preserve_binning: sh = sh.reduce_range(bottom=self.x_range[0], top=self.x_range[1])
+        if (not is_equal(self.binning, 0) and not preserve_binning): 
+            sh = sh.rebin(self.binning)
+        if not preserve_binning: 
+            sh = sh.reduce_range(bottom=self.x_range[0], top=self.x_range[1])
         # ST isr fsr issue
         if row.sample_name in ['mc_santitop','mc_stop']:
             if 'Weight_ISRFSR_Up' in sh.sys: 
@@ -68,7 +72,7 @@ class StackPlotter():
         self.stich_dy(feature, reg)
         bdf = self.bck_df(feature, reg)
         return self.combine_hists(bdf)     
-    def draw_background(self, ax, feature, reg, ratio = -1, draw_sys=1,  error_scale=1, make_density=1, scale = 1, sys_label = None, nom_color='red', **kwargs):
+    def draw_background(self, ax, feature, reg, ratio = -1, draw_sys=1,  error_scale=1, make_density=1, scale = 1, sys_label = None, nom_color='red',colors=bck_colors, alpha=1, **kwargs):
         self.stich_dy(feature, reg)
         bdf = self.bck_df(feature, reg)
         hist_dict = {}
@@ -85,10 +89,10 @@ class StackPlotter():
         labels = [signal_type_dict[x] for x in bck_dict]
 
         ax.stackplot(_chist.calc_bin_centers(), _nominal_values,
-                     labels=labels, alpha=1, step='mid', colors=bck_colors)
+                     labels=labels, alpha=alpha, step='mid', colors=colors)
         bhist = self.combine_back(feature, reg)
         if make_density: bhist = bhist.make_density_hist()
-        bhist.draw(ax, alpha=.5, draw_sys=draw_sys, error_scale=error_scale, color=nom_color, sys_label=sys_label, label="MC background", **kwargs)
+        bhist.draw(ax, alpha=.5, draw_sys=draw_sys, error_scale=error_scale, color=nom_color, sys_label=sys_label, **kwargs)
         return bhist
     def select_hists(self,**kwargs):
         tdf = self.plot_df
@@ -109,19 +113,26 @@ class StackPlotter():
     def draw_signals(self, ax, feature, reg,
                      dbs_values = [0.04], mass_values = [125., 150., 175., 200., 250, 300, 350.],
                     c1='#ff2f00', c2='#0486ff',
-                    ratio=-1,  draw_sys=1, make_density=1, labels=True, **kwargs):
+                    ratio=-1,  draw_sys=1, make_density=1, labels=True, scales=[],**kwargs):
         nmass = len(mass_values)
         colors = [color_fader(c1,c2,mix=(i+.0)/nmass) for i in range(nmass)]
+        if len(scales) != len(mass_values): 
+            if len(scales) > 0: print("unequal scales")
+            scales = [1 for m in mass_values]
         
         tdf = self.feature_reg_df(feature, reg)
         sdf =  tdf[tdf.type=='sig']
+        signals = {}
         for dbs in dbs_values:
-            for color, mass in zip(colors, mass_values): 
+            for color, mass, scale in zip(colors, mass_values, scales): 
                 _sdf = sdf[(sdf.mass==mass) & (sdf.dbs==dbs)]
                 _shist = self.make_hist(_sdf.iloc[0])
+                _shist *= scale
                 if make_density: _shist = _shist.make_density_hist()
                 label = '{} GeV'.format(int(mass)) if labels==True else None
-                _shist.draw(ax, color=color, label=label, draw_sys=draw_sys)
+                _shist.draw(ax, color=color, label=label, draw_sys=draw_sys,  sysalpha=0.25, **kwargs)
+                signals[(dbs,mass)] = _shist
+        return signals
                 
     def draw_signals_compare_dbs(self, ax, feature, reg,
                      dbs_values = [0.04, 1.0], mass_values = [125., 350.], 
@@ -169,4 +180,4 @@ def get_stack_plotter(output_dir, era, bins = 'split', x_range=[100,900]):
         bin_edges = split_bins.bin_edges
     else:
         bin_edges = 0
-    return StackPlotter(plot_df, era, rebin=bin_edges, x_range=x_range)
+    return StackPlotter(plot_df, era, binning=bin_edges, x_range=x_range)

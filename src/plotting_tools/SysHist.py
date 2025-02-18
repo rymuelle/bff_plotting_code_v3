@@ -14,6 +14,15 @@ class SysHist(Bins):
         self.sys = sys
     def add_sys(self, key, down, up):
         self.sys[key] = [down, up]
+    def sys_summary_dict(self):
+        nom = self.nominal.sum()
+        sys_string = "nominal: {:.1f}:".format(nom)
+        sys_dict = {}
+        for sys, (down, up) in self.sys.items():
+            sys_down =  np.sum(down)/nom if nom!=0 else 0
+            sys_up =  np.sum(down)/nom if nom!=0 else 0
+            sys_dict[sys] = (sys_down,sys_up)
+        return sys_dict
     def sys_summary(self):
         nom = self.nominal.sum()
         sys_string = "nominal: {:.1f}:".format(nom)
@@ -82,6 +91,7 @@ class SysHist(Bins):
             sys=sys)  
         
     def reduce_range(self, bottom=-np.inf, top=np.inf):
+        self.bin_edges = self.bins.bin_edges
         bin_edges = self.bin_edges[(self.bin_edges < top) & (self.bin_edges>bottom)]
         new_bins = Bins(bin_edges)
         centers = new_bins.calc_bin_centers()
@@ -128,7 +138,7 @@ class SysHist(Bins):
         width = np.array(self.calc_bin_widths()*scale)
         return self.calc_ratio(width)
     def draw(self, ax, color='blue', error_scale=1, draw_sys=True, 
-             sys_label=None, errorbar=True, **kwargs):
+             sys_label=None, errorbar=True, syscolor = 'gray', sysalpha=.5, hatch=None, **kwargs):
         
         if errorbar: ax.errorbar(self.calc_bin_centers(), self.nominal, yerr=self.std*error_scale, drawstyle='steps-mid',color=color, **kwargs)
         else:
@@ -144,7 +154,7 @@ class SysHist(Bins):
             
             edges = self.bin_edges.repeat(2)[1:-1]
 
-            ax.fill_between(edges, up, down, step='mid', alpha=.5, color='gray', label=sys_label)
+            ax.fill_between(edges, up, down, step='mid', alpha=sysalpha, color=syscolor, label=sys_label, hatch=hatch)
     def calc_sum(self):
         return np.sum(self.nominal)
     def calc_integral(self):
@@ -196,6 +206,12 @@ class SysHist(Bins):
         sys2 = other.sys
         new_sys = {}
         for key, (down, up) in sys.items():
+            if (key in sys) and not (key in sys2):
+                new_sys[key] = sys[key]
+                continue
+            if (key in sys2) and not (key in sys2):
+                new_sys[key] = sys2[key]
+                continue
             try:
                 new_sys[key] = [(sys[key]['down']**2 + sys2[key]['down']**2)**.5,
                             (sys[key]['up']**2 + sys2[key]['up']**2)**.5]
